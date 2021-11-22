@@ -231,6 +231,7 @@ function aircraft_unload()
 	XLuaSetNumber(dr_override_surfaces, 0) 
 	XLuaSetNumber(dr_ecam_mode, 0)
 	logMsg("EXIT LUA")
+end
 function do_on_exit()
 	XLuaSetNumber(dr_override_surfaces, 0) 
 	XLuaSetNumber(dr_ecam_mode, 0)
