@@ -43894,7 +43894,7 @@ EMITTER engine 0 0.0242794 7.29363441 0 0 0 0
 	ANIM_rotate	0	1	0	92.40090279	92.40090279
 	ANIM_rotate	0	0	-1	1.14075899	1.14075899
 	ANIM_rotate	1	0	0	-1.09377646	-1.09377646
-	ANIM_rotate_begin	0.00000011	0.00000007	0.99986309	sim/flightmodel/controls/wing1l_ail1def
+	ANIM_rotate_begin	0.00000011	0.00000007	0.99986309	sim/flightmodel/controls/wing2l_ail1def
 	ANIM_rotate_key	0	0
 	ANIM_rotate_key	1	1.00013702
 	ANIM_rotate_end
@@ -43905,7 +43905,7 @@ EMITTER engine 0 0.0242794 7.29363441 0 0 0 0
 	ANIM_rotate	0	1	0	92.30006188	92.30006188
 	ANIM_rotate	0	0	-1	-0.68468458	-0.68468458
 	ANIM_rotate	1	0	0	0.65775554	0.65775554
-	ANIM_rotate_begin	0.00000003	0	1.00064635	sim/flightmodel/controls/wing1l_ail2def
+	ANIM_rotate_begin	0.00000003	0	1.00064635	sim/flightmodel/controls/wing2l_ail2def
 	ANIM_rotate_key	0	0
 	ANIM_rotate_key	1	0.99935411
 	ANIM_rotate_end
@@ -43916,7 +43916,7 @@ EMITTER engine 0 0.0242794 7.29363441 0 0 0 0
 	ANIM_rotate	0	1	0	-92.30006188	-92.30006188
 	ANIM_rotate	0	0	-1	0.68468458	0.68468458
 	ANIM_rotate	1	0	0	0.65775554	0.65775554
-	ANIM_rotate_begin	0.00000003	0.0000001	-1.00064623	sim/flightmodel/controls/wing1r_ail2def
+	ANIM_rotate_begin	0.00000003	0.0000001	-1.00064623	sim/flightmodel/controls/wing2r_ail2def
 	ANIM_rotate_key	0	0
 	ANIM_rotate_key	1	0.99935411
 	ANIM_rotate_end
@@ -43927,7 +43927,7 @@ EMITTER engine 0 0.0242794 7.29363441 0 0 0 0
 	ANIM_rotate	0	1	0	-92.40090279	-92.40090279
 	ANIM_rotate	0	0	-1	-1.14075899	-1.14075899
 	ANIM_rotate	1	0	0	-1.09377646	-1.09377646
-	ANIM_rotate_begin	0.00000005	-0.00000004	-0.99986291	sim/flightmodel/controls/wing1r_ail1def
+	ANIM_rotate_begin	0.00000005	-0.00000004	-0.99986291	sim/flightmodel/controls/wing2r_ail1def
 	ANIM_rotate_key	0	0
 	ANIM_rotate_key	1	1.00013702
 	ANIM_rotate_end
@@ -44185,7 +44185,7 @@ EMITTER engine 0 0.0242794 7.29363441 0 0 0 0
 	ANIM_end
 ANIM_begin
 ANIM_trans	-0.98499	0.01394	-1.07863998	-0.98499	0.01394	-1.07863998
-ANIM_rotate_begin	1	0	0	sim/flightmodel/controls/wing2l_elv2def
+ANIM_rotate_begin	1	0	0	sim/flightmodel/controls/wing4l_elv2def
 ANIM_rotate_key	0	0
 ANIM_rotate_key	1	0.99981131
 ANIM_rotate_end
