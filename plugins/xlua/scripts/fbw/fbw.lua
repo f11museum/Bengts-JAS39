@@ -443,7 +443,7 @@ function before_physics()
 	g_roll_trim = lclamp((g_roll_trim + g_rollr_tgt - sim_acf_rollrate) * sim_FRP * g_mach_washout / 2 , -0.25, 0.25)
 	
 	-- yaw laws ------------------------
-	g_command_heading = ((sim_yoke_heading_ratio * 10 - sim_beta) * (0.02) - sim_beta_rate * 0.02) * g_mach_washout * hi_alpha_boost-- (sim_acf_yawrate * 0.05 * lclamp(1 - sim_airspeed_kts_pilot/100, 0, 1))
+	g_command_heading = ((sim_yoke_heading_ratio * 10 - sim_beta) * (0.02) - sim_beta_rate * 0.02) * g_mach_washout-- * hi_alpha_boost-- (sim_acf_yawrate * 0.05 * lclamp(1 - sim_airspeed_kts_pilot/100, 0, 1))
 	if math.abs(g_command_g) < 2 and math.abs(sim_acf_roll) < 10 and math.abs(sim_acf_pitch) < 13 and math.abs(sim_yoke_roll_ratio) < 0.1  then 
 		g_command_heading = g_command_heading - sim_acf_yawrate * 0.1 * g_mach_washout
 		end
@@ -457,9 +457,9 @@ function before_physics()
 	fc_pitch = (g_command_pitch + g_pitch_trim + sim_yoke_pitch_ratio * 0.1) * 45
 	fc_roll = (g_command_roll + g_roll_trim) * 20
 	fc_yaw = (g_command_heading + g_yaw_trim + g_yaw_roll) * 25
-	lowspeed_flap =  -fc_pitch  + ipol(sim_alpha, {5, 10, 20, 30}, {0, 10, 15, 0}, 4) 
+	lowspeed_flap = 0-- -fc_pitch  + ipol(sim_alpha, {5, 10, 20, 30}, {0, 10, 15, 0}, 4) 
 	down_lmt = 20 * lclamp(1 - sim_alpha / 20, 0, 1)
-	landing_flap = sim_gear_deploy * 20 * (1 - g_wow_anim) * ipol(sim_airspeed_kts_pilot, {150, 170, 220}, {1, 0.5, 0}, 3)
+	landing_flap = 0 --sim_gear_deploy * 20 * (1 - g_wow_anim) * ipol(sim_airspeed_kts_pilot, {150, 170, 220}, {1, 0.5, 0}, 3)
 	if sim_N1 < 50 and g_wow == 1 and sim_braking_ratio > 0.01 and sim_airspeed_kts_pilot > 40 then 
 		gnd_spoiler = anim(gnd_spoiler, 1, 0.2)
 	else	
@@ -482,8 +482,8 @@ function before_physics()
 end
 
 -- temp = 0
--- function after_physics() 	
-	
--- end
+function after_physics() 	
+	XLuaSetNumber(dr_override_surfaces, 0) 
+end
 
 --function after_replay() end
