@@ -71,6 +71,13 @@ dr_vstab = XLuaFindDataRef("sim/flightmodel/controls/vstab1_rud1def")
 dr_gear_deploy = XLuaFindDataRef("sim/aircraft/parts/acf_gear_deploy[1]")
 dr_N1 = XLuaFindDataRef("sim/flightmodel/engine/ENGN_N1_[0]")
 dr_braking_ratio = XLuaFindDataRef("sim/cockpit2/controls/parking_brake_ratio")
+dr_braking_ratio_right = XLuaFindDataRef("sim/cockpit2/controls/right_brake_ratio")
+dr_braking_ratio_left = XLuaFindDataRef("sim/cockpit2/controls/left_brake_ratio")
+
+dr_speedbrake_wing_right = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake1_deg[0]")
+dr_speedbrake_wing_left = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake1_deg[1]")
+
+
 dr_burner_ratio = XLuaFindDataRef("sim/flightmodel2/engines/afterburner_ratio[0]")
 dr_elevation =  XLuaFindDataRef("sim/flightmodel/position/elevation")
 dr_override_engines =  XLuaFindDataRef("sim/operation/override/override_engines")
@@ -216,9 +223,9 @@ local burner_add = 0
 function flight_start() 
 	dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
 	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel2")
-	XLuaSetNumber(dr_fuel1, 3000) 
+	XLuaSetNumber(dr_fuel1, 2800) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
-	XLuaSetNumber(dr_override_surfaces, 1) 
+	--XLuaSetNumber(dr_override_surfaces, 1) 
 	XLuaSetNumber(dr_ecam_mode, 1) 
 
 	logMsg("Flight started with LUA")
@@ -299,6 +306,8 @@ function get_drefs()
 	sim_psi = getnumber(dr_psi)
 	sim_N1 = getnumber(dr_N1)
 	sim_braking_ratio = getnumber(dr_braking_ratio)
+	sim_braking_ratio_left = getnumber(dr_braking_ratio_left)
+	sim_braking_ratio_right = getnumber(dr_braking_ratio_right)
 	sim_burner_ratio = getnumber(dr_burner_ratio)
 	sim_elevation = getnumber(dr_elevation) * 3.28
 	sim_thrust_lbs = getnumber(dr_POINT_thrust) / 4.45	
@@ -366,7 +375,7 @@ function before_physics()
 	
 	burner_add = 6100 + sim_elevation/10 + sim_machno 
 	tgt_thrust_lbs = (max_thrust_rat * lclamp(sim_N1 / 100, 0, 1)^3 * 12000 + max_thrust_rat * sim_burner_ratio * burner_add)
-	XLuaSetNumber(dr_faxil_plug_acf, (tgt_thrust_lbs - sim_thrust_lbs) * -4.45 + ipol(sim_machno, {1.0, 1.2, 1.6, 2.0}, {0, -25000, -33000, -43000}, 3)  + add_lift / 10)
+	--XLuaSetNumber(dr_faxil_plug_acf, (tgt_thrust_lbs - sim_thrust_lbs) * -4.45 + ipol(sim_machno, {1.0, 1.2, 1.6, 2.0}, {0, -25000, -33000, -43000}, 3)  + add_lift / 10)
 
 
 ------------------------------------------------------------------------------------------
@@ -408,9 +417,15 @@ function before_physics()
 
 	-- pitch laws ----------------------
 	rlx = math.abs(sim_acf_roll / 180) * math.cos(math.rad(sim_acf_pitch)) 
-	if sim_yoke_pitch_ratio > 0 then g_command_g = sim_yoke_pitch_ratio * (lclamp((sim_airspeed_kts_pilot/300) * 9, 1.5, 9) - rlx) else g_command_g = 0 + sim_yoke_pitch_ratio * ( lclamp(sim_airspeed_kts_pilot/300, 0, 1) * 4 -rlx) end
+	if sim_yoke_pitch_ratio > 0 then 
+		g_command_g = sim_yoke_pitch_ratio * (lclamp((sim_airspeed_kts_pilot/300) * 9, 1.5, 9) - rlx) 
+	else 
+		g_command_g = 0 + sim_yoke_pitch_ratio * ( lclamp(sim_airspeed_kts_pilot/300, 0, 1) * 4 -rlx) 
+	end
 
-	if sim_machno > 0.95 and sim_machno < 1.05 and g_command_g > 7 then g_command_g = 7 end
+	if sim_machno > 0.95 and sim_machno < 1.05 and g_command_g > 7 then 
+		g_command_g = 7 
+	end
 	g_command_g = g_command_g + rlx
 
 	max_pitch_rate = 35
@@ -421,12 +436,16 @@ function before_physics()
 
 	
 	if g_wow == 0 then 
-		if sim_alpha > 0 then g_aoa_limit = 26 - math.abs(sim_yoke_roll_ratio) * 4 else g_aoa_limit = -10 end
+		if sim_alpha > 0 then 
+			g_aoa_limit = 26 - math.abs(sim_yoke_roll_ratio) * 4 
+		else 
+			g_aoa_limit = -10 
+		end
 		g_aoa_command = (g_aoa_limit - sim_alpha) * 0.03 - sim_alpha_rate * 0.3 --* g_mach_washout 
 		if (sim_alpha > 0 and g_command_pitch > g_aoa_command) or (sim_alpha < 0 and g_command_pitch < g_aoa_command) then 
 			g_command_pitch = g_aoa_command 
-			end
 		end
+	end
 	
 	g_command_pitch = (g_command_pitch * g_mach_washout) * (1-g_wow_anim) + (sim_yoke_pitch_ratio - sim_acf_pitchrate * 0.1 - sim_acf_pitch * 0.01) * g_wow_anim
 
@@ -434,12 +453,12 @@ function before_physics()
 		g_pitch_trim = lclamp(g_pitch_trim + g_command_pitch * sim_FRP * 7 , -1, 1) 
 	else
 		g_pitch_trim = anim(g_pitch_trim, 0, 0.2)
-		end
+	end
 	
 	
 	-- roll laws -----------------------
 	roll_choke = lclamp((1 - sim_alpha/38) * (sim_airspeed_kts_pilot / 300), 0.1, 1) 
-	g_rollr_tgt = sim_yoke_roll_ratio * 250 * roll_choke-- lclamp(sim_airspeed_kts_pilot * 0.8 * lclamp(1 - sim_alpha/60, 0.2, 1), 15, 250)
+	g_rollr_tgt = sim_yoke_roll_ratio * 350 * roll_choke-- lclamp(sim_airspeed_kts_pilot * 0.8 * lclamp(1 - sim_alpha/60, 0.2, 1), 15, 250)
 	g_command_roll = (sim_yoke_roll_ratio * 0.3 * roll_choke + (g_rollr_tgt - sim_acf_rollrate) * 0.01) * g_mach_washout 
 	g_roll_trim = lclamp((g_roll_trim + g_rollr_tgt - sim_acf_rollrate) * sim_FRP * g_mach_washout / 2 , -0.25, 0.25)
 	
@@ -465,18 +484,66 @@ function before_physics()
 		gnd_spoiler = anim(gnd_spoiler, 1, 0.2)
 	else	
 		gnd_spoiler = anim(gnd_spoiler, 0, 0.2)
-		end
+	end
 	
 	alpha_align =  lclamp(sim_alpha, -0, 15) * (1-g_wow_anim) * -1
-	XLuaSetNumber(dr_left_elevator, anim(sim_left_elevator, lclamp(lowspeed_flap + fc_roll - gnd_spoiler * 60, -20, 20), 100))
-	XLuaSetNumber(dr_right_elevator, anim(sim_right_elevator, lclamp(lowspeed_flap - fc_roll - gnd_spoiler * 60, -20, 20), 100))
+--	XLuaSetNumber(dr_left_elevator, anim(sim_left_elevator, lclamp(lowspeed_flap + fc_roll - gnd_spoiler * 60, -20, 20), 100))
+--	XLuaSetNumber(dr_right_elevator, anim(sim_right_elevator, lclamp(lowspeed_flap - fc_roll - gnd_spoiler * 60, -20, 20), 100))
 	XLuaSetNumber(dr_left_aileron, anim(sim_left_aileron, lclamp(lowspeed_flap + fc_roll - gnd_spoiler * 60, -20, down_lmt), 100))
 	XLuaSetNumber(dr_right_aileron, anim(sim_right_aileron, lclamp(lowspeed_flap -fc_roll - gnd_spoiler * 60, -20, down_lmt), 100))
-	XLuaSetNumber(dr_left_canard, anim(sim_left_canard, lclamp(fc_pitch - sim_machno * 1 + 0.5 + alpha_align  + landing_flap - gnd_spoiler * 40, -45, 15), 100))
-	XLuaSetNumber(dr_right_canard, anim(sim_right_canard, lclamp(fc_pitch - sim_machno * 1 + 0.5 + alpha_align  + landing_flap - gnd_spoiler * 40, -45, 15), 100))
+--	XLuaSetNumber(dr_left_canard , anim(sim_left_canard , lclamp(fc_pitch - sim_machno * 1 + 0.5 + alpha_align  + landing_flap - gnd_spoiler * 40, -45, 15), 100)   )
+--	XLuaSetNumber(dr_right_canard, anim(sim_right_canard, lclamp(fc_pitch - sim_machno * 1 + 0.5 + alpha_align  + landing_flap - gnd_spoiler * 40, -45, 15), 100)   )
 	XLuaSetNumber(dr_vstab, anim(sim_vstab, clamp(fc_yaw, -20, 20), 50))
 	dr_gripen_le_flap = anim(dr_gripen_le_flap, lclamp(sim_alpha -3 - landing_flap, 0, 20), 50)
 	dr_gripen_nozzle = 6 - sim_N1 * 0.15 + sim_burner_ratio * 15
+
+	-- mina tester
+
+	optimal_angle = 20
+	max_pitch_rate = 30
+	max_alpha_up = 25
+	max_alpha_down = -20
+	alpha_correction = 10
+
+	max_g_pos = 8
+	max_g_neg = -4
+	g_correction = 20
+
+	wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
+
+	current_rate = sim_acf_pitchrate
+
+	delta = -current_rate
+	error_correction = 0
+	if (sim_alpha > max_alpha_up) then
+		error_correction = error_correction -  (sim_alpha - max_alpha_up)*alpha_correction
+	end
+	if (sim_alpha < max_alpha_down) then
+		error_correction = error_correction -  (sim_alpha + max_alpha_down)*alpha_correction
+	end
+
+	-- G-force limit
+	if (sim_g_nrml > max_g_pos) then
+		error_correction = error_correction -  (sim_g_nrml - max_g_pos)*g_correction
+	end
+	if (sim_g_nrml < max_g_neg) then
+		error_correction = error_correction -  (sim_g_nrml + max_g_neg)*(g_correction/4)
+	end
+	canard = -sim_alpha + lclamp(delta+wanted_rate+error_correction, -optimal_angle, optimal_angle)
+
+	if sim_N1 < 50 and g_wow == 1 and ((sim_braking_ratio_right > 0.01 and sim_braking_ratio_left > 0.1) or sim_braking_ratio > 0.1) then 
+		canard = canard -80
+		XLuaSetNumber(dr_speedbrake_wing_right, 80)
+		XLuaSetNumber(dr_speedbrake_wing_left, 80)
+	else
+		XLuaSetNumber(dr_speedbrake_wing_right, 0)
+		XLuaSetNumber(dr_speedbrake_wing_left, 0)
+	end
+	XLuaSetNumber(dr_left_canard, lclamp(canard, -80, 90) )
+	XLuaSetNumber(dr_right_canard, lclamp(canard, -80, 90) )
+	
+	XLuaSetNumber(dr_left_elevator , -wanted_rate + fc_roll - lclamp(delta+wanted_rate+error_correction, -optimal_angle, optimal_angle))
+	XLuaSetNumber(dr_right_elevator, -wanted_rate - fc_roll - lclamp(delta+wanted_rate+error_correction, -optimal_angle, optimal_angle))
 
 	
 	
