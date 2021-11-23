@@ -15,15 +15,16 @@ max_yaw_rate = 50
 
 elevator_rate_to_angle = 1
 
-max_alpha_up = 25
+max_alpha_up = 30
 max_alpha_down = -20
 max_alpha_fade = 10
 alpha_correction = 10
 
-max_g_pos = 10
-max_g_neg = -5
-max_g_fade = 2
-g_correction = 10
+max_g_pos = 9
+max_g_neg = -3.5
+max_g_fade = 1
+max_g_fade_rate = 1
+g_correction = 1
 
 motor_speed = 200 
 
@@ -224,6 +225,9 @@ function calculateRudder()
 	m_rudder = delta
 end
 
+
+prev_rate = 0.0
+
 function calculateElevator()
 
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
@@ -239,7 +243,6 @@ function calculateElevator()
 	
 	error_correction = 0
 	if (sim_alpha > max_alpha_up) then
-		--XLuaSetNumber(dr_speedbrake_wing_right, 80)
 		-- om vinklen överstiger önskat värde så börjar vi lägga på en felkorrigering baserat på hur mycket över värdet vi är
 		-- Alla fel har kalibreringsvärden på hur aggresivt den ska motverka felet
 		error_correction = error_correction -  (sim_alpha - max_alpha_up)*alpha_correction
@@ -250,27 +253,43 @@ function calculateElevator()
 	-- 
 	-- G-force limit
 	if (sim_g_nrml > max_g_pos) then
-		error_correction = error_correction -  (sim_g_nrml - max_g_pos)*g_correction
+		diff = (sim_g_nrml - max_g_pos)
+		error_correction = error_correction -  (diff*diff)*g_correction
+		prev_rate = prev_rate * 0.95
 	end
 	if (sim_g_nrml < max_g_neg) then
-		error_correction = error_correction -  (sim_g_nrml + max_g_neg)*g_correction
+		diff = (sim_g_nrml + max_g_neg)
+		error_correction = error_correction + (diff*diff) * g_correction/3
+		prev_rate = prev_rate * 0.95
 	end
-	-- fade ut kontrollutslag för att försöka minska studsande
+	
 	
 	-- fade ut kontrollutslag för att försöka minska studsande
-	
 	if (sim_alpha > max_alpha_up-max_alpha_fade) then
-		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_up-max_alpha_fade))*max_pitch_rate/max_alpha_fade, 0, max_pitch_rate)
+		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_up-max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate)
 	end
 	if (sim_alpha < max_alpha_down+max_alpha_fade) then
-		wanted_rate = constrain(wanted_rate - (sim_alpha+max_alpha_down+max_alpha_fade)*max_pitch_rate/max_alpha_fade, -max_pitch_rate, 0 )
+		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_down+max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate )
 	end
 	-- G fade
 	if (sim_g_nrml > max_g_pos-max_g_fade) then
-		wanted_rate = constrain(wanted_rate - (sim_g_nrml-(max_g_pos-max_g_fade))*max_pitch_rate/max_g_fade, 0, max_pitch_rate)
-	end
-	if (sim_g_nrml < max_g_neg+max_g_fade) then
-		wanted_rate = constrain(wanted_rate - (sim_g_nrml+(max_g_neg+max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate,0 )
+		if (prev_rate == 0.0) then
+			prev_rate = sim_acf_pitchrate
+		end
+		
+		wanted_rate = constrain(wanted_rate, -max_pitch_rate, prev_rate)
+		
+		
+		--wanted_rate = constrain(wanted_rate - prev_rate *(sim_g_nrml-(max_g_pos-max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
+	elseif (sim_g_nrml < max_g_neg+max_g_fade) then
+		if (prev_rate == 0.0) then
+			prev_rate = sim_acf_pitchrate
+		end
+		wanted_rate = constrain(wanted_rate, prev_rate, max_pitch_rate)
+		
+		--wanted_rate = constrain(wanted_rate - (sim_g_nrml-(max_g_neg+max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
+	else 
+		prev_rate = 0.0
 	end
 	
 	-- Börja med att vinkla framvingarna så dom ligger helt plant med färdvinkeln (alpha) i detta läget så sker ingen påverkan på planets rotation
@@ -358,7 +377,7 @@ function before_physics()
 	XLuaSetNumber(dr_vstab, s_rudder)
 	
 -- Sätt status så vi vet om det här scriuptet fungerar 
-	XLuaSetNumber(dr_status, 1+s_rudder)
+	XLuaSetNumber(dr_status, 1)
 
 
 
