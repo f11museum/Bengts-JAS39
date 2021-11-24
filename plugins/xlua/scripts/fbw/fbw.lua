@@ -22,7 +22,7 @@ max_alpha_down = -15
 max_alpha_fade = 10
 alpha_correction = 50
 
-max_g_pos = 9
+max_g_pos = 10
 max_g_neg = -3.5
 max_g_fade = 1
 max_g_fade_rate = 1
@@ -32,7 +32,7 @@ motor_speed = 200
 motor_speed = 56 -- riktiga planet 56 grader per sekund
 motor_speed_canard = 56*2 -- riktiga planet 56 grader per sekund
 
-fade_out = 0.25
+fade_out = 0.6
 
 -- Datareffar
 
