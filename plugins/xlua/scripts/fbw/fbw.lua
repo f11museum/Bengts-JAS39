@@ -18,9 +18,9 @@ max_yaw_rate = 50
 elevator_rate_to_angle = 2
 
 max_alpha_up = 30
-max_alpha_down = -20
+max_alpha_down = -15
 max_alpha_fade = 10
-alpha_correction = 10
+alpha_correction = 50
 
 max_g_pos = 9
 max_g_neg = -3.5
@@ -30,7 +30,7 @@ g_correction = 1
 
 motor_speed = 200 
 motor_speed = 56 -- riktiga planet 56 grader per sekund
-motor_speed_canard = 56
+motor_speed_canard = 56*2 -- riktiga planet 56 grader per sekund
 
 fade_out = 0.25
 
@@ -326,7 +326,7 @@ function calculateElevator()
 	
 	-- Omvandla önskade ändringar på vinkeln till roderutslag i grader
 	wanted_rate = wanted_rate * current_fade_out
-	error_correction = error_correction * current_fade_out
+	--error_correction = error_correction * current_fade_out
 	angle = (delta+wanted_rate+error_correction) / elevator_rate_to_angle
 	--angle = angle * current_fade_out
 	
@@ -378,8 +378,8 @@ function before_physics()
 	s_canard = motor(s_canard, m_canard, motor_speed_canard)
 	--s_canard = m_canard
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
-	m_elevator_l = constrain(m_elevator+m_aileron, -40, 40)
-	m_elevator_r = constrain(m_elevator-m_aileron, -40, 40)
+	m_elevator_l = constrain(m_elevator+m_aileron/2, -40, 40)
+	m_elevator_r = constrain(m_elevator-m_aileron/2, -40, 40)
 	s_elevator_l = motor(s_elevator_l, m_elevator_l, motor_speed)
 	s_elevator_r = motor(s_elevator_r, m_elevator_r, motor_speed)
 	
