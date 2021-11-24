@@ -11,8 +11,8 @@
 optimal_angle = 20 -- För fram vingen
 max_pitch_rate = 50
 max_roll_rate_val = 270
-max_roll_rate = 270
-min_roll_rate = 60
+max_roll_rate = 270 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger
+min_roll_rate = 60 -- orginal 60
 max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
@@ -107,6 +107,7 @@ function flight_start()
 	dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
 	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel[0]")
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
+		
 	
 	XLuaSetNumber(dr_fuel1, 2980) 
 	XLuaSetNumber(dr_fuel2, 2980) 
@@ -114,6 +115,8 @@ function flight_start()
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
 	XLuaSetNumber(dr_ecam_mode, 1) 
+	--XLuaSetNumber(XLuaFindDataRef("sim/joystick/eq_pfc_yoke"), 1) -- ta bort krysset som dyker upp om man inte har joystick
+	
 
 	--clouds = XLuaFindDataRef("sim/private/controls/skyc/white_out_in_clouds")
 	--XLuaSetNumber(clouds, 0)
@@ -337,7 +340,7 @@ function calculateElevator()
 	-- Här kollar vi om vi ska aktivera luftbroms med framvingarna vid landning
 	-- Är motorn på låg fart och någon broms aktiverad samtidigt som hjulen är i marken så aktiverar vi bromsen
 	if sim_N1 < 50 and g_groundContact == 1 and ((sim_braking_ratio_right > 0.01 and sim_braking_ratio_left > 0.1) or sim_braking_ratio > 0.1) then 
-		canard = canard -80
+		canard = canard -30
 		XLuaSetNumber(dr_speedbrake_wing_right, 80)
 		XLuaSetNumber(dr_speedbrake_wing_left, 80)
 	else
@@ -387,7 +390,7 @@ function before_physics()
 	-- Skevrodret på bakvingen ska ha bara ha input från roll
 	m_aileron_l = constrain(m_aileron, -40, 40)
 	--m_aileron_r = constrain(-m_aileron, -40, 40)
-	s_aileron_l = motor(s_aileron_l, m_aileron_l, motor_speed)
+	s_aileron_l = motor(s_aileron_l, m_aileron_l, motor_speed*2)
 	--s_aileron_r = motor(s_aileron_r, m_aileron_r, motor_speed)
 
 	-- sidoroder
