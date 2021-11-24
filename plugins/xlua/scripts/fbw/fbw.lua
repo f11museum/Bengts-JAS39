@@ -105,10 +105,11 @@ current_fade_out = 1.0
 
 function flight_start() 
 	dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
-	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel2")
+	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel[0]")
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	
-	XLuaSetNumber(dr_fuel1, 3000) 
+	XLuaSetNumber(dr_fuel1, 2980) 
+	XLuaSetNumber(dr_fuel2, 2980) 
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
