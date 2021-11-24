@@ -10,10 +10,12 @@
 -- Kalibreringsvariabler
 optimal_angle = 20 -- För fram vingen
 max_pitch_rate = 50
-max_roll_rate = 300
+max_roll_rate_val = 270
+max_roll_rate = 270
+min_roll_rate = 60
 max_yaw_rate = 50
 
-elevator_rate_to_angle = 1
+elevator_rate_to_angle = 2
 
 max_alpha_up = 30
 max_alpha_down = -20
@@ -27,7 +29,10 @@ max_g_fade_rate = 1
 g_correction = 1
 
 motor_speed = 200 
+motor_speed = 56 -- riktiga planet 56 grader per sekund
+motor_speed_canard = 56
 
+fade_out = 0.25
 
 -- Datareffar
 
@@ -78,6 +83,9 @@ dr_nose_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[0
 dr_left_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[1]") 
 dr_right_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[2]") 
 
+dr_airspeed_kts_pilot = XLuaFindDataRef("sim/flightmodel/position/indicated_airspeed") 
+
+
 
 
 -- publika variabler
@@ -91,6 +99,8 @@ s_aileron_r = 0
 s_rudder = 0
 
 g_groundContact = 0
+
+current_fade_out = 1.0
 -- Plugin funktioner
 
 function flight_start() 
@@ -133,6 +143,10 @@ function constrain(val, lower, upper)
     return math.max(lower, math.min(upper, val))
 end
 
+function interpolate(x1, y1, x2, y2, value)
+	y = y1 + (y2-y1)/(x2-x1)*(value-x1)
+	return y
+end
 
 -- Våra program funktioner
 
@@ -158,16 +172,30 @@ function update_dataref()
 	sim_braking_ratio = getnumber(dr_braking_ratio)
 	sim_braking_ratio_left = getnumber(dr_braking_ratio_left)
 	sim_braking_ratio_right = getnumber(dr_braking_ratio_right)
+	sim_airspeed_kts_pilot = getnumber(dr_airspeed_kts_pilot)
 	
 	sim_FRP = getnumber(dr_FRP); if sim_FRP == 0 then sim_FRP = 1 end
 	
 	if (sim_nose_gear_depress) > 0 then 
 		g_groundContact = 1 
-		
 	else 
 		g_groundContact = 0 
-		
-		end
+	end
+	
+	current_fade_out = interpolate(0, 1.0, 500, fade_out, sim_airspeed_kts_pilot )
+	current_fade_out = constrain(current_fade_out, fade_out,1.0)
+	
+	max_roll_rate = interpolate(min_roll_rate, 130, max_roll_rate_val, 300, sim_airspeed_kts_pilot )
+	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val)
+	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
+	
+
+	XLuaSetNumber(dr_payload, current_fade_out) 
+	
+	glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
+	light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
+	darkness = interpolate(0.3, 0.5, 0.8, 0.0, light_attenuation )
+	XLuaSetNumber(glasdarkness, darkness) 
 	
 end
 
@@ -210,7 +238,7 @@ function calculateAileron()
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 	delta = wanted_rate-current_rate
 	
-	m_aileron = delta/2
+	m_aileron = delta
 end
 
 function calculateRudder()
@@ -297,7 +325,10 @@ function calculateElevator()
 	-- Vi begränsar sedan värdet så det inte överstiger dom vinklar som ger högst rotationskraft så den inte stallar
 	
 	-- Omvandla önskade ändringar på vinkeln till roderutslag i grader
+	wanted_rate = wanted_rate * current_fade_out
+	error_correction = error_correction * current_fade_out
 	angle = (delta+wanted_rate+error_correction) / elevator_rate_to_angle
+	--angle = angle * current_fade_out
 	
 	canard = -sim_alpha + constrain(angle, -optimal_angle, optimal_angle)
 
@@ -343,8 +374,8 @@ function before_physics()
 	XLuaSetNumber(dr_right_canard, sim_yoke_pitch_ratio*90) -- för felkoll
 	-- Sätt värden på alla vingar efter vad som räknats ut
 	-- Framvingen ska bara ha sin uträkning från canard
-	m_canard = constrain(m_canard, -80, 90)
-	s_canard = motor(s_canard, m_canard, motor_speed*2)
+	m_canard = constrain(m_canard, -50, 25)
+	s_canard = motor(s_canard, m_canard, motor_speed_canard)
 	--s_canard = m_canard
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
 	m_elevator_l = constrain(m_elevator+m_aileron, -40, 40)
