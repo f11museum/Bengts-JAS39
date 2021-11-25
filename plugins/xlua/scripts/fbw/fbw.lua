@@ -10,8 +10,8 @@
 -- Kalibreringsvariabler
 optimal_angle = 20 -- För fram vingen
 max_pitch_rate = 50
-max_roll_rate_val = 270
-max_roll_rate = 270 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger
+max_roll_rate_val = 320 
+max_roll_rate = 320 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
 min_roll_rate = 60 -- orginal 60
 max_yaw_rate = 50
 
@@ -30,7 +30,7 @@ g_correction = 1
 
 motor_speed = 200 
 motor_speed = 56 -- riktiga planet 56 grader per sekund
-motor_speed_canard = 56*2 -- riktiga planet 56 grader per sekund
+motor_speed_canard = 56*3 -- riktiga planet 56 grader per sekund
 
 fade_out = 0.6
 
@@ -101,6 +101,9 @@ s_rudder = 0
 g_groundContact = 0
 
 current_fade_out = 1.0
+
+error_correction = 0
+
 -- Plugin funktioner
 
 function flight_start() 
@@ -263,8 +266,12 @@ prev_rate = 0.0
 function calculateElevator()
 
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
-	wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
-	
+	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
+	if (sim_yoke_pitch_ratio<0) then
+		wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
+	else
+		wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
+	end
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_pitchrate
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
@@ -274,6 +281,7 @@ function calculateElevator()
 
 	
 	error_correction = 0
+	error_correction_g = 0
 	if (sim_alpha > max_alpha_up) then
 		-- om vinklen överstiger önskat värde så börjar vi lägga på en felkorrigering baserat på hur mycket över värdet vi är
 		-- Alla fel har kalibreringsvärden på hur aggresivt den ska motverka felet
@@ -286,12 +294,12 @@ function calculateElevator()
 	-- G-force limit
 	if (sim_g_nrml > max_g_pos) then
 		diff = (sim_g_nrml - max_g_pos)
-		error_correction = error_correction -  (diff*diff)*g_correction
+		error_correction_g = error_correction_g -  (diff*diff)*g_correction
 		prev_rate = prev_rate * 0.95
 	end
 	if (sim_g_nrml < max_g_neg) then
 		diff = (sim_g_nrml + max_g_neg)
-		error_correction = error_correction + (diff*diff) * g_correction/3
+		error_correction_g = error_correction_g + (diff*diff) * g_correction/3
 		prev_rate = prev_rate * 0.95
 	end
 	
@@ -331,7 +339,7 @@ function calculateElevator()
 	-- Omvandla önskade ändringar på vinkeln till roderutslag i grader
 	wanted_rate = wanted_rate * current_fade_out
 	--error_correction = error_correction * current_fade_out
-	angle = (delta+wanted_rate+error_correction) / elevator_rate_to_angle
+	angle = (delta+wanted_rate+error_correction+error_correction_g) / elevator_rate_to_angle
 	--angle = angle * current_fade_out
 	
 	canard = -sim_alpha + constrain(angle, -optimal_angle, optimal_angle)
@@ -378,8 +386,14 @@ function before_physics()
 	XLuaSetNumber(dr_right_canard, sim_yoke_pitch_ratio*90) -- för felkoll
 	-- Sätt värden på alla vingar efter vad som räknats ut
 	-- Framvingen ska bara ha sin uträkning från canard
-	m_canard = constrain(m_canard, -50, 25)
-	s_canard = motor(s_canard, m_canard, motor_speed_canard)
+	if (error_correction>0) then
+		m_canard = constrain(m_canard, -50, 25) -- ge den lite extra spelrumm när den ska göra nödvändiga stabiliseringar
+		s_canard = motor(s_canard, m_canard, motor_speed_canard)
+	else
+		m_canard = constrain(m_canard, -50, 25)
+		s_canard = motor(s_canard, m_canard, motor_speed_canard)
+	end
+	
 	--s_canard = m_canard
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
 	m_elevator_l = constrain(m_elevator+m_aileron/2, -40, 40)
