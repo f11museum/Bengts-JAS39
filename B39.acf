@@ -204,7 +204,7 @@ P _gear/0/_lonE 3.0
 P _gear/0/_lonN 3.0
 P _gear/0/_lonR -95.0
 P _gear/0/_scon 13213.863281250
-P _gear/0/_stat_def 0.107868180
+P _gear/0/_stat_def 0.107868157
 P _gear/0/_steerdeg_hispeed 7.500000000
 P _gear/0/_steerdeg_lospeed 67.0
 P _gear/0/_strut_comp 0.0
@@ -238,7 +238,7 @@ P _gear/1/_lonE 0.0
 P _gear/1/_lonN 0.0
 P _gear/1/_lonR 90.0
 P _gear/1/_scon 20421.423828125
-P _gear/1/_stat_def 0.720804513
+P _gear/1/_stat_def 0.720804334
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 0.0
@@ -272,7 +272,7 @@ P _gear/2/_lonE 0.0
 P _gear/2/_lonN 0.0
 P _gear/2/_lonR 90.0
 P _gear/2/_scon 20421.423828125
-P _gear/2/_stat_def 0.720804513
+P _gear/2/_stat_def 0.720804334
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 0.0
@@ -356,9 +356,9 @@ P _lite/3/_v10_att_part -1
 P _lite/3/_v10_att_phi_ref 0.0
 P _lite/3/_v10_att_psi_ref 0.0
 P _lite/3/_v10_att_the_ref 0.0
-P _lite/3/_v10_att_x_acf_prt_ref -0.098425195
-P _lite/3/_v10_att_y_acf_prt_ref 6.561679840
-P _lite/3/_v10_att_z_acf_prt_ref 26.246719360
+P _lite/3/_v10_att_x_acf_prt_ref -13.221785545
+P _lite/3/_v10_att_y_acf_prt_ref 0.0
+P _lite/3/_v10_att_z_acf_prt_ref 26.640419006
 P _lite/3/_v10_is_internal 2376
 P _lite/3/_v10_steers_with_gear 0
 P _lite/3/_width 0.0
@@ -375,8 +375,8 @@ P _lite/4/_v10_att_phi_ref 0.0
 P _lite/4/_v10_att_psi_ref 0.0
 P _lite/4/_v10_att_the_ref 0.0
 P _lite/4/_v10_att_x_acf_prt_ref -0.098425195
-P _lite/4/_v10_att_y_acf_prt_ref 6.561679840
-P _lite/4/_v10_att_z_acf_prt_ref 26.246719360
+P _lite/4/_v10_att_y_acf_prt_ref 3.280839920
+P _lite/4/_v10_att_z_acf_prt_ref 26.640419006
 P _lite/4/_v10_is_internal 2376
 P _lite/4/_v10_steers_with_gear 0
 P _lite/4/_width 0.0
@@ -392,9 +392,9 @@ P _lite/5/_v10_att_part -1
 P _lite/5/_v10_att_phi_ref 0.0
 P _lite/5/_v10_att_psi_ref 0.0
 P _lite/5/_v10_att_the_ref 0.0
-P _lite/5/_v10_att_x_acf_prt_ref 0.098425195
-P _lite/5/_v10_att_y_acf_prt_ref 6.561679840
-P _lite/5/_v10_att_z_acf_prt_ref 26.246719360
+P _lite/5/_v10_att_x_acf_prt_ref 14.206036568
+P _lite/5/_v10_att_y_acf_prt_ref 0.0
+P _lite/5/_v10_att_z_acf_prt_ref 26.640419006
 P _lite/5/_v10_is_internal 2376
 P _lite/5/_v10_steers_with_gear 0
 P _lite/5/_width 0.0
@@ -410,9 +410,9 @@ P _lite/6/_v10_att_part -1
 P _lite/6/_v10_att_phi_ref 0.0
 P _lite/6/_v10_att_psi_ref 0.0
 P _lite/6/_v10_att_the_ref 0.0
-P _lite/6/_v10_att_x_acf_prt_ref 0.098425195
-P _lite/6/_v10_att_y_acf_prt_ref 6.561679840
-P _lite/6/_v10_att_z_acf_prt_ref 26.246719360
+P _lite/6/_v10_att_x_acf_prt_ref 0.0
+P _lite/6/_v10_att_y_acf_prt_ref 10.170602798
+P _lite/6/_v10_att_z_acf_prt_ref 41.010498047
 P _lite/6/_v10_is_internal 2376
 P _lite/6/_v10_steers_with_gear 0
 P _lite/6/_width 0.0
@@ -16624,7 +16624,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.884826183
-P _part/86/_part_y -3.552366018
+P _part/86/_part_y -3.552366257
 P _part/86/_part_z 27.559053421
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -18094,7 +18094,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.884826183
-P _part/87/_part_y -3.552366018
+P _part/87/_part_y -3.552366257
 P _part/87/_part_z 27.559053421
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -23613,7 +23613,7 @@ P acf/_auto_pressurization 1
 P acf/_auto_psi_for_dir_change 180.0
 P acf/_auto_ptch_axis_defaults_free 0
 P acf/_auto_roll_axis_defaults_free 0
-P acf/_auto_rpm_EQ 1
+P acf/_auto_rpm_EQ 0
 P acf/_auto_rpm_with_tvec 0
 P acf/_auto_sync_EQ 1
 P acf/_auto_trim_EQ 1
@@ -25195,7 +25195,7 @@ P acf/_give_tow/1 0.0
 P acf/_give_tow/2 0.0
 P acf/_give_tow/count 3
 P acf/_go_to_beta_below_thro 0.0
-P acf/_go_to_burner_50_above_thro 0.899999976
+P acf/_go_to_burner_50_above_thro 0.0
 P acf/_go_to_pitch_mode_on_alt_arm 0
 P acf/_go_to_revr_below_thro 0.0
 P acf/_govnr_EQ 0
@@ -25873,7 +25873,7 @@ P acf/_tank_psi/6 10.0
 P acf/_tank_psi/7 10.0
 P acf/_tank_psi/8 10.0
 P acf/_tank_psi/count 9
-P acf/_tank_rat/0 0.999000013
+P acf/_tank_rat/0 1.0
 P acf/_tank_rat/1 0.0
 P acf/_tank_rat/2 0.0
 P acf/_tank_rat/3 0.0
