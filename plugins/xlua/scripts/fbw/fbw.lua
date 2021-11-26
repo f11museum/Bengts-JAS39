@@ -17,6 +17,7 @@ max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
 
+deadzone = 0.05
 max_alpha_up = 30
 max_alpha_down = -15
 max_alpha_fade = 10
@@ -112,13 +113,13 @@ function flight_start()
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 		
 	
-	XLuaSetNumber(dr_fuel1, 2980) 
-	XLuaSetNumber(dr_fuel2, 2980) 
+	XLuaSetNumber(dr_fuel1, 2970) 
+	XLuaSetNumber(dr_fuel2, 2970) 
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
 	XLuaSetNumber(dr_ecam_mode, 1) 
-	--XLuaSetNumber(XLuaFindDataRef("sim/joystick/eq_pfc_yoke"), 1) -- ta bort krysset som dyker upp om man inte har joystick
+	XLuaSetNumber(XLuaFindDataRef("sim/joystick/eq_pfc_yoke"), 1) -- ta bort krysset som dyker upp om man inte har joystick
 	
 
 	--clouds = XLuaFindDataRef("sim/private/controls/skyc/white_out_in_clouds")
@@ -267,10 +268,18 @@ function calculateElevator()
 
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
-	if (sim_yoke_pitch_ratio<0) then
-		wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
+	if (sim_yoke_pitch_ratio<deadzone and sim_yoke_pitch_ratio > -deadzone) then
+		sim_yoke_pitch_ratio = 0
+		wanted_rate = 0
 	else
-		wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
+
+		if (sim_yoke_pitch_ratio<0) then
+			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio + deadzone
+			wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
+		else
+			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio -deadzone
+			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
+		end
 	end
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_pitchrate
