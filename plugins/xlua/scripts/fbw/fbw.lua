@@ -188,6 +188,7 @@ function update_dataref()
 	sim_acf_rollrate = getnumber(dr_acf_rollrate)
 	sim_acf_yawrate = getnumber(dr_acf_yawrate)
 	sim_pitch = getnumber(dr_acf_pitch)
+	sim_acf_roll = getnumber(dr_acf_roll)
 	sim_alpha = getnumber(dr_alpha)
 	sim_g_nrml = getnumber(dr_g_nrml)
 	sim_N1 = getnumber(dr_N1)
@@ -300,7 +301,8 @@ function calculateElevator()
 			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
 		end
 		lock = lock_pitch -sim_pitch 
-		wanted_rate = lock*10
+		wanted_rate = (lock*10)* math.cos(math.rad(sim_acf_roll))
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), math.cos(math.rad(sim_acf_roll))) 
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
@@ -406,8 +408,8 @@ function calculateElevator()
 	lock = lock * current_fade_out
 
 
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), lock) 
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
+	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), lock) 
+	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
 	--error_correction = error_correction * current_fade_out
 	angle = (lock+delta*2+wanted_rate+error_correction+error_correction_g) / elevator_rate_to_angle
 	canard_angle = (delta*2+(wanted_rate*0.5)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
@@ -426,11 +428,11 @@ function calculateElevator()
 		-- XLuaSetNumber(dr_speedbrake_wing_left, 45)
 		-- XLuaSetNumber(dr_speedbrake_wing_right2, 45)
 		-- XLuaSetNumber(dr_speedbrake_wing_left2, 45)
-		-- 
-		-- XLuaSetNumber(dr_speedbrake2_wing_right, 45)
-		-- XLuaSetNumber(dr_speedbrake2_wing_left, 45)
-		-- XLuaSetNumber(dr_speedbrake2_wing_right2, 45)
-		-- XLuaSetNumber(dr_speedbrake2_wing_left2, 45)
+		
+		XLuaSetNumber(dr_speedbrake2_wing_right, 45)
+		XLuaSetNumber(dr_speedbrake2_wing_left, 45)
+		XLuaSetNumber(dr_speedbrake2_wing_right2, 45)
+		XLuaSetNumber(dr_speedbrake2_wing_left2, 45)
 	else
 		XLuaSetNumber(dr_speedbrake_wing_right, 0)
 		XLuaSetNumber(dr_speedbrake_wing_left, 0)
