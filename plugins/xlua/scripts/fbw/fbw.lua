@@ -114,6 +114,15 @@ canard_fade_out = 1.0
 
 error_correction = 0
 
+
+prev_rate = 0.0
+g_rest = 0.0
+g_restn = 0.0
+avg_pitch_neg = 0.0
+
+lock_pitch = 10.0
+lock_pitch_movement = 0
+
 -- Plugin funktioner
 
 function flight_start() 
@@ -276,27 +285,27 @@ function calculateRudder()
 end
 
 
-prev_rate = 0.0
-g_rest = 0.0
-g_restn = 0.0
-avg_pitch_neg = 0.0
-
-lock_pitch = 0.0
-lock_pitch_movement = 0
 
 function calculateElevator()
-
+	lock = 0
+	delta = 0
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
 	if (sim_yoke_pitch_ratio<deadzone and sim_yoke_pitch_ratio > -deadzone) then
 		sim_yoke_pitch_ratio = 0
 		wanted_rate = 0
-		if lock_pitch_movement then
+		if lock_pitch_movement == 1 then
 			lock_pitch = sim_pitch
 			lock_pitch_movement = 0
+			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
 		end
-		delta = sim_pitch - lock_pitch
-		delta = -delta
+		lock = lock_pitch -sim_pitch 
+		wanted_rate = lock*10
+		-- Kollar vad planet har för nuvarande rotationshastighet 
+		current_rate = sim_acf_pitchrate
+		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
+		delta = -current_rate
+		--lock = delta
 	else
 
 		if (sim_yoke_pitch_ratio<0) then
@@ -307,12 +316,12 @@ function calculateElevator()
 			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
 		end
 		lock_pitch_movement = 1
+		
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = -current_rate
 	end
-	
 	
 	
 	-- Begränsningar för alpha och G krafter
@@ -394,9 +403,14 @@ function calculateElevator()
 	
 	-- Omvandla önskade ändringar på vinkeln till roderutslag i grader
 	wanted_rate = wanted_rate * current_fade_out
+	lock = lock * current_fade_out
+
+
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), lock) 
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
 	--error_correction = error_correction * current_fade_out
-	angle = (delta*2+wanted_rate+error_correction+error_correction_g) / elevator_rate_to_angle
-	canard_angle = ((wanted_rate*0.5)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
+	angle = (lock+delta*2+wanted_rate+error_correction+error_correction_g) / elevator_rate_to_angle
+	canard_angle = (delta*2+(wanted_rate*0.5)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
 	
 	--angle = angle * current_fade_out
 	
