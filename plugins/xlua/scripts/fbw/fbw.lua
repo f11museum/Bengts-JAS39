@@ -93,6 +93,7 @@ dr_left_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[1
 dr_right_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[2]") 
 
 dr_airspeed_kts_pilot = XLuaFindDataRef("sim/flightmodel/position/indicated_airspeed") 
+dr_gear = XLuaFindDataRef("sim/cockpit/switches/gear_handle_status") 
 
 
 
@@ -202,6 +203,7 @@ function update_dataref()
 	sim_braking_ratio_left = getnumber(dr_braking_ratio_left)
 	sim_braking_ratio_right = getnumber(dr_braking_ratio_right)
 	sim_airspeed_kts_pilot = getnumber(dr_airspeed_kts_pilot)
+	sim_gear = getnumber(dr_gear)
 	
 	sim_FRP = getnumber(dr_FRP); if sim_FRP == 0 then sim_FRP = 1 end
 	
@@ -280,8 +282,11 @@ function calculateRudder()
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_yawrate
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
-	delta = wanted_rate -current_rate
-	
+	if (g_groundContact == 1) then
+		delta = wanted_rate
+	else
+		delta = wanted_rate -current_rate
+	end
 	m_rudder = delta
 end
 
@@ -301,7 +306,9 @@ function calculateElevator()
 			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
 		end
 		lock = lock_pitch -sim_pitch 
-		wanted_rate = (lock*10)* math.cos(math.rad(sim_acf_roll))
+		if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
+			wanted_rate = (lock*10)* math.cos(math.rad(sim_acf_roll))
+		end
 		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), math.cos(math.rad(sim_acf_roll))) 
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
@@ -429,10 +436,10 @@ function calculateElevator()
 		-- XLuaSetNumber(dr_speedbrake_wing_right2, 45)
 		-- XLuaSetNumber(dr_speedbrake_wing_left2, 45)
 		
-		XLuaSetNumber(dr_speedbrake2_wing_right, 45)
-		XLuaSetNumber(dr_speedbrake2_wing_left, 45)
-		XLuaSetNumber(dr_speedbrake2_wing_right2, 45)
-		XLuaSetNumber(dr_speedbrake2_wing_left2, 45)
+		--XLuaSetNumber(dr_speedbrake2_wing_right, 35)
+		--XLuaSetNumber(dr_speedbrake2_wing_left, 35)
+		XLuaSetNumber(dr_speedbrake2_wing_right2, 35)
+		XLuaSetNumber(dr_speedbrake2_wing_left2, 35)
 	else
 		XLuaSetNumber(dr_speedbrake_wing_right, 0)
 		XLuaSetNumber(dr_speedbrake_wing_left, 0)
