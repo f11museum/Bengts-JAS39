@@ -271,7 +271,7 @@ function calculateAileron()
 	current_rate = sim_acf_rollrate
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 	delta = wanted_rate-current_rate
-	
+	delta = delta * current_fade_out
 	m_aileron = delta
 end
 
@@ -332,7 +332,7 @@ function calculateElevator()
 		delta = -current_rate
 	end
 	
-	
+	delta = delta * current_fade_out
 	-- Begränsningar för alpha och G krafter
 
 	
