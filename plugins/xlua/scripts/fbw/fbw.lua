@@ -290,7 +290,7 @@ function calculateRudder()
 	m_rudder = delta
 end
 
-
+lock_avg = 0.0
 
 function calculateElevator()
 	lock = 0
@@ -306,8 +306,10 @@ function calculateElevator()
 			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
 		end
 		lock = lock_pitch -sim_pitch 
+		
 		if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
-			wanted_rate = (lock*10)* math.cos(math.rad(sim_acf_roll))
+			lock = (lock*10)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
+			lock_avg = (lock_avg*99 + lock)/100
 		end
 		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), math.cos(math.rad(sim_acf_roll))) 
 		-- Kollar vad planet har för nuvarande rotationshastighet 
@@ -325,7 +327,9 @@ function calculateElevator()
 			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
 		end
 		lock_pitch_movement = 1
-		
+		if (sim_gear == 0) then
+			lock = lock_avg
+		end
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
