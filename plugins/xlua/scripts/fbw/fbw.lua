@@ -18,6 +18,7 @@ max_yaw_rate = 50
 elevator_rate_to_angle = 2
 
 deadzone = 0.15
+autopilot_disable = 0.45
 max_alpha_up = 30
 max_alpha_down = -15
 max_alpha_fade = 10
@@ -47,6 +48,7 @@ dr_FRP = XLuaFindDataRef("sim/operation/misc/frame_rate_period")
 dr_yoke_roll_ratio = XLuaFindDataRef("sim/joystick/yoke_roll_ratio") 
 dr_yoke_heading_ratio = XLuaFindDataRef("sim/joystick/yoke_heading_ratio") 
 dr_yoke_pitch_ratio = XLuaFindDataRef("sim/joystick/yoke_pitch_ratio") 
+dr_elv_trim = XLuaFindDataRef("sim/flightmodel/controls/elv_trim") 
 
 -- Vingar
 dr_left_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail1def")
@@ -67,6 +69,9 @@ dr_acf_yawrate = XLuaFindDataRef("sim/flightmodel/position/R")
 dr_acf_rollrate_acc = XLuaFindDataRef("sim/flightmodel/position/P_dot") 
 dr_acf_pitchrate_acc = XLuaFindDataRef("sim/flightmodel/position/Q_dot") 
 dr_acf_yawrate_acc = XLuaFindDataRef("sim/flightmodel/position/R_dot") 
+dr_acf_vx = XLuaFindDataRef("sim/flightmodel/position/local_vx") 
+dr_acf_vy = XLuaFindDataRef("sim/flightmodel/position/local_vy") 
+dr_acf_vz = XLuaFindDataRef("sim/flightmodel/position/local_vz") 
 
 dr_alpha = XLuaFindDataRef("sim/flightmodel/position/alpha") 
 dr_g_nrml = XLuaFindDataRef("sim/flightmodel/forces/g_nrml") 
@@ -94,6 +99,17 @@ dr_right_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[
 
 dr_airspeed_kts_pilot = XLuaFindDataRef("sim/flightmodel/position/indicated_airspeed") 
 dr_gear = XLuaFindDataRef("sim/cockpit/switches/gear_handle_status") 
+
+dr_altitude = XLuaFindDataRef("sim/flightmodel/misc/h_ind") 
+
+-- Egna JAS dataref
+dr_jas_button_spak = XLuaFindDataRef("JAS/button/spak") 
+dr_jas_button_att = XLuaFindDataRef("JAS/button/att") 
+dr_jas_button_hojd = XLuaFindDataRef("JAS/button/hojd") 
+
+dr_jas_lamps_spak = XLuaFindDataRef("JAS/lamps/spak") 
+dr_jas_lamps_att = XLuaFindDataRef("JAS/lamps/att") 
+dr_jas_lamps_hojd = XLuaFindDataRef("JAS/lamps/hojd")  
 
 
 
@@ -175,6 +191,37 @@ function interpolate(x1, y1, x2, y2, value)
 	return y
 end
 
+function myGetAlpha() 
+	
+ 	vx = sim_acf_vx
+	vy = sim_acf_vy
+	vz = sim_acf_vz
+	pitch = sim_pitch
+	
+	length = math.sqrt(vy * vy + vx * vx + vz * vz)
+	if (length > 1.0) then
+		alpha = math.asin(vy / length)
+		alpha = pitch - math.deg(alpha)
+		return alpha
+	else 
+		return 0.0
+	end
+end
+function myGetFlightAngle() 
+	
+ 	vx = sim_acf_vx
+	vy = sim_acf_vy
+	vz = sim_acf_vz
+	pitch = sim_pitch
+	
+	length = math.sqrt(vy * vy + vx * vx + vz * vz)
+	if (length > 1.0) then
+		angle = math.asin(vy / length)
+		return math.deg(angle)
+	else 
+		return 0.0
+	end
+end
 -- Våra program funktioner
 
 function update_dataref()
@@ -185,6 +232,8 @@ function update_dataref()
 	sim_yoke_pitch_ratio = getnumber(dr_yoke_pitch_ratio) 
 	sim_yoke_roll_ratio = getnumber(dr_yoke_roll_ratio) 
 	sim_yoke_heading_ratio = getnumber(dr_yoke_heading_ratio)
+	sim_elv_trim = getnumber(dr_elv_trim)
+	
 	sim_acf_pitchrate = getnumber(dr_acf_pitchrate)
 	sim_acf_rollrate = getnumber(dr_acf_rollrate)
 	sim_acf_yawrate = getnumber(dr_acf_yawrate)
@@ -193,6 +242,10 @@ function update_dataref()
 	sim_alpha = getnumber(dr_alpha)
 	sim_g_nrml = getnumber(dr_g_nrml)
 	sim_N1 = getnumber(dr_N1)
+	sim_acf_vx = getnumber(dr_acf_vx)
+	sim_acf_vy = getnumber(dr_acf_vy)
+	sim_acf_vz = getnumber(dr_acf_vz)
+	sim_acf_flight_angle = myGetFlightAngle()
 	
 	sim_left_gear_depress = getnumber(dr_left_gear_depress)
 	sim_right_gear_depress = getnumber(dr_right_gear_depress)
@@ -204,8 +257,21 @@ function update_dataref()
 	sim_braking_ratio_right = getnumber(dr_braking_ratio_right)
 	sim_airspeed_kts_pilot = getnumber(dr_airspeed_kts_pilot)
 	sim_gear = getnumber(dr_gear)
+	sim_altitude = getnumber(dr_altitude)
+	
+	sim_jas_button_spak = getnumber(dr_jas_button_spak)
+	sim_jas_button_att = getnumber(dr_jas_button_att)
+	sim_jas_button_hojd = getnumber(dr_jas_button_hojd)
+	
+	sim_jas_lamps_spak = getnumber(dr_jas_lamps_spak)
+	sim_jas_lamps_att = getnumber(dr_jas_lamps_att)
+	sim_jas_lamps_hojd = getnumber(dr_jas_lamps_hojd)
 	
 	sim_FRP = getnumber(dr_FRP); if sim_FRP == 0 then sim_FRP = 1 end
+	
+	
+
+	sim_true_alpha = myGetAlpha()
 	
 	if (sim_nose_gear_depress) > 0 then 
 		g_groundContact = 1 
@@ -219,7 +285,7 @@ function update_dataref()
 	canard_fade_out = interpolate(0, 1.0, 500, 0, sim_airspeed_kts_pilot )
 	canard_fade_out = constrain(canard_fade_out, 0,1.0)
 	
-	max_roll_rate = interpolate(min_roll_rate, 130, max_roll_rate_val, 300, sim_airspeed_kts_pilot )
+	max_roll_rate = interpolate(min_roll_rate, 170, max_roll_rate_val, 350, sim_airspeed_kts_pilot )
 	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val)
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	
@@ -232,7 +298,6 @@ function update_dataref()
 	XLuaSetNumber(glasdarkness, darkness) 
 	
 end
-
 
 function myfilter(currentValue, newValue)
 
@@ -291,34 +356,73 @@ function calculateRudder()
 end
 
 lock_avg = 0.0
+auto_alt = 0.0
+autopilot_hold_alti = 0
+autopilot_hold_att = 0
+
+auto_trim = 0.0
+
+function calculateAutopilot()
+	lock = 0
+	if (sim_yoke_pitch_ratio>autopilot_disable or sim_yoke_pitch_ratio < -autopilot_disable) then
+		autopilot_hold_alti = 0
+		autopilot_hold_att = 0
+		XLuaSetNumber(dr_jas_lamps_spak, 1)
+		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	end
+	if (sim_jas_lamps_hojd > 0) then
+		demand = -(sim_altitude - autopilot_hold_alti)/30
+		
+		autopilot_hold_att = constrain(demand, -10,10)
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), autopilot_hold_alti) 
+	end
+	if (sim_jas_lamps_att > 0 or sim_jas_lamps_att < 0 or sim_jas_lamps_hojd > 0) then
+		demand = autopilot_hold_att - sim_acf_flight_angle
+
+		return demand *5
+	end
+	
+	if lock_pitch_movement == 1 then
+		lock_pitch = sim_pitch
+		lock_pitch_movement = 0
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
+	end
+	lock = lock_pitch -sim_pitch 
+	
+	if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
+		lock = (lock*10)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
+		
+	end
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), math.cos(math.rad(sim_acf_roll))) 
+	
+	return lock
+end
 
 function calculateElevator()
 	lock = 0
 	delta = 0
+
+	auto = calculateAutopilot()
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
 	if (sim_yoke_pitch_ratio<deadzone and sim_yoke_pitch_ratio > -deadzone) then
+		-- ingen rör spaken
 		sim_yoke_pitch_ratio = 0
 		wanted_rate = 0
-		if lock_pitch_movement == 1 then
-			lock_pitch = sim_pitch
-			lock_pitch_movement = 0
-			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
-		end
-		lock = lock_pitch -sim_pitch 
 		
-		if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
-			lock = (lock*10)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
-			lock_avg = (lock_avg*99 + lock)/100
-		end
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), math.cos(math.rad(sim_acf_roll))) 
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
-		delta = -current_rate
-		--lock = delta
+		delta = -current_rate*2
+		if (sim_jas_lamps_spak > 0) then
+			auto_trim = (auto_trim*9 + (auto+(delta * current_fade_out)))/10
+		else
+			--lock = delta
+			wanted_rate = wanted_rate + auto
+		end
 	else
-
+		-- piloten rör spaken
 		if (sim_yoke_pitch_ratio<0) then
 			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio + deadzone
 			wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
@@ -333,8 +437,11 @@ function calculateElevator()
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
-		delta = -current_rate
+		delta = -current_rate*2
 	end
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), auto) 
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[5]"), lock_avg) 
+	
 	
 	delta = delta * current_fade_out
 	-- Begränsningar för alpha och G krafter
@@ -390,8 +497,7 @@ function calculateElevator()
 		
 		diff = sim_g_nrml-(max_g_pos-max_g_fade)
 		wanted_rate = interpolate(0,wanted_rate, max_g_fade*2, 0, diff/5)
-		
-		
+
 		--wanted_rate = constrain(wanted_rate - prev_rate *(sim_g_nrml-(max_g_pos-max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
 	elseif (sim_g_nrml < max_g_neg+max_g_fade) then
 		
@@ -404,11 +510,7 @@ function calculateElevator()
 		--g_restn = constrain(g_restn - 0.1, 0,1000)
 		--g_rest = constrain(g_rest - 0.01, 0,1000)
 	end
-	if (sim_yoke_pitch_ratio<0) then
-		--wanted_rate = constrain(wanted_rate, wanted_rate,0)
-	else
-		--wanted_rate = constrain(wanted_rate, 0,wanted_rate)
-	end
+
 	
 	-- Börja med att vinkla framvingarna så dom ligger helt plant med färdvinkeln (alpha) i detta läget så sker ingen påverkan på planets rotation
 	-- Där efter så adderar vi alla önskade korrigeringar och fel
@@ -418,12 +520,13 @@ function calculateElevator()
 	wanted_rate = wanted_rate * current_fade_out
 	lock = lock * current_fade_out
 
+	trim = sim_elv_trim*-10*elevator_rate_to_angle
 
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), lock) 
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
 	--error_correction = error_correction * current_fade_out
-	angle = (lock+delta*2+wanted_rate+error_correction+error_correction_g) / elevator_rate_to_angle
-	canard_angle = (delta*2+(wanted_rate*0.5)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
+	angle = (auto_trim+delta+wanted_rate+error_correction+error_correction_g+trim) / elevator_rate_to_angle
+	canard_angle = (delta+(wanted_rate*0.5)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
 	
 	--angle = angle * current_fade_out
 	
@@ -466,8 +569,32 @@ function calculateElevator()
 	
 end
 
+function update_buttons()
+	if (sim_jas_button_spak == 1) then
+		XLuaSetNumber(dr_jas_lamps_spak, 1)
+		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	end
+	if (sim_jas_button_att == 1) then
+		autopilot_hold_att = sim_acf_flight_angle
+		XLuaSetNumber(dr_jas_lamps_spak, 0)
+		XLuaSetNumber(dr_jas_lamps_att, 1)
+		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), autopilot_hold_att) 
+	end
+	if (sim_jas_button_hojd == 1) then
+		autopilot_hold_alti = sim_altitude
+		XLuaSetNumber(dr_jas_lamps_spak, 0)
+		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_hojd, 1)
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), autopilot_hold_alti) 
+		
+	end
+end
+
 function before_physics() 
 	update_dataref()
+	update_buttons()
 	m_canard = 0
 	m_elevator = 0
 	m_elevator_roll = 0
