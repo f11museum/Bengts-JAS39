@@ -12,7 +12,7 @@ optimal_angle = 20 -- För fram vingen
 max_pitch_rate = 30
 max_roll_rate_val = 320 
 max_roll_rate = 320 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
-min_roll_rate = 30 -- orginal 60
+min_roll_rate = 70 -- orginal 60
 max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
@@ -117,6 +117,9 @@ dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 
 dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
 dr_cloud_shadow = XLuaFindDataRef("sim/private/controls/clouds/cloud_shadow_lighten_ratio")
+
+dr_baro_set = XLuaFindDataRef("sim/cockpit/misc/barometer_setting")
+dr_baro_current = XLuaFindDataRef("sim/weather/barometer_sealevel_inhg")
 
 
 
@@ -296,13 +299,16 @@ function update_dataref()
 	canard_fade_out = interpolate(0, 1.0, 500, 0, sim_airspeed_kts_pilot )
 	canard_fade_out = constrain(canard_fade_out, 0,1.0)
 	
-	max_roll_rate = interpolate(min_roll_rate, 170, max_roll_rate_val, 350, sim_airspeed_kts_pilot )
+	max_roll_rate = interpolate(200, min_roll_rate,450, max_roll_rate_val, sim_airspeed_kts_pilot )
 	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val)
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	
 
 	XLuaSetNumber(dr_fog, 0.1) 
 	XLuaSetNumber(dr_cloud_shadow, 1.0) 
+	
+	XLuaSetNumber(dr_baro_set, getnumber(dr_baro_current)) 
+	
 	
 	glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
 	light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
@@ -343,7 +349,7 @@ end
 function calculateAileron()
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
 	wanted_rate = sim_yoke_roll_ratio * max_roll_rate
-	
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), max_roll_rate) 
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_rollrate
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
@@ -362,7 +368,7 @@ function calculateRudder()
 	if (g_groundContact == 1) then
 		delta = wanted_rate
 	else
-		delta = wanted_rate -current_rate
+		delta = wanted_rate -current_rate*0.5
 	end
 	m_rudder = delta
 end
@@ -379,6 +385,8 @@ cumError = 0.0
 kp = 20
 ki = 2
 kd = 1
+
+clock_test = 0.0
 
 function calculateAutopilot(wanted_rate)
 	if (sim_jas_auto_mode == 0) then
@@ -430,14 +438,14 @@ function calculateAutopilot(wanted_rate)
 		if lock_pitch_movement == 1 then
 			lock_pitch = sim_pitch
 			lock_pitch_movement = 0
-			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
+			
 		end
 		error = wanted_rate - sim_acf_pitchrate -- determine error
 		kp = 15
 		ki = 4
 		kd = 0.5
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_rate) 
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), error) 
+		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_rate) 
+		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), error) 
 	end
 	
 	-- PID försök till att få en bättre autotrim
@@ -464,8 +472,10 @@ function calculateAutopilot(wanted_rate)
 	end
 	
 	lock = constrain(lock, -50,50)
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[7]"), lock) 
-	
+	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[7]"), lock) 
+	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), sim_FRP) 
+	-- clock_test = clock_test + sim_FRP
+	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), clock_test) 
 	return lock
 end
 
@@ -731,10 +741,10 @@ function before_physics()
 	
 	--s_canard = m_canard
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
-	m_elevator_l = constrain(m_elevator+m_aileron/2, -40, 40)
-	m_elevator_r = constrain(m_elevator-m_aileron/2, -40, 40)
-	m_elevator_l = constrain(m_elevator, -40, 40)
-	m_elevator_r = constrain(m_elevator, -40, 40)
+	m_elevator_l = constrain(m_elevator+m_aileron/2, -30, 30)
+	m_elevator_r = constrain(m_elevator-m_aileron/2, -30, 30)
+	--m_elevator_l = constrain(m_elevator, -40, 40)
+	--m_elevator_r = constrain(m_elevator, -40, 40)
 	s_elevator_l = motor(s_elevator_l, m_elevator_l, motor_speed)
 	s_elevator_r = motor(s_elevator_r, m_elevator_r, motor_speed)
 	
