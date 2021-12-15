@@ -9,7 +9,7 @@
 
 -- Kalibreringsvariabler
 optimal_angle = 20 -- För fram vingen
-max_pitch_rate = 100
+max_pitch_rate = 30
 max_roll_rate_val = 320 
 max_roll_rate = 320 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
 min_roll_rate = 30 -- orginal 60
@@ -227,7 +227,7 @@ function myGetFlightAngle()
 	end
 end
 -- Våra program funktioner
-
+sim_FRP = 1
 function update_dataref()
 
 	local getnumber = XLuaGetNumber
@@ -275,7 +275,10 @@ function update_dataref()
 	sim_jas_auto_alt = getnumber(dr_jas_auto_alt)
 	sim_jas_auto_att = getnumber(dr_jas_auto_att)
 	
-	sim_FRP = getnumber(dr_FRP); if sim_FRP == 0 then sim_FRP = 1 end
+	sim_FRP = (sim_FRP*19+ getnumber(dr_FRP))/20
+	if sim_FRP == 0 then 
+		sim_FRP = 1 
+	end
 	
 	
 
@@ -377,7 +380,7 @@ kp = 20
 ki = 2
 kd = 1
 
-function calculateAutopilot()
+function calculateAutopilot(wanted_rate)
 	if (sim_jas_auto_mode == 0) then
 		return 0
 	end
@@ -397,7 +400,8 @@ function calculateAutopilot()
 	if (sim_jas_auto_mode == 3) then
 		if lock_pitch_movement == 1 then
 			lock_pitch_movement = 0
-			autopilot_hold_alti = sim_altitude
+			--autopilot_hold_alti = sim_altitude
+			autopilot_hold_alti = autopilot_hold_alti + wanted_rate
 			XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti) 
 		end
 		demand = -(sim_altitude - sim_jas_auto_alt)/100
@@ -410,15 +414,15 @@ function calculateAutopilot()
 	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
 		if (lock_pitch_movement == 1 and sim_jas_auto_mode == 2) then
 			lock_pitch_movement = 0
-			autopilot_hold_att = sim_acf_flight_angle
+			autopilot_hold_att = autopilot_hold_att + wanted_rate/100
 			XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
 		end
 		demand = sim_jas_auto_att - sim_acf_flight_angle
-		error = demand
+		error = constrain(demand, -20,20)
 		--return demand *5
 		kp = 15
-		ki = 2
-		kd = 8
+		ki = 5
+		kd = 20*current_fade_out
 	end
 	
 
@@ -428,10 +432,12 @@ function calculateAutopilot()
 			lock_pitch_movement = 0
 			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
 		end
-		error = 0 - sim_acf_pitchrate -- determine error
-		kp = 40
-		ki = 0.5
-		kd = 1
+		error = wanted_rate - sim_acf_pitchrate -- determine error
+		kp = 15
+		ki = 4
+		kd = 0.5
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_rate) 
+		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), error) 
 	end
 	
 	-- PID försök till att få en bättre autotrim
@@ -439,8 +445,8 @@ function calculateAutopilot()
 	elapsedTime = sim_FRP
 
 	--error = lock_pitch - sim_pitch -- determine error
-	cumError = cumError + error * elapsedTime --compute integral
-	rateError = (error - lastError)/elapsedTime --compute derivative
+	cumError = constrain(cumError + error * elapsedTime, -10,10) --compute integral
+	rateError = constrain((error - lastError)/elapsedTime, -10,10) --compute derivative
 
 	out = kp*error + ki*cumError + kd*rateError --PID output               
 
@@ -450,9 +456,11 @@ function calculateAutopilot()
 	
 	--lock = lock_pitch -sim_pitch 
 	
-	if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
+	if (sim_gear == 0 and sim_jas_auto_mode > 1) then -- använd inte låsning av vinkeln om landstället är nere
 		lock = (out)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
 		
+	else
+		lock = (out)
 	end
 	
 	lock = constrain(lock, -50,50)
@@ -471,7 +479,7 @@ function calculateElevator()
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
 	if (sim_yoke_pitch_ratio<deadzone and sim_yoke_pitch_ratio > -deadzone) then
-		auto1 = calculateAutopilot()
+		
 		-- ingen rör spaken
 		sim_yoke_pitch_ratio = 0
 		wanted_rate = 0
@@ -480,19 +488,14 @@ function calculateElevator()
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = -current_rate*2
-		if (sim_jas_auto_mode == 1) then
-			auto_trim = (auto_trim*9 + auto1)/10
-		else
-			--lock = delta
-			wanted_rate = wanted_rate + auto1
-		end
+		
 	else
 		-- piloten rör spaken
 		if (sim_yoke_pitch_ratio<0) then
-			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio - deadzone
+			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio + deadzone
 			wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
 		else
-			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio +deadzone
+			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio -deadzone
 			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
 		end
 		lock_pitch_movement = 1
@@ -504,8 +507,56 @@ function calculateElevator()
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = -current_rate*2
-		wanted_rate = wanted_rate + auto1
+		wanted_rate = wanted_rate
 	end
+	
+	if (sim_jas_auto_mode == 0) then
+		--lock = delta
+		wanted_rate = wanted_rate*5
+	end
+	
+	-- fade ut kontrollutslag för att försöka minska studsande
+	if (sim_alpha > max_alpha_up-max_alpha_fade) then
+		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_up-max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate)
+	end
+	if (sim_alpha < max_alpha_down+max_alpha_fade) then
+		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_down+max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate )
+	end
+	-- G fade
+	if (sim_g_nrml > max_g_pos-max_g_fade) then
+		if (prev_rate == 0.0) then
+			prev_rate = sim_acf_pitchrate
+			g_rest = g_rest + 0.3
+		end
+		
+		diff = sim_g_nrml-(max_g_pos-max_g_fade)
+		wanted_rate = interpolate(0,wanted_rate, max_g_fade*2, 0, diff/5)
+
+		--wanted_rate = constrain(wanted_rate - prev_rate *(sim_g_nrml-(max_g_pos-max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
+	elseif (sim_g_nrml < max_g_neg+max_g_fade) then
+		
+		--wanted_rate = constrain(wanted_rate, prev_rate, max_pitch_rate)
+		diff = sim_g_nrml-(max_g_neg+max_g_fade)
+		wanted_rate = interpolate(0,wanted_rate, -max_g_fade*2, 0, diff/5)
+		--wanted_rate = constrain(wanted_rate - (sim_g_nrml-(max_g_neg+max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
+	else 
+		prev_rate = 0.0
+		--g_restn = constrain(g_restn - 0.1, 0,1000)
+		--g_rest = constrain(g_rest - 0.01, 0,1000)
+	end
+	auto1 = calculateAutopilot(wanted_rate)
+	if (sim_jas_auto_mode == 1) then
+		--auto_trim = (auto_trim*9 + auto1)/10
+		delta = 0
+		wanted_rate = auto1
+	elseif (sim_jas_auto_mode == 2) then
+		--lock = delta
+		wanted_rate = wanted_rate*0.02 + auto1 * current_fade_out
+	else
+		--lock = delta
+		wanted_rate = wanted_rate + auto1 * current_fade_out
+	end
+	
 	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), auto1) 
 	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[5]"), lock_avg) 
 	
@@ -548,35 +599,7 @@ function calculateElevator()
 	
 	
 	
-	-- fade ut kontrollutslag för att försöka minska studsande
-	if (sim_alpha > max_alpha_up-max_alpha_fade) then
-		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_up-max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate)
-	end
-	if (sim_alpha < max_alpha_down+max_alpha_fade) then
-		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_down+max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate )
-	end
-	-- G fade
-	if (sim_g_nrml > max_g_pos-max_g_fade) then
-		if (prev_rate == 0.0) then
-			prev_rate = sim_acf_pitchrate
-			g_rest = g_rest + 0.3
-		end
-		
-		diff = sim_g_nrml-(max_g_pos-max_g_fade)
-		wanted_rate = interpolate(0,wanted_rate, max_g_fade*2, 0, diff/5)
-
-		--wanted_rate = constrain(wanted_rate - prev_rate *(sim_g_nrml-(max_g_pos-max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
-	elseif (sim_g_nrml < max_g_neg+max_g_fade) then
-		
-		--wanted_rate = constrain(wanted_rate, prev_rate, max_pitch_rate)
-		diff = sim_g_nrml-(max_g_neg+max_g_fade)
-		wanted_rate = interpolate(0,wanted_rate, -max_g_fade*2, 0, diff/5)
-		--wanted_rate = constrain(wanted_rate - (sim_g_nrml-(max_g_neg+max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
-	else 
-		prev_rate = 0.0
-		--g_restn = constrain(g_restn - 0.1, 0,1000)
-		--g_rest = constrain(g_rest - 0.01, 0,1000)
-	end
+	
 
 	
 	-- Börja med att vinkla framvingarna så dom ligger helt plant med färdvinkeln (alpha) i detta läget så sker ingen påverkan på planets rotation
@@ -593,7 +616,7 @@ function calculateElevator()
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
 	--error_correction = error_correction * current_fade_out
 	angle = (auto_trim+delta+wanted_rate+error_correction+error_correction_g+trim) / elevator_rate_to_angle
-	canard_angle = (delta+(wanted_rate*0.5)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
+	canard_angle = (delta+(wanted_rate*0.3 * current_fade_out)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
 	
 	--angle = angle * current_fade_out
 	
@@ -710,6 +733,8 @@ function before_physics()
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
 	m_elevator_l = constrain(m_elevator+m_aileron/2, -40, 40)
 	m_elevator_r = constrain(m_elevator-m_aileron/2, -40, 40)
+	m_elevator_l = constrain(m_elevator, -40, 40)
+	m_elevator_r = constrain(m_elevator, -40, 40)
 	s_elevator_l = motor(s_elevator_l, m_elevator_l, motor_speed)
 	s_elevator_r = motor(s_elevator_r, m_elevator_r, motor_speed)
 	
