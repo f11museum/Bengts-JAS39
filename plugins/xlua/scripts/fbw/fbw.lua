@@ -12,12 +12,12 @@ optimal_angle = 20 -- För fram vingen
 max_pitch_rate = 100
 max_roll_rate_val = 320 
 max_roll_rate = 320 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
-min_roll_rate = 60 -- orginal 60
+min_roll_rate = 30 -- orginal 60
 max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
 
-deadzone = 0.15
+deadzone = 0.10
 autopilot_disable = 0.45
 max_alpha_up = 30
 max_alpha_down = -15
@@ -32,7 +32,7 @@ g_correction = 0.025
 
 motor_speed = 200 
 motor_speed = 56 -- riktiga planet 56 grader per sekund
-motor_speed_canard = 56*3 -- riktiga planet 56 grader per sekund
+motor_speed_canard = 56 -- riktiga planet 56 grader per sekund
 
 fade_out = 0.6
 
@@ -111,6 +111,12 @@ dr_jas_lamps_spak = XLuaFindDataRef("JAS/lamps/spak")
 dr_jas_lamps_att = XLuaFindDataRef("JAS/lamps/att") 
 dr_jas_lamps_hojd = XLuaFindDataRef("JAS/lamps/hojd")  
 
+dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
+dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
+dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
+
+dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
+dr_cloud_shadow = XLuaFindDataRef("sim/private/controls/clouds/cloud_shadow_lighten_ratio")
 
 
 
@@ -153,10 +159,10 @@ function flight_start()
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
-	XLuaSetNumber(dr_ecam_mode, 1) 
 	XLuaSetNumber(XLuaFindDataRef("sim/joystick/eq_pfc_yoke"), 1) -- ta bort krysset som dyker upp om man inte har joystick
 	
-
+	
+	XLuaSetNumber(dr_jas_auto_mode, 1) 
 	--clouds = XLuaFindDataRef("sim/private/controls/skyc/white_out_in_clouds")
 	--XLuaSetNumber(clouds, 0)
 	--logMsg("Flight started with LUA")
@@ -165,13 +171,11 @@ end
 
 function aircraft_unload()
 	XLuaSetNumber(dr_override_surfaces, 0) 
-	XLuaSetNumber(dr_ecam_mode, 0)
 	--logMsg("EXIT LUA")
 end
 
 function do_on_exit()
 	XLuaSetNumber(dr_override_surfaces, 0) 
-	XLuaSetNumber(dr_ecam_mode, 0)
 	--logMsg("EXIT LUA")
 end
 
@@ -267,6 +271,10 @@ function update_dataref()
 	sim_jas_lamps_att = getnumber(dr_jas_lamps_att)
 	sim_jas_lamps_hojd = getnumber(dr_jas_lamps_hojd)
 	
+	sim_jas_auto_mode = getnumber(dr_jas_auto_mode)
+	sim_jas_auto_alt = getnumber(dr_jas_auto_alt)
+	sim_jas_auto_att = getnumber(dr_jas_auto_att)
+	
 	sim_FRP = getnumber(dr_FRP); if sim_FRP == 0 then sim_FRP = 1 end
 	
 	
@@ -290,7 +298,8 @@ function update_dataref()
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	
 
-	XLuaSetNumber(dr_payload, current_fade_out) 
+	XLuaSetNumber(dr_fog, 0.1) 
+	XLuaSetNumber(dr_cloud_shadow, 1.0) 
 	
 	glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
 	light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
@@ -362,51 +371,107 @@ autopilot_hold_att = 0
 
 auto_trim = 0.0
 
+lastError = 0.0
+cumError = 0.0
+kp = 20
+ki = 2
+kd = 1
+
 function calculateAutopilot()
-	lock = 0
-	if (sim_yoke_pitch_ratio>autopilot_disable or sim_yoke_pitch_ratio < -autopilot_disable) then
-		autopilot_hold_alti = 0
-		autopilot_hold_att = 0
-		XLuaSetNumber(dr_jas_lamps_spak, 1)
-		XLuaSetNumber(dr_jas_lamps_att, 0)
-		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	if (sim_jas_auto_mode == 0) then
+		return 0
 	end
-	if (sim_jas_lamps_hojd > 0) then
-		demand = -(sim_altitude - autopilot_hold_alti)/30
+	lock = 0
+	error = 0
+	if (sim_yoke_pitch_ratio>autopilot_disable or sim_yoke_pitch_ratio < -autopilot_disable) then
+		if (sim_jas_auto_mode > 1) then
+			autopilot_hold_alti = 0
+			autopilot_hold_att = 0
+			XLuaSetNumber(dr_jas_lamps_spak, 1)
+			XLuaSetNumber(dr_jas_lamps_att, 0)
+			XLuaSetNumber(dr_jas_lamps_hojd, 0)
+			XLuaSetNumber(dr_jas_auto_mode, 1) 
+		end
+		
+	end
+	if (sim_jas_auto_mode == 3) then
+		if lock_pitch_movement == 1 then
+			lock_pitch_movement = 0
+			autopilot_hold_alti = sim_altitude
+			XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti) 
+		end
+		demand = -(sim_altitude - sim_jas_auto_alt)/100
 		
 		autopilot_hold_att = constrain(demand, -10,10)
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), autopilot_hold_alti) 
-	end
-	if (sim_jas_lamps_att > 0 or sim_jas_lamps_att < 0 or sim_jas_lamps_hojd > 0) then
-		demand = autopilot_hold_att - sim_acf_flight_angle
-
-		return demand *5
-	end
-	
-	if lock_pitch_movement == 1 then
-		lock_pitch = sim_pitch
-		lock_pitch_movement = 0
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
-	end
-	lock = lock_pitch -sim_pitch 
-	
-	if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
-		lock = (lock*10)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
+		XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
+		
 		
 	end
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), math.cos(math.rad(sim_acf_roll))) 
+	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
+		if (lock_pitch_movement == 1 and sim_jas_auto_mode == 2) then
+			lock_pitch_movement = 0
+			autopilot_hold_att = sim_acf_flight_angle
+			XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
+		end
+		demand = sim_jas_auto_att - sim_acf_flight_angle
+		error = demand
+		--return demand *5
+		kp = 15
+		ki = 2
+		kd = 8
+	end
+	
+
+	if (sim_jas_auto_mode == 1) then 
+		if lock_pitch_movement == 1 then
+			lock_pitch = sim_pitch
+			lock_pitch_movement = 0
+			XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[1]"), lock_pitch) 
+		end
+		error = 0 - sim_acf_pitchrate -- determine error
+		kp = 40
+		ki = 0.5
+		kd = 1
+	end
+	
+	-- PID försök till att få en bättre autotrim
+
+	elapsedTime = sim_FRP
+
+	--error = lock_pitch - sim_pitch -- determine error
+	cumError = cumError + error * elapsedTime --compute integral
+	rateError = (error - lastError)/elapsedTime --compute derivative
+
+	out = kp*error + ki*cumError + kd*rateError --PID output               
+
+	lastError = error --remember current error
+	previousTime = currentTime --remember current time
+
+	
+	--lock = lock_pitch -sim_pitch 
+	
+	if (sim_gear == 0) then -- använd inte låsning av vinkeln om landstället är nere
+		lock = (out)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
+		
+	end
+	
+	lock = constrain(lock, -50,50)
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[7]"), lock) 
 	
 	return lock
 end
 
+
+auto1 = 0
 function calculateElevator()
 	lock = 0
 	delta = 0
 
-	auto = calculateAutopilot()
+	
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
 	if (sim_yoke_pitch_ratio<deadzone and sim_yoke_pitch_ratio > -deadzone) then
+		auto1 = calculateAutopilot()
 		-- ingen rör spaken
 		sim_yoke_pitch_ratio = 0
 		wanted_rate = 0
@@ -415,31 +480,33 @@ function calculateElevator()
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = -current_rate*2
-		if (sim_jas_lamps_spak > 0) then
-			auto_trim = (auto_trim*9 + (auto+(delta * current_fade_out)))/10
+		if (sim_jas_auto_mode == 1) then
+			auto_trim = (auto_trim*9 + auto1)/10
 		else
 			--lock = delta
-			wanted_rate = wanted_rate + auto
+			wanted_rate = wanted_rate + auto1
 		end
 	else
 		-- piloten rör spaken
 		if (sim_yoke_pitch_ratio<0) then
-			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio + deadzone
+			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio - deadzone
 			wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
 		else
-			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio -deadzone
+			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio +deadzone
 			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
 		end
 		lock_pitch_movement = 1
 		if (sim_gear == 0) then
 			lock = lock_avg
+			auto_trim = 0
 		end
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = -current_rate*2
+		wanted_rate = wanted_rate + auto1
 	end
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), auto) 
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), auto1) 
 	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[5]"), lock_avg) 
 	
 	
@@ -520,7 +587,7 @@ function calculateElevator()
 	wanted_rate = wanted_rate * current_fade_out
 	lock = lock * current_fade_out
 
-	trim = sim_elv_trim*-10*elevator_rate_to_angle
+	trim = sim_elv_trim*-20*elevator_rate_to_angle
 
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), lock) 
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
@@ -569,25 +636,44 @@ function calculateElevator()
 	
 end
 
+knapp = 0
+
 function update_buttons()
 	if (sim_jas_button_spak == 1) then
-		XLuaSetNumber(dr_jas_lamps_spak, 1)
-		XLuaSetNumber(dr_jas_lamps_att, 0)
-		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+		if (knapp == 0) then
+			knapp = 1
+			if (sim_jas_auto_mode == 1) then
+				XLuaSetNumber(dr_jas_lamps_spak, 0)
+				XLuaSetNumber(dr_jas_lamps_att, 0)
+				XLuaSetNumber(dr_jas_lamps_hojd, 0)
+				
+				XLuaSetNumber(dr_jas_auto_mode, 0) 
+			else
+				XLuaSetNumber(dr_jas_lamps_spak, 1)
+				XLuaSetNumber(dr_jas_lamps_att, 0)
+				XLuaSetNumber(dr_jas_lamps_hojd, 0)
+				
+				XLuaSetNumber(dr_jas_auto_mode, 1) 
+			end
+		end
+	else
+		knapp = 0
 	end
 	if (sim_jas_button_att == 1) then
 		autopilot_hold_att = sim_acf_flight_angle
 		XLuaSetNumber(dr_jas_lamps_spak, 0)
 		XLuaSetNumber(dr_jas_lamps_att, 1)
 		XLuaSetNumber(dr_jas_lamps_hojd, 0)
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), autopilot_hold_att) 
+		XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
+		XLuaSetNumber(dr_jas_auto_mode, 2) 
 	end
 	if (sim_jas_button_hojd == 1) then
 		autopilot_hold_alti = sim_altitude
 		XLuaSetNumber(dr_jas_lamps_spak, 0)
 		XLuaSetNumber(dr_jas_lamps_att, 0)
 		XLuaSetNumber(dr_jas_lamps_hojd, 1)
-		XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), autopilot_hold_alti) 
+		XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti)
+		XLuaSetNumber(dr_jas_auto_mode, 3)  
 		
 	end
 end
@@ -614,7 +700,7 @@ function before_physics()
 	-- Framvingen ska bara ha sin uträkning från canard
 	if (error_correction>0) then
 		m_canard = constrain(m_canard, -55-10, 25+20) -- ge den lite extra spelrumm när den ska göra nödvändiga stabiliseringar
-		s_canard = motor(s_canard, m_canard, motor_speed_canard*2)
+		s_canard = motor(s_canard, m_canard, motor_speed_canard*4)
 	else
 		m_canard = constrain(m_canard, -55, 25+10)
 		s_canard = motor(s_canard, m_canard, motor_speed_canard)
