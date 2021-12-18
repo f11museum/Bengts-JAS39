@@ -299,21 +299,21 @@ function update_dataref()
 	canard_fade_out = interpolate(0, 1.0, 500, 0, sim_airspeed_kts_pilot )
 	canard_fade_out = constrain(canard_fade_out, 0,1.0)
 	
-	max_roll_rate = interpolate(200, min_roll_rate,450, max_roll_rate_val, sim_airspeed_kts_pilot )
+	max_roll_rate = interpolate(150, min_roll_rate,320, max_roll_rate_val, sim_airspeed_kts_pilot )
 	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val)
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	
 
-	XLuaSetNumber(dr_fog, 0.1) 
-	XLuaSetNumber(dr_cloud_shadow, 1.0) 
-	
-	XLuaSetNumber(dr_baro_set, getnumber(dr_baro_current)) 
-	
-	
-	glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
-	light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
-	darkness = interpolate(0.3, 0.5, 0.8, 0.0, light_attenuation )
-	XLuaSetNumber(glasdarkness, darkness) 
+	-- XLuaSetNumber(dr_fog, 0.1) 
+	-- XLuaSetNumber(dr_cloud_shadow, 1.0) 
+	-- 
+	-- XLuaSetNumber(dr_baro_set, getnumber(dr_baro_current)) 
+	-- 
+	-- 
+	-- glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
+	-- light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
+	-- darkness = interpolate(0.3, 0.5, 0.8, 0.0, light_attenuation )
+	-- XLuaSetNumber(glasdarkness, darkness) 
 	
 end
 

@@ -1,0 +1,320 @@
+-------------------------------------------------------
+---- Hjälp system för JAS
+---- F11 Museum 2021 Bengt
+-------------------------------------------------------
+
+
+-- Datareffar
+dr_status = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
+
+dr_override_flightcontrol = XLuaFindDataRef("sim/operation/override/override_flightcontrol") 
+dr_override_surfaces = XLuaFindDataRef("sim/operation/override/override_control_surfaces") 
+dr_FRP = XLuaFindDataRef("sim/operation/misc/frame_rate_period")
+
+-- input från användaren
+dr_yoke_roll_ratio = XLuaFindDataRef("sim/joystick/yoke_roll_ratio") 
+dr_yoke_heading_ratio = XLuaFindDataRef("sim/joystick/yoke_heading_ratio") 
+dr_yoke_pitch_ratio = XLuaFindDataRef("sim/joystick/yoke_pitch_ratio") 
+dr_elv_trim = XLuaFindDataRef("sim/flightmodel/controls/elv_trim") 
+
+-- Vingar
+dr_left_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail1def")
+dr_right_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2r_ail1def")
+dr_left_aileron = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail2def")
+dr_right_aileron = XLuaFindDataRef("sim/flightmodel/controls/wing2r_ail2def")
+dr_left_canard = XLuaFindDataRef("sim/flightmodel/controls/wing4l_elv2def")
+dr_right_canard = XLuaFindDataRef("sim/flightmodel/controls/wing4r_elv2def")
+dr_vstab = XLuaFindDataRef("sim/flightmodel/controls/vstab1_rud1def")
+
+
+dr_acf_pitch = XLuaFindDataRef("sim/flightmodel/position/theta") 
+dr_acf_roll = XLuaFindDataRef("sim/flightmodel/position/phi") 
+dr_acf_hdg = XLuaFindDataRef("sim/flightmodel/position/psi") 
+dr_acf_rollrate = XLuaFindDataRef("sim/flightmodel/position/P") 
+dr_acf_pitchrate = XLuaFindDataRef("sim/flightmodel/position/Q") 
+dr_acf_yawrate = XLuaFindDataRef("sim/flightmodel/position/R") 
+dr_acf_rollrate_acc = XLuaFindDataRef("sim/flightmodel/position/P_dot") 
+dr_acf_pitchrate_acc = XLuaFindDataRef("sim/flightmodel/position/Q_dot") 
+dr_acf_yawrate_acc = XLuaFindDataRef("sim/flightmodel/position/R_dot") 
+dr_acf_vx = XLuaFindDataRef("sim/flightmodel/position/local_vx") 
+dr_acf_vy = XLuaFindDataRef("sim/flightmodel/position/local_vy") 
+dr_acf_vz = XLuaFindDataRef("sim/flightmodel/position/local_vz") 
+
+dr_alpha = XLuaFindDataRef("sim/flightmodel/position/alpha") 
+dr_g_nrml = XLuaFindDataRef("sim/flightmodel/forces/g_nrml") 
+
+
+dr_N1 = XLuaFindDataRef("sim/flightmodel/engine/ENGN_N1_[0]")
+dr_braking_ratio = XLuaFindDataRef("sim/cockpit2/controls/parking_brake_ratio")
+dr_braking_ratio_right = XLuaFindDataRef("sim/cockpit2/controls/right_brake_ratio")
+dr_braking_ratio_left = XLuaFindDataRef("sim/cockpit2/controls/left_brake_ratio")
+dr_speedbrake_ratio = XLuaFindDataRef("sim/cockpit2/controls/speedbrake_ratio")
+
+dr_speedbrake_wing_right = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake1_deg[0]")
+dr_speedbrake_wing_left = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake1_deg[1]")
+dr_speedbrake_wing_right2 = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake1_deg[2]")
+dr_speedbrake_wing_left2 = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake1_deg[3]")
+
+dr_speedbrake2_wing_right = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake2_deg[0]")
+dr_speedbrake2_wing_left = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake2_deg[1]")
+dr_speedbrake2_wing_right2 = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake2_deg[2]")
+dr_speedbrake2_wing_left2 = XLuaFindDataRef("sim/flightmodel2/wing/speedbrake2_deg[3]")
+
+dr_nose_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[0]") 
+dr_left_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[1]") 
+dr_right_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[2]") 
+
+dr_airspeed_kts_pilot = XLuaFindDataRef("sim/flightmodel/position/indicated_airspeed") 
+dr_gear = XLuaFindDataRef("sim/cockpit/switches/gear_handle_status") 
+
+dr_altitude = XLuaFindDataRef("sim/flightmodel/misc/h_ind") 
+
+dr_altitude = XLuaFindDataRef("sim/flightmodel/misc/h_ind") 
+
+-- Egna JAS dataref
+dr_jas_button_spak = XLuaFindDataRef("JAS/button/spak") 
+dr_jas_button_att = XLuaFindDataRef("JAS/button/att") 
+dr_jas_button_hojd = XLuaFindDataRef("JAS/button/hojd") 
+
+dr_jas_lamps_spak = XLuaFindDataRef("JAS/lamps/spak") 
+dr_jas_lamps_att = XLuaFindDataRef("JAS/lamps/att") 
+dr_jas_lamps_hojd = XLuaFindDataRef("JAS/lamps/hojd")  
+dr_jas_lamps_airbrake = XLuaFindDataRef("JAS/lamps/airbrake")  
+
+dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
+dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
+dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
+
+dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
+dr_cloud_shadow = XLuaFindDataRef("sim/private/controls/clouds/cloud_shadow_lighten_ratio")
+
+dr_baro_set = XLuaFindDataRef("sim/cockpit/misc/barometer_setting")
+dr_baro_current = XLuaFindDataRef("sim/weather/barometer_sealevel_inhg")
+
+
+
+-- publika variabler
+s_canard = 0
+s_elevator = 0
+s_elevator_l = 0
+s_elevator_r = 0
+s_aileron = 0
+s_aileron_l = 0
+s_aileron_r = 0
+s_rudder = 0
+
+g_groundContact = 0
+
+current_fade_out = 1.0
+canard_fade_out = 1.0
+
+error_correction = 0
+
+
+prev_rate = 0.0
+g_rest = 0.0
+g_restn = 0.0
+avg_pitch_neg = 0.0
+
+lock_pitch = 10.0
+lock_pitch_movement = 0
+
+-- Plugin funktioner
+
+function flight_start() 
+	dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
+	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel[0]")
+	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
+		
+	
+	XLuaSetNumber(dr_fuel1, 2970) 
+	XLuaSetNumber(dr_fuel2, 2970) 
+	XLuaSetNumber(dr_payload, 0) 
+	--XLuaSetNumber(dr_fuel2, 1600) 
+	--XLuaSetNumber(dr_override_surfaces, 1) 
+	XLuaSetNumber(XLuaFindDataRef("sim/joystick/eq_pfc_yoke"), 1) -- ta bort krysset som dyker upp om man inte har joystick
+	
+	
+	XLuaSetNumber(dr_jas_auto_mode, 1) 
+	--clouds = XLuaFindDataRef("sim/private/controls/skyc/white_out_in_clouds")
+	--XLuaSetNumber(clouds, 0)
+	--logMsg("Flight started with LUA")
+	
+end
+
+function aircraft_unload()
+	--XLuaSetNumber(dr_override_surfaces, 0) 
+	--logMsg("EXIT LUA")
+end
+
+function do_on_exit()
+	--XLuaSetNumber(dr_override_surfaces, 0) 
+	--logMsg("EXIT LUA")
+end
+
+
+-- Hjälpfunktioner
+
+function constrain(val, lower, upper)
+    
+    if lower > upper then 
+        lower, upper = upper, lower 
+    end -- swap if boundaries supplied the wrong way
+    return math.max(lower, math.min(upper, val))
+end
+
+function interpolate(x1, y1, x2, y2, value)
+	y = y1 + (y2-y1)/(x2-x1)*(value-x1)
+	return y
+end
+
+function myGetAlpha() 
+	
+ 	vx = sim_acf_vx
+	vy = sim_acf_vy
+	vz = sim_acf_vz
+	pitch = sim_pitch
+	
+	length = math.sqrt(vy * vy + vx * vx + vz * vz)
+	if (length > 1.0) then
+		alpha = math.asin(vy / length)
+		alpha = pitch - math.deg(alpha)
+		return alpha
+	else 
+		return 0.0
+	end
+end
+function myGetFlightAngle() 
+	
+ 	vx = sim_acf_vx
+	vy = sim_acf_vy
+	vz = sim_acf_vz
+	pitch = sim_pitch
+	
+	length = math.sqrt(vy * vy + vx * vx + vz * vz)
+	if (length > 1.0) then
+		angle = math.asin(vy / length)
+		return math.deg(angle)
+	else 
+		return 0.0
+	end
+end
+
+-- Våra program funktioner
+sim_FRP = 1
+function update_dataref()
+
+	local getnumber = XLuaGetNumber
+
+
+	-- sim_yoke_pitch_ratio = getnumber(dr_yoke_pitch_ratio) 
+	-- sim_yoke_roll_ratio = getnumber(dr_yoke_roll_ratio) 
+	-- sim_yoke_heading_ratio = getnumber(dr_yoke_heading_ratio)
+	-- sim_elv_trim = getnumber(dr_elv_trim)
+    -- 
+	-- sim_acf_pitchrate = getnumber(dr_acf_pitchrate)
+	-- sim_acf_rollrate = getnumber(dr_acf_rollrate)
+	-- sim_acf_yawrate = getnumber(dr_acf_yawrate)
+	-- sim_pitch = getnumber(dr_acf_pitch)
+	-- sim_acf_roll = getnumber(dr_acf_roll)
+	-- sim_alpha = getnumber(dr_alpha)
+	-- sim_g_nrml = getnumber(dr_g_nrml)
+	-- sim_N1 = getnumber(dr_N1)
+	-- sim_acf_vx = getnumber(dr_acf_vx)
+	-- sim_acf_vy = getnumber(dr_acf_vy)
+	-- sim_acf_vz = getnumber(dr_acf_vz)
+	-- sim_acf_flight_angle = myGetFlightAngle()
+	
+	sim_left_gear_depress = getnumber(dr_left_gear_depress)
+	sim_right_gear_depress = getnumber(dr_right_gear_depress)
+	sim_nose_gear_depress = getnumber(dr_nose_gear_depress)
+	
+	sim_speedbrake_ratio = getnumber(dr_speedbrake_ratio)
+	-- sim_braking_ratio = getnumber(dr_braking_ratio)
+	-- sim_braking_ratio_left = getnumber(dr_braking_ratio_left)
+	-- sim_braking_ratio_right = getnumber(dr_braking_ratio_right)
+	-- sim_airspeed_kts_pilot = getnumber(dr_airspeed_kts_pilot)
+	-- sim_gear = getnumber(dr_gear)
+	-- sim_altitude = getnumber(dr_altitude)
+    
+    sim_master_caution = getnumber(dr_master_caution)
+    sim_master_warning = getnumber(dr_master_warning)
+    sim_gear_warning = getnumber(dr_gear_warning)
+	
+	sim_jas_button_spak = getnumber(dr_jas_button_spak)
+	sim_jas_button_att = getnumber(dr_jas_button_att)
+	sim_jas_button_hojd = getnumber(dr_jas_button_hojd)
+	
+	sim_jas_lamps_spak = getnumber(dr_jas_lamps_spak)
+	sim_jas_lamps_att = getnumber(dr_jas_lamps_att)
+	sim_jas_lamps_hojd = getnumber(dr_jas_lamps_hojd)
+	
+	sim_jas_auto_mode = getnumber(dr_jas_auto_mode)
+	sim_jas_auto_alt = getnumber(dr_jas_auto_alt)
+	sim_jas_auto_att = getnumber(dr_jas_auto_att)
+	
+	sim_FRP = (sim_FRP*19+ getnumber(dr_FRP))/20
+	if sim_FRP == 0 then 
+		sim_FRP = 1 
+	end
+	
+	-- sim_true_alpha = myGetAlpha()
+	
+	if (sim_nose_gear_depress) > 0 then 
+		g_groundContact = 1 
+	else 
+		g_groundContact = 0 
+	end
+
+	XLuaSetNumber(dr_fog, 0.1) 
+	XLuaSetNumber(dr_cloud_shadow, 1.0) 
+	
+	XLuaSetNumber(dr_baro_set, getnumber(dr_baro_current)) 
+	
+	
+	glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
+	light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
+	darkness = interpolate(0.3, 0.5, 0.8, 0.0, light_attenuation )
+	XLuaSetNumber(glasdarkness, darkness) 
+	
+end
+
+
+
+
+function lampAirbrake()
+    
+    if (sim_speedbrake_ratio > 0) then
+        XLuaSetNumber(dr_jas_lamps_airbrake, 1) 
+    else
+        XLuaSetNumber(dr_jas_lamps_airbrake, 0) 
+    end
+end
+
+function lampMasterWarning()
+    if (sim_master_caution > 0 || sim_master_warning > 0 || sim_gear_warning > 0) {
+    
+        XLuaSetNumber(dr_jas_lamps_master1, 1) 
+        XLuaSetNumber(dr_jas_lamps_master2, 1) 
+    else
+        XLuaSetNumber(dr_jas_lamps_master1, 0) 
+        XLuaSetNumber(dr_jas_lamps_master2, 0) 
+    end
+end
+
+
+knapp = 0
+function update_buttons()
+    knapp = 0
+end
+
+function before_physics() 
+	update_dataref()
+	update_buttons()
+    lampAirbrake()
+
+end
+
+function after_physics() 	
+	XLuaSetNumber(dr_override_surfaces, 0) 
+end
