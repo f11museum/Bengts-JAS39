@@ -38,7 +38,8 @@ fade_out = 0.6
 
 -- Datareffar
 
-dr_status = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
+dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat") 
+dr_status2 = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
 
 dr_override_flightcontrol = XLuaFindDataRef("sim/operation/override/override_flightcontrol") 
 dr_override_surfaces = XLuaFindDataRef("sim/operation/override/override_control_surfaces") 
@@ -114,6 +115,7 @@ dr_jas_lamps_hojd = XLuaFindDataRef("JAS/lamps/hojd")
 dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
 dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
 dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
+sim_jas_auto_afk = find_dataref("JAS/autopilot/afk")
 
 dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
 dr_cloud_shadow = XLuaFindDataRef("sim/private/controls/clouds/cloud_shadow_lighten_ratio")
@@ -229,6 +231,41 @@ function myGetFlightAngle()
 		return 0.0
 	end
 end
+
+blink1s = 0
+blinktimer = 0
+function blink1sFunc()
+	blinktimer = blinktimer + sim_FRP
+	t2 = math.floor(blinktimer)
+	if (t2 % 2 == 0) then
+		blink1s = 1
+	else 
+		blink1s = 0
+	end
+end
+
+
+th_cumError = 0
+th_lastError = 0
+function PIDth()
+	l_kp = 1
+	l_ki = 1
+	l_kd = 1
+	-- PID försök 
+
+	elapsedTime = sim_FRP
+
+	--error = lock_pitch - sim_pitch -- determine error
+	th_cumError = constrain(th_cumError + error * elapsedTime, -10,10) --compute integral
+	rateError = constrain((error - th_lastError)/elapsedTime, -10,10) --compute derivative
+
+	out = l_kp*error + l_ki*th_cumError + l_kd*rateError --PID output               
+
+	th_lastError = error --remember current error
+
+	return out
+end
+
 -- Våra program funktioner
 sim_FRP = 1
 function update_dataref()
@@ -708,6 +745,27 @@ function update_buttons()
 		XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti)
 		XLuaSetNumber(dr_jas_auto_mode, 3)  
 		
+	end
+	
+	if (sim_jas_button_afk == 1) then
+		if (knapp == 0) then
+			knapp = 1
+			if (sim_jas_auto_afk == 1) then
+				XLuaSetNumber(dr_jas_lamps_spak, 0)
+				XLuaSetNumber(dr_jas_lamps_att, 0)
+				XLuaSetNumber(dr_jas_lamps_hojd, 0)
+				
+				XLuaSetNumber(dr_jas_auto_mode, 0) 
+			else
+				XLuaSetNumber(dr_jas_lamps_spak, 1)
+				XLuaSetNumber(dr_jas_lamps_att, 0)
+				XLuaSetNumber(dr_jas_lamps_hojd, 0)
+				
+				XLuaSetNumber(dr_jas_auto_mode, 1) 
+			end
+		end
+	else
+		knapp = 0
 	end
 end
 
