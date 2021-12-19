@@ -3,36 +3,44 @@ I
 ACF
 
 PROPERTIES_BEGIN
-P _cgpt/0/_w_max 0.0
-P _cgpt/0/_w_now 0.0
-P _cgpt/0/_w_test 0.0
-P _cgpt/0/_z_ref 0.0
-P _cgpt/1/_w_max 0.0
-P _cgpt/1/_w_now 0.0
+P _cgpt/0/_name empty craft
+P _cgpt/0/_w_max 14815.099609375
+P _cgpt/0/_w_now 14815.099609375
+P _cgpt/0/_w_test 14815.059570312
+P _cgpt/0/_z_ref 26.639999390
+P _cgpt/1/_name fuel tank #1
+P _cgpt/1/_w_max 6703.799804688
+P _cgpt/1/_w_now 7374.179199219
 P _cgpt/1/_w_test 0.0
-P _cgpt/1/_z_ref 0.0
+P _cgpt/1/_z_ref 26.969999313
+P _cgpt/2/_name fuel tank #2
 P _cgpt/2/_w_max 0.0
-P _cgpt/2/_w_now 0.0
+P _cgpt/2/_w_now 1.0
 P _cgpt/2/_w_test 0.0
 P _cgpt/2/_z_ref 0.0
+P _cgpt/3/_name fuel tank #3
 P _cgpt/3/_w_max 0.0
-P _cgpt/3/_w_now 0.0
+P _cgpt/3/_w_now 1.0
 P _cgpt/3/_w_test 0.0
 P _cgpt/3/_z_ref 0.0
+P _cgpt/4/_name fuel tank #4
 P _cgpt/4/_w_max 0.0
-P _cgpt/4/_w_now 0.0
+P _cgpt/4/_w_now 1.0
 P _cgpt/4/_w_test 0.0
 P _cgpt/4/_z_ref 0.0
+P _cgpt/5/_name fuel tank #5
 P _cgpt/5/_w_max 0.0
-P _cgpt/5/_w_now 0.0
+P _cgpt/5/_w_now 1.0
 P _cgpt/5/_w_test 0.0
 P _cgpt/5/_z_ref 0.0
+P _cgpt/6/_name fuel tank #6
 P _cgpt/6/_w_max 0.0
-P _cgpt/6/_w_now 0.0
+P _cgpt/6/_w_now 1.0
 P _cgpt/6/_w_test 0.0
 P _cgpt/6/_z_ref 0.0
+P _cgpt/7/_name fuel tank #7
 P _cgpt/7/_w_max 0.0
-P _cgpt/7/_w_now 0.0
+P _cgpt/7/_w_now 1.0
 P _cgpt/7/_w_test 0.0
 P _cgpt/7/_z_ref 0.0
 P _cgpt/count 8
@@ -90,7 +98,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118796654
+P _gear/0/_stat_def 0.118796684
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -124,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.711948097
+P _gear/1/_stat_def 0.711948633
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -158,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.711948097
+P _gear/2/_stat_def 0.711948633
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -15004,7 +15012,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.521806240
-P _part/86/_part_y -3.407325983
+P _part/86/_part_y -3.407325506
 P _part/86/_part_z 27.800683975
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -16474,7 +16482,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.521806240
-P _part/87/_part_y -3.407325983
+P _part/87/_part_y -3.407325506
 P _part/87/_part_z 27.800683975
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -21250,7 +21258,27 @@ P _wpna/7/_v10_att_y_acf_prt_ref 0.131233588
 P _wpna/7/_v10_att_z_acf_prt_ref 32.480312347
 P _wpna/7/_v10_is_internal 0
 P _wpna/7/_v10_steers_with_gear 0
-P _wpna/count 8
+P _wpna/8/_v10_att_file_stl flare.wpn
+P _wpna/8/_v10_att_part -1
+P _wpna/8/_v10_att_phi_ref 0.0
+P _wpna/8/_v10_att_psi_ref 0.0
+P _wpna/8/_v10_att_the_ref 0.0
+P _wpna/8/_v10_att_x_acf_prt_ref 0.0
+P _wpna/8/_v10_att_y_acf_prt_ref 0.0
+P _wpna/8/_v10_att_z_acf_prt_ref 0.0
+P _wpna/8/_v10_is_internal -839863605
+P _wpna/8/_v10_steers_with_gear 0
+P _wpna/9/_v10_att_file_stl chaff.wpn
+P _wpna/9/_v10_att_part -1
+P _wpna/9/_v10_att_phi_ref 0.0
+P _wpna/9/_v10_att_psi_ref 0.0
+P _wpna/9/_v10_att_the_ref 0.0
+P _wpna/9/_v10_att_x_acf_prt_ref 0.0
+P _wpna/9/_v10_att_y_acf_prt_ref 0.0
+P _wpna/9/_v10_att_z_acf_prt_ref 0.0
+P _wpna/9/_v10_is_internal -839863605
+P _wpna/9/_v10_steers_with_gear 0
+P _wpna/count 10
 P acf/_APU_cooldown_time 0.001000000
 P acf/_APU_door_time 0.001000000
 P acf/_APU_spooldn_time 9.0
@@ -23792,7 +23820,7 @@ P acf/_mixt_x_ctr 0.0
 P acf/_n1_power_curve1 2.0
 P acf/_n1_power_curve2 3.0
 P acf/_n2_power_curve 3.500000000
-P acf/_name Bengts JAS 0.7
+P acf/_name Bengts JAS 0.8
 P acf/_new_plot_XP3D_cock/0 1
 P acf/_new_plot_XP3D_cock/1 1
 P acf/_new_plot_XP3D_cock/2 0
@@ -23851,9 +23879,9 @@ P acf/_ott_the_sec_to_trim 0.0
 P acf/_ott_the_sec_to_tune 4.0
 P acf/_otto_ah_source_type 11
 P acf/_otto_dg_source_type 11
-P acf/_paraf_dur 0.0
-P acf/_paraf_max 0
-P acf/_paraf_vvi 0.0
+P acf/_paraf_dur 30.0
+P acf/_paraf_max 100
+P acf/_paraf_vvi 3.0
 P acf/_park_non_vect_props_00_below_02 0
 P acf/_park_non_vect_props_90_below_05 0
 P acf/_part_descrip/24 test1
