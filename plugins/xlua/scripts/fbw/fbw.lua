@@ -394,16 +394,74 @@ function motor(inval, target, spd)
 	end
 end
 
+
+a_lastError = 0.0
+a_cumError = 0.0
+
+
+wanted_roll = 0
+stick_roll = 0
+
 function calculateAileron()
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
-	wanted_rate = sim_yoke_roll_ratio * max_roll_rate
+	if (sim_yoke_roll_ratio<deadzone and sim_yoke_roll_ratio > -deadzone) then
+		-- ingen rör spaken
+		if (stick_roll == 1) then
+			stick_roll = 0
+		end
+		wanted_rate = 0
+		-- Kollar vad planet har för nuvarande rotationshastighet 
+		current_rate = sim_acf_rollrate
+		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
+		delta = wanted_rate-current_rate
+		delta = delta * current_fade_out
+		
+		-- lägg på liten justering för att gå tillbaka dit man va när man släppte spaken
+		delta2 = wanted_roll - sim_acf_roll
+		delta2 = (delta2*delta2)
+		--delta = delta - delta2 * current_fade_out
+	else
+		wanted_roll = sim_acf_roll
+		if (sim_yoke_roll_ratio<0) then
+			sim_yoke_roll_ratio = sim_yoke_roll_ratio + deadzone
+			wanted_rate = sim_yoke_roll_ratio * max_roll_rate
+		else
+			sim_yoke_roll_ratio = sim_yoke_roll_ratio -deadzone
+			wanted_rate = sim_yoke_roll_ratio * max_roll_rate
+		end
+		wanted_rate = sim_yoke_roll_ratio * max_roll_rate
+		
+		-- Kollar vad planet har för nuvarande rotationshastighet 
+		current_rate = sim_acf_rollrate
+		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
+		delta = wanted_rate-current_rate
+		delta = delta * current_fade_out
+	end
+	--sim_acf_roll
+	
 	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), max_roll_rate) 
-	-- Kollar vad planet har för nuvarande rotationshastighet 
-	current_rate = sim_acf_rollrate
-	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
-	delta = wanted_rate-current_rate
-	delta = delta * current_fade_out
+	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), sim_acf_rollrate) 
+	
 	m_aileron = delta
+	
+	-- PID försök till att få en bättre trim
+	a_kp = 5
+	a_kp = interpolate(0, a_kp, 1000, 0.01, sim_airspeed_kts_pilot )
+	a_ki = 0
+	a_kd = 1
+
+	elapsedTime = sim_FRP
+
+	error = wanted_roll-sim_acf_roll -- determine error
+	a_cumError = constrain(a_cumError + error * elapsedTime, -10,10) --compute integral
+	a_rateError = constrain((error - a_lastError)/elapsedTime, -10,10) --compute derivative
+
+	out = a_kp*error + a_ki*a_cumError + a_kd*a_rateError --PID output               
+
+	a_lastError = error --remember current error
+	previousTime = currentTime --remember current time
+
+	--m_aileron = constrain(out, -50,50)
 end
 
 function calculateRudder()
