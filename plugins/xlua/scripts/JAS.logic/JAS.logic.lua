@@ -87,13 +87,24 @@ XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 111)
 sim_jas_lamps_spak = find_dataref("JAS/lamps/spak")
 sim_jas_lamps_att = find_dataref("JAS/lamps/att")
 sim_jas_lamps_hojd = find_dataref("JAS/lamps/hojd")
+sim_jas_lamps_afk = find_dataref("JAS/lamps/afk")
 sim_jas_lamps_airbrake = find_dataref("JAS/lamps/airbrake")
 sim_jas_lamps_gears = find_dataref("JAS/lamps/gears")
 sim_jas_lamps_master = find_dataref("JAS/lamps/master")
 sim_jas_lamps_master1 = find_dataref("JAS/lamps/master1")
 sim_jas_lamps_master2 = find_dataref("JAS/lamps/master2")
 sim_jas_lamps_apu_gar = find_dataref("JAS/lamps/apu_gar")
-sim_jas_lamps_pluv = find_dataref("JAS/lamps/pluv")
+
+--dap
+
+sim_jas_system_dap_power = find_dataref("JAS/system/dap/power")
+sim_jas_system_dap_startup = find_dataref("JAS/system/dap/startup")
+sim_jas_system_dap_pluv = find_dataref("JAS/system/dap/lamp/pluv")
+
+-- motmedel
+sim_jas_system_mot_fack = find_dataref("JAS/system/mot/fack")
+sim_jas_system_mot_rems = find_dataref("JAS/system/mot/rems")
+
 
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 112)
 dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
@@ -134,6 +145,10 @@ simCMD_gen_on = find_command("sim/electrical/generator_1_on")
 simCMD_gen_off = find_command("sim/electrical/generator_1_off")
 
 simCMD_engine_starter = find_command("sim/engines/engage_starters")
+
+
+simCMD_flare = find_command("sim/weapons/deploy_flares")
+simCMD_chaff = find_command("sim/weapons/deploy_chaff")
 
 -- publika variabler
 
@@ -429,8 +444,49 @@ function sysESS()
 		end
 	else
 		sim_jas_system_ess_power = 0
+		sim_jas_lamps_spak = 0
+		sim_jas_lamps_att = 0
+		sim_jas_lamps_hojd = 0
+		sim_jas_lamps_afk = 0
 	end
 	
+end
+
+
+flare = 0.0
+chaff = 0.0
+
+function sysDAP()
+	if (sim_power_bus_volt[0]>20) then
+		sim_jas_system_dap_power = 1
+		sim_jas_system_dap_startup = sim_jas_system_dap_startup + (sim_FRP*1000)
+		if (sim_jas_system_dap_startup > 1000*10) then
+			sim_jas_system_dap_pluv = 1
+		else
+			sim_jas_system_dap_pluv = 0
+		end
+	else
+		sim_jas_system_dap_power = 0
+		sim_jas_system_dap_startup = 0
+		sim_jas_system_dap_pluv = 0
+	end
+	
+	if (flare >0) then
+		flare = flare - sim_FRP
+		simCMD_flare:stop()
+	end
+	if (chaff == 1) then
+		chaff = 0
+		simCMD_chaff:stop()
+	end
+	if (sim_jas_system_mot_fack == 1 and flare <=0) then
+		simCMD_flare:start()
+		flare = 0.25
+	end
+	if (sim_jas_system_mot_rems == 1) then
+		simCMD_chaff:start()
+		chaff = 1
+	end
 end
 
 function larm()
@@ -452,7 +508,7 @@ function before_physics()
     lampAirbrake()
     lampMasterWarning()
 	lampAPUGar()
-	
+	sysDAP()
 	sysESS()
 	larm()
     -- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 303)
