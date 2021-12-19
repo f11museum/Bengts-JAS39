@@ -489,9 +489,10 @@ function calculateAutopilot(wanted_rate)
 			
 		end
 		error = wanted_rate - sim_acf_pitchrate -- determine error
-		kp = 15
-		ki = 4
-		kd = 0.5
+		kp = 15*current_fade_out
+		kp = interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot )
+		ki = 4*current_fade_out
+		kd = 0 --0.5--/current_fade_out/current_fade_out
 		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_rate) 
 		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), error) 
 	end
