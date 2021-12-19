@@ -90,7 +90,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118796647
+P _gear/0/_stat_def 0.118796654
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -314,7 +314,7 @@ P _obja/3/_v10_att_z_acf_prt_ref 19.356954575
 P _obja/3/_v10_is_internal 6
 P _obja/3/_v10_steers_with_gear 0
 P _obja/count 4
-P _panel_inst_3d 2
+P _panel_inst_3d 23
 P _part/0/_bot_s1 0.0
 P _part/0/_bot_s2 0.015625000
 P _part/0/_bot_t1 0.255859375
@@ -21170,7 +21170,7 @@ P _wing/9/_yawbr/8 0
 P _wing/9/_yawbr/9 0
 P _wing/9/_yawbr/count 10
 P _wing/count 56
-P _wpna/0/_v10_att_file_stl DropTank1100.wpn
+P _wpna/0/_v10_att_file_stl placeholder.wpn
 P _wpna/0/_v10_att_part -1
 P _wpna/0/_v10_att_phi_ref 0.0
 P _wpna/0/_v10_att_psi_ref 0.0
@@ -21253,8 +21253,8 @@ P _wpna/7/_v10_steers_with_gear 0
 P _wpna/count 8
 P acf/_APU_cooldown_time 0.001000000
 P acf/_APU_door_time 0.001000000
-P acf/_APU_spooldn_time 15.0
-P acf/_APU_spoolup_time 15.0
+P acf/_APU_spooldn_time 9.0
+P acf/_APU_spoolup_time 10.0
 P acf/_AShi_G_k 0.010000000
 P acf/_AShi_Gdot_k 0.029999999
 P acf/_AShi_alpha_k 0.090000004
@@ -21989,7 +21989,7 @@ P acf/_auto_engage_BC_deg 0.0
 P acf/_auto_omega_fire 0.0
 P acf/_auto_omega_idle 0.0
 P acf/_auto_omega_open 0.0
-P acf/_auto_pressurization 0
+P acf/_auto_pressurization 1
 P acf/_auto_psi_for_dir_change 180.0
 P acf/_auto_ptch_axis_defaults_free 0
 P acf/_auto_roll_axis_defaults_free 0
@@ -23118,7 +23118,7 @@ P acf/_esys_amperage/32 0.0
 P acf/_esys_amperage/33 0.0
 P acf/_esys_amperage/34 0.0
 P acf/_esys_amperage/35 0.0
-P acf/_esys_amperage/36 6.0
+P acf/_esys_amperage/36 0.0
 P acf/_esys_amperage/37 0.0
 P acf/_esys_amperage/38 0.0
 P acf/_esys_amperage/42 0.0
@@ -23178,7 +23178,7 @@ P acf/_esys_amperage/rel_dice_wing_heat_1 0.0
 P acf/_esys_amperage/rel_dme 0.0
 P acf/_esys_amperage/rel_efis_1 3.0
 P acf/_esys_amperage/rel_efis_2 4.0
-P acf/_esys_amperage/rel_ele_fp0 0.0
+P acf/_esys_amperage/rel_ele_fp0 2.0
 P acf/_esys_amperage/rel_ele_fp1 0.0
 P acf/_esys_amperage/rel_ele_fp2 0.0
 P acf/_esys_amperage/rel_ele_fp3 0.0
@@ -23216,7 +23216,7 @@ P acf/_esys_amperage/rel_heatPR4 0.0
 P acf/_esys_amperage/rel_heatPR5 0.0
 P acf/_esys_amperage/rel_heatPR6 0.0
 P acf/_esys_amperage/rel_heatPR7 0.0
-P acf/_esys_amperage/rel_ignitr0 0.0
+P acf/_esys_amperage/rel_ignitr0 2.0
 P acf/_esys_amperage/rel_ignitr1 0.0
 P acf/_esys_amperage/rel_ignitr2 0.0
 P acf/_esys_amperage/rel_ignitr3 0.0
@@ -23224,7 +23224,7 @@ P acf/_esys_amperage/rel_ignitr4 0.0
 P acf/_esys_amperage/rel_ignitr5 0.0
 P acf/_esys_amperage/rel_ignitr6 0.0
 P acf/_esys_amperage/rel_ignitr7 0.0
-P acf/_esys_amperage/rel_inverter0 6.0
+P acf/_esys_amperage/rel_inverter0 0.0
 P acf/_esys_amperage/rel_inverter1 0.0
 P acf/_esys_amperage/rel_lites_beac 1.0
 P acf/_esys_amperage/rel_lites_hud 1.0
@@ -23256,7 +23256,7 @@ P acf/_esys_amperage/rel_yaw_damp 2.0
 P acf/_esys_bus_bit_add/110 1
 P acf/_esys_bus_bit_add/112 1
 P acf/_esys_bus_bit_add/115 1
-P acf/_esys_bus_bit_add/116 0
+P acf/_esys_bus_bit_add/116 1
 P acf/_esys_bus_bit_add/117 1
 P acf/_esys_bus_bit_add/120 0
 P acf/_esys_bus_bit_add/124 1
@@ -23297,7 +23297,7 @@ P acf/_esys_bus_bit_add/32 0
 P acf/_esys_bus_bit_add/33 0
 P acf/_esys_bus_bit_add/34 0
 P acf/_esys_bus_bit_add/35 0
-P acf/_esys_bus_bit_add/36 1
+P acf/_esys_bus_bit_add/36 0
 P acf/_esys_bus_bit_add/37 0
 P acf/_esys_bus_bit_add/38 0
 P acf/_esys_bus_bit_add/42 0
@@ -23357,7 +23357,7 @@ P acf/_esys_bus_bit_add/rel_dice_wing_heat_1 0
 P acf/_esys_bus_bit_add/rel_dme 0
 P acf/_esys_bus_bit_add/rel_efis_1 1
 P acf/_esys_bus_bit_add/rel_efis_2 1
-P acf/_esys_bus_bit_add/rel_ele_fp0 0
+P acf/_esys_bus_bit_add/rel_ele_fp0 1
 P acf/_esys_bus_bit_add/rel_ele_fp1 0
 P acf/_esys_bus_bit_add/rel_ele_fp2 0
 P acf/_esys_bus_bit_add/rel_ele_fp3 0
@@ -23395,7 +23395,7 @@ P acf/_esys_bus_bit_add/rel_heatPR4 0
 P acf/_esys_bus_bit_add/rel_heatPR5 0
 P acf/_esys_bus_bit_add/rel_heatPR6 0
 P acf/_esys_bus_bit_add/rel_heatPR7 0
-P acf/_esys_bus_bit_add/rel_ignitr0 0
+P acf/_esys_bus_bit_add/rel_ignitr0 1
 P acf/_esys_bus_bit_add/rel_ignitr1 0
 P acf/_esys_bus_bit_add/rel_ignitr2 0
 P acf/_esys_bus_bit_add/rel_ignitr3 0
@@ -23403,7 +23403,7 @@ P acf/_esys_bus_bit_add/rel_ignitr4 0
 P acf/_esys_bus_bit_add/rel_ignitr5 0
 P acf/_esys_bus_bit_add/rel_ignitr6 0
 P acf/_esys_bus_bit_add/rel_ignitr7 0
-P acf/_esys_bus_bit_add/rel_inverter0 1
+P acf/_esys_bus_bit_add/rel_inverter0 0
 P acf/_esys_bus_bit_add/rel_inverter1 0
 P acf/_esys_bus_bit_add/rel_lites_beac 1
 P acf/_esys_bus_bit_add/rel_lites_hud 1
@@ -23418,7 +23418,7 @@ P acf/_esys_bus_bit_add/rel_navcom1 1
 P acf/_esys_bus_bit_add/rel_navcom2 1
 P acf/_esys_bus_bit_add/rel_pil_tsi 0
 P acf/_esys_bus_bit_add/rel_rud_trim 1
-P acf/_esys_bus_bit_add/rel_servo_thro 0
+P acf/_esys_bus_bit_add/rel_servo_thro 1
 P acf/_esys_bus_bit_add/rel_slats 0
 P acf/_esys_bus_bit_add/rel_stab_aug 1
 P acf/_esys_bus_bit_add/rel_stall_warn 0
@@ -23628,9 +23628,9 @@ P acf/_ground_pwr/2 0.0
 P acf/_ground_pwr/count 3
 P acf/_h_eqlbm 4.661777496
 P acf/_has_ADG 0
-P acf/_has_APU_bleed_air 0
-P acf/_has_APU_generator 0
-P acf/_has_APU_switch 0
+P acf/_has_APU_bleed_air 1
+P acf/_has_APU_generator 1
+P acf/_has_APU_switch 1
 P acf/_has_DC_fd 0
 P acf/_has_GLASS_hsi 1
 P acf/_has_SC_fd 0
@@ -23653,7 +23653,7 @@ P acf/_has_food_1 0
 P acf/_has_food_2 0
 P acf/_has_fuel_1 0
 P acf/_has_fuel_2 0
-P acf/_has_full_bleed_air 0
+P acf/_has_full_bleed_air 1
 P acf/_has_get_tow 0
 P acf/_has_get_tow_new 0
 P acf/_has_give_tow 0
@@ -23674,7 +23674,7 @@ P acf/_hide_prop_at_90_vect 0
 P acf/_hoops_hud_EQ 0
 P acf/_hud_tapes_track_vector 0
 P acf/_hyd_brakes 1
-P acf/_hyd_ele_pump_0123 0
+P acf/_hyd_ele_pump_0123 1
 P acf/_hyd_engn_pump_0123/0 1
 P acf/_hyd_engn_pump_0123/1 1
 P acf/_hyd_engn_pump_0123/2 0
@@ -23688,11 +23688,11 @@ P acf/_hyd_flaps 1
 P acf/_hyd_flightcons 1
 P acf/_hyd_gear 1
 P acf/_hyd_gear_fail_mode 2
-P acf/_hyd_gear_fail_speed 80.0
-P acf/_hyd_max_p 1388.750000000
-P acf/_hyd_max_p_RAT 0.0
-P acf/_hyd_max_p_ele 0.0
-P acf/_hyd_max_p_eng 1111.0
+P acf/_hyd_gear_fail_speed 250.0
+P acf/_hyd_max_p 513.750000000
+P acf/_hyd_max_p_RAT 301.0
+P acf/_hyd_max_p_ele 401.0
+P acf/_hyd_max_p_eng 411.0
 P acf/_hyd_max_p_rot 0.0
 P acf/_hyd_nw_steer 1
 P acf/_hyd_prop_pump_0123/0 0
@@ -23704,7 +23704,7 @@ P acf/_hyd_prop_pump_0123/5 0
 P acf/_hyd_prop_pump_0123/6 0
 P acf/_hyd_prop_pump_0123/7 0
 P acf/_hyd_prop_pump_0123/count 8
-P acf/_hyd_rat_pump_0123 0
+P acf/_hyd_rat_pump_0123 1
 P acf/_idle_rat/0 0.600000024
 P acf/_idle_rat/1 0.800000012
 P acf/_idle_rat/count 2
@@ -23713,8 +23713,8 @@ P acf/_inlet_compression_efficiency 0.920000017
 P acf/_inverted_fuel_oil_EQ 1
 P acf/_inverter_for_elec_gyros 0
 P acf/_inverter_for_ind_trq 0
-P acf/_inverter_for_otto 1
-P acf/_inverter_for_radar 1
+P acf/_inverter_for_otto 0
+P acf/_inverter_for_radar 0
 P acf/_is_airliner 0
 P acf/_is_cargo 0
 P acf/_is_experimental 0
@@ -23780,12 +23780,12 @@ P acf/_max_gen_amp_per_gen/7 0.0
 P acf/_max_gen_amp_per_gen/count 8
 P acf/_max_mach_eff 2.700000048
 P acf/_max_oilT 245.0
-P acf/_max_press_diff 9.0
+P acf/_max_press_diff 14.0
 P acf/_max_vac 8.0
 P acf/_max_xmsn_P 1.0
 P acf/_max_xmsn_T 1.0
 P acf/_min_n1 1.0
-P acf/_min_n2 21.544345856
+P acf/_min_n2 22.0
 P acf/_min_rwy_len 0.0
 P acf/_min_vec_on_ground 0.0
 P acf/_mixt_x_ctr 0.0
@@ -23820,8 +23820,8 @@ P acf/_num_batteries 1
 P acf/_num_braking_wheels 0.0
 P acf/_num_buses 1
 P acf/_num_engn 1
-P acf/_num_generators 2
-P acf/_num_inverters 1
+P acf/_num_generators 1
+P acf/_num_inverters 2
 P acf/_num_prop 0
 P acf/_num_xmsn 1
 P acf/_nw_side_k 0.0
@@ -23849,8 +23849,8 @@ P acf/_ott_the_deg_per_kt 0.200000003
 P acf/_ott_the_sec_into_future 0.383512825
 P acf/_ott_the_sec_to_trim 0.0
 P acf/_ott_the_sec_to_tune 4.0
-P acf/_otto_ah_source_type 10
-P acf/_otto_dg_source_type 10
+P acf/_otto_ah_source_type 11
+P acf/_otto_dg_source_type 11
 P acf/_paraf_dur 0.0
 P acf/_paraf_max 0
 P acf/_paraf_vvi 0.0
@@ -24198,14 +24198,14 @@ P acf/_stab_trim_dn 0.0
 P acf/_stab_trim_up 0.0
 P acf/_stab_with_Vind 0.0
 P acf/_stab_with_flap 0.0
-P acf/_stall_warn_aoa 23.0
+P acf/_stall_warn_aoa 21.299999237
 P acf/_stall_warn_is_variable 0
 P acf/_start_on_water 0
 P acf/_starter_engages_fuel 1
 P acf/_starter_engages_igniter_arm 1
-P acf/_starter_engages_igniter_on 0
+P acf/_starter_engages_igniter_on 1
 P acf/_starter_engages_ignition 1
-P acf/_starter_is_air_driven 0
+P acf/_starter_is_air_driven 1
 P acf/_starter_max_rpm_rat 0.409999996
 P acf/_starter_torque_rat 0.170000002
 P acf/_steerdeg_castor 0.0
@@ -24426,7 +24426,7 @@ P acf/_wiper_ang2/3 120.0
 P acf/_wiper_ang2/count 4
 P acf/_wiper_max_cycles_second 2.0
 P acf/_xmsn_of_engn/0 0
-P acf/_xmsn_of_engn/1 0
+P acf/_xmsn_of_engn/1 1
 P acf/_xmsn_of_engn/2 0
 P acf/_xmsn_of_engn/3 0
 P acf/_xmsn_of_engn/4 0
@@ -24511,6 +24511,174 @@ HUD_hsi_semiround HUD_hsi_round.png
 
 rad_navcom1_GA rad_navcom1_GA.png
   POS 595.000000 338.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_apu but_apu.png
+  POS 276.000000 274.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_battery but_battery.png
+  POS 203.000000 211.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_drop_tank but_drop_tank.png
+  POS 370.000000 331.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_HUD_power but_HUD_power.png
+  POS 716.000000 337.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_jettison but_jettison.png
+  POS 796.000000 259.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_burner_enable but_afterburner_ena
+  POS 171.000000 120.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_generator but_generator.png
+  POS 249.000000 213.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_generator_apu but_generator_apu.p
+  POS 301.000000 211.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_igniter but_igniter.png
+  POS 369.000000 211.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+press_bleed_air_mini bleed_air.png
+  POS 419.000000 160.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+press_bleed_air_full bleed_air_full.png
+  POS 488.000000 159.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+eng_rnd_N1 engine_N1.png
+  POS 628.000000 244.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+eng_rnd_ITT engine_ITT.png
+  POS 730.000000 244.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_brakes but_brakes.png
+  POS 459.000000 353.500000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+but_starter_HM but_starter_HM.png
+  POS 418.000000 215.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+ann_generator_off ann_generator.png
+  POS 629.000000 154.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+ann_master_accept ann_master_accept.p
+  POS 420.000000 314.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+ann_oil_press_lo ann_oil_press.png
+  POS 631.000000 115.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+ann_hyd_press ann_hydraulic_press
+  POS 694.000000 153.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+ann_engine_fire ann_engine_fire.png
+  POS 694.000000 114.000000
+  DATAREF 
+  LIGHT_MODE MECHANICAL
+  LIGHT_RHEOSTAT 0
+  KEY_FRAME 0.000000 0.000000 1.000000
+  KEY_FRAME 1.000000 1.000000
+
+apu_running APU_running.png
+  POS 787.000000 162.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0

@@ -130,6 +130,9 @@ simCMD_apu_gen_off = find_command("sim/electrical/APU_generator_off")
 
 simCMD_apu_bleed_air = find_command("sim/bleed_air/bleed_air_apu")
 
+simCMD_gen_on = find_command("sim/electrical/generator_1_on")
+simCMD_gen_off = find_command("sim/electrical/generator_1_off")
+
 simCMD_engine_starter = find_command("sim/engines/engage_starters")
 
 -- publika variabler
@@ -161,7 +164,7 @@ function flight_start()
 	sim_jas_button_lt_kran = 1
 	sim_jas_button_hstrom = 1
 	sim_jas_button_ess = 1
-	sim_jas_button_start = 1
+	--sim_jas_button_start = 1
 	sim_jas_button_antikoll = 1
 	sim_jas_button_apu = 1
 end
@@ -362,11 +365,13 @@ function buttonPower()
 		if (power_state == 0) then
 			power_state = 1
         	simCMD_apu_gen_on:once()
+			simCMD_gen_on:once()
 		end
     else
 		if (power_state == 1) then
 			power_state = 0
 			simCMD_apu_gen_off:once()
+			simCMD_gen_off:once()
 		end
 	end
 end
@@ -434,6 +439,7 @@ function larm()
 	else
 		sim_vat_larm_bramgd = 0
 	end
+	
 end
 
 heartbeat = 0
