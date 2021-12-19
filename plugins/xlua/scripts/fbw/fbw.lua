@@ -2,8 +2,8 @@
 ---- Stabiliserings system för JAS
 ---- F11 Museum 2021 Bengt
 -------------------------------------------------------
-
-
+sim_heartbeat = find_dataref("JAS/system/ess/heartbeat2")
+sim_heartbeat = 100
 
 --- Helt nytt stabiliserings system för det befintliga funkade inte så bra och hamnade i super stall vid helt korrekta manövrar
 
@@ -41,10 +41,15 @@ fade_out = 0.6
 dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat") 
 dr_status2 = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
 
+sim_override_throttles = find_dataref("sim/operation/override/override_throttles") 
+sim_throttle_use = find_dataref("sim/flightmodel/engine/ENGN_thro_use") 
+sim_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
+sim_throttle_burner = find_dataref("sim/flightmodel/engine/ENGN_burnrat") 
+
 dr_override_flightcontrol = XLuaFindDataRef("sim/operation/override/override_flightcontrol") 
 dr_override_surfaces = XLuaFindDataRef("sim/operation/override/override_control_surfaces") 
 dr_FRP = XLuaFindDataRef("sim/operation/misc/frame_rate_period")
-
+sim_heartbeat = 101
 -- input från användaren
 dr_yoke_roll_ratio = XLuaFindDataRef("sim/joystick/yoke_roll_ratio") 
 dr_yoke_heading_ratio = XLuaFindDataRef("sim/joystick/yoke_heading_ratio") 
@@ -76,7 +81,7 @@ dr_acf_vz = XLuaFindDataRef("sim/flightmodel/position/local_vz")
 
 dr_alpha = XLuaFindDataRef("sim/flightmodel/position/alpha") 
 dr_g_nrml = XLuaFindDataRef("sim/flightmodel/forces/g_nrml") 
-
+sim_heartbeat = 102
 
 dr_N1 = XLuaFindDataRef("sim/flightmodel/engine/ENGN_N1_[0]")
 dr_braking_ratio = XLuaFindDataRef("sim/cockpit2/controls/parking_brake_ratio")
@@ -103,19 +108,24 @@ dr_gear = XLuaFindDataRef("sim/cockpit/switches/gear_handle_status")
 
 dr_altitude = XLuaFindDataRef("sim/flightmodel/misc/h_ind") 
 
+sim_heartbeat = 103
 -- Egna JAS dataref
 dr_jas_button_spak = XLuaFindDataRef("JAS/button/spak") 
 dr_jas_button_att = XLuaFindDataRef("JAS/button/att") 
 dr_jas_button_hojd = XLuaFindDataRef("JAS/button/hojd") 
-
+sim_jas_button_afk = find_dataref("JAS/button/afk")
+sim_heartbeat = 104
 dr_jas_lamps_spak = XLuaFindDataRef("JAS/lamps/spak") 
 dr_jas_lamps_att = XLuaFindDataRef("JAS/lamps/att") 
 dr_jas_lamps_hojd = XLuaFindDataRef("JAS/lamps/hojd")  
-
+sim_jas_lamps_afk = find_dataref("JAS/lamps/afk")
+sim_heartbeat = 105
 dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
 dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
 dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 sim_jas_auto_afk = find_dataref("JAS/autopilot/afk")
+
+sim_heartbeat = 106
 
 dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
 dr_cloud_shadow = XLuaFindDataRef("sim/private/controls/clouds/cloud_shadow_lighten_ratio")
@@ -154,6 +164,7 @@ lock_pitch_movement = 0
 -- Plugin funktioner
 
 function flight_start() 
+	sim_heartbeat = 200
 	dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
 	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel[0]")
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
@@ -171,7 +182,7 @@ function flight_start()
 	--clouds = XLuaFindDataRef("sim/private/controls/skyc/white_out_in_clouds")
 	--XLuaSetNumber(clouds, 0)
 	--logMsg("Flight started with LUA")
-	
+	sim_heartbeat = 299
 end
 
 function aircraft_unload()
@@ -247,10 +258,10 @@ end
 
 th_cumError = 0
 th_lastError = 0
-function PIDth()
-	l_kp = 1
-	l_ki = 1
-	l_kd = 1
+function PIDth(error)
+	l_kp = 0.07
+	l_ki = 0.05
+	l_kd = 0.1
 	-- PID försök 
 
 	elapsedTime = sim_FRP
@@ -707,6 +718,8 @@ function calculateElevator()
 end
 
 knapp = 0
+knapp2 = 0
+current_th = 0
 
 function update_buttons()
 	if (sim_jas_button_spak == 1) then
@@ -748,30 +761,52 @@ function update_buttons()
 	end
 	
 	if (sim_jas_button_afk == 1) then
-		if (knapp == 0) then
-			knapp = 1
-			if (sim_jas_auto_afk == 1) then
-				XLuaSetNumber(dr_jas_lamps_spak, 0)
-				XLuaSetNumber(dr_jas_lamps_att, 0)
-				XLuaSetNumber(dr_jas_lamps_hojd, 0)
+		if (knapp2 == 0) then
+			knapp2 = 1
+			if (sim_jas_auto_afk > 0) then
+				sim_jas_auto_afk = 0
 				
-				XLuaSetNumber(dr_jas_auto_mode, 0) 
 			else
-				XLuaSetNumber(dr_jas_lamps_spak, 1)
-				XLuaSetNumber(dr_jas_lamps_att, 0)
-				XLuaSetNumber(dr_jas_lamps_hojd, 0)
+				sim_jas_lamps_afk = 1
+				sim_jas_auto_afk = sim_airspeed_kts_pilot
+				current_th = sim_throttle[0]
 				
-				XLuaSetNumber(dr_jas_auto_mode, 1) 
 			end
 		end
 	else
-		knapp = 0
+		knapp2 = 0
+	end
+end
+
+
+function calculateThrottle()
+	--sim_override_throttles = 1
+	if (sim_jas_auto_afk >= 1) then
+		sim_jas_lamps_afk = 1
+		sim_override_throttles = 1
+		error = sim_jas_auto_afk - sim_airspeed_kts_pilot
+		
+		demand = constrain(PIDth(error), 0.0,1.0)
+		sim_throttle_use[0] = demand
+		sim_throttle_burner[0] = constrain( (demand-0.9)*10, 0.0,1.0)
+		
+		if (sim_throttle[0]>current_th+0.1 or sim_throttle[0]<current_th-0.1) then
+			-- stäng av auto throttle om någon rör vid gasen
+			sim_jas_auto_afk = 0
+		end
+	else
+		sim_override_throttles = 0
+		sim_jas_lamps_afk = 0
+		--sim_throttle_use[0] = sim_throttle[0]
 	end
 end
 
 function before_physics() 
+	sim_heartbeat = 300
 	update_dataref()
+	sim_heartbeat = 301
 	update_buttons()
+	sim_heartbeat = 302
 	m_canard = 0
 	m_elevator = 0
 	m_elevator_roll = 0
@@ -781,11 +816,12 @@ function before_physics()
 	--XLuaSetNumber(dr_right_elevator, sim_yoke_pitch_ratio*90) -- för felkoll
 	
 	
-	
+	calculateThrottle()
+	sim_heartbeat = 303
 	calculateElevator()
 	calculateAileron()
 	calculateRudder()
-	
+	sim_heartbeat = 306
 	--XLuaSetNumber(dr_right_canard, sim_yoke_pitch_ratio*90) -- för felkoll
 	-- Sätt värden på alla vingar efter vad som räknats ut
 	-- Framvingen ska bara ha sin uträkning från canard
@@ -834,9 +870,10 @@ function before_physics()
 	XLuaSetNumber(dr_status, 1)
 
 
-
+	sim_heartbeat = 399
 end
 
 function after_physics() 	
 	XLuaSetNumber(dr_override_surfaces, 0) 
 end
+sim_heartbeat = 199
