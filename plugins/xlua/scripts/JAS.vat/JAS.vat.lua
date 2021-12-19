@@ -34,6 +34,8 @@ sim_power = find_dataref("JAS/system/vat/power")
 sim_hgen = find_dataref("JAS/system/vat/hgen")
 dr_hgen_lamp = XLuaFindDataRef("JAS/system/vat/lamp/hgen")
 -- JAS/system/vat/motor	int	y	unit	Description
+sim_motor = find_dataref("JAS/system/vat/motor")
+dr_motor_lamp = XLuaFindDataRef("JAS/system/vat/lamp/motor")
 -- JAS/system/vat/dragkr	int	y	unit	Description
 -- JAS/system/vat/oljetr	int	y	unit	Description
 sim_oljetr = find_dataref("JAS/system/vat/oljetr")
@@ -100,6 +102,7 @@ sim_apu_amps = find_dataref("sim/cockpit2/electrical/APU_generator_amps")
 
 sim_warn_generator_off = find_dataref("sim/cockpit/warnings/annunciators/generator_off")
 
+sim_engine_n1 = find_dataref("sim/flightmodel2/engines/N1_percent")
 
 
 function flight_start() 
@@ -194,6 +197,7 @@ end
 function checkLarm()
 	
 	updateLarm(1, 4, sim_hgen, dr_hgen_lamp, 1)
+	updateLarm(1, 5, sim_motor, dr_motor_lamp, 1)
 	updateLarm(1, 7, sim_oljetr, dr_oljetr_lamp, 1)
 	
 	updateLarm(2, 3, sim_hydr1, dr_hydr1_lamp, 1)
@@ -254,6 +258,12 @@ function larm()
 		sim_apu = 0
 	else 
 		sim_apu = 1
+	end
+	
+	if (sim_engine_n1[0]<16) then
+		sim_motor = 1
+	else 
+		sim_motor = 0
 	end
 	
 end
