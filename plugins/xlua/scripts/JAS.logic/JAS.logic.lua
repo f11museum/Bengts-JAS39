@@ -89,6 +89,7 @@ sim_jas_lamps_att = find_dataref("JAS/lamps/att")
 sim_jas_lamps_hojd = find_dataref("JAS/lamps/hojd")
 sim_jas_lamps_airbrake = find_dataref("JAS/lamps/airbrake")
 sim_jas_lamps_gears = find_dataref("JAS/lamps/gears")
+sim_jas_lamps_master = find_dataref("JAS/lamps/master")
 sim_jas_lamps_master1 = find_dataref("JAS/lamps/master1")
 sim_jas_lamps_master2 = find_dataref("JAS/lamps/master2")
 sim_jas_lamps_apu_gar = find_dataref("JAS/lamps/apu_gar")
@@ -98,6 +99,11 @@ XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 112)
 dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
 dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
 dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
+
+
+sim_vat_larm_bramgd = find_dataref("JAS/system/vat/bramgd")
+
+sim_vat_larm1 = find_dataref("JAS/system/vat/larm1")
 
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 120)
 dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
@@ -308,26 +314,11 @@ function lampAirbrake()
 	end
 end
 
-clocktimer = 0
+
 function lampMasterWarning()
     if ( (sim_master_caution > 0) or (sim_master_warning > 0) or (sim_gear_warning > 0)) then
-        clocktimer = clocktimer + sim_FRP
-        
-        
-        t1 = clocktimer*10
-        t2 = math.floor(t1 / 2)
-        
-        if (t2 % 2 == 0) then
-			sim_jas_lamps_master1 = 1
-			sim_jas_lamps_master2 = 0
-        else
-            sim_jas_lamps_master1 = 0
-			sim_jas_lamps_master2 = 1
-        end
-        
-    else
-		sim_jas_lamps_master1 = 0
-		sim_jas_lamps_master2 = 0
+        sim_vat_larm1 = 1
+
     end
 end
 
@@ -437,6 +428,13 @@ function sysESS()
 	
 end
 
+function larm()
+	if (sim_fuel1 <500) then
+		sim_vat_larm_bramgd = 1
+	else
+		sim_vat_larm_bramgd = 0
+	end
+end
 
 heartbeat = 0
 function before_physics() 
@@ -450,6 +448,7 @@ function before_physics()
 	lampAPUGar()
 	
 	sysESS()
+	larm()
     -- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 303)
     -- XLuaSetNumber(dr_status, heartbeat) 
 	sim_heartbeat = heartbeat
