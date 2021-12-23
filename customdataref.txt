@@ -16,6 +16,8 @@ JAS/frontpanel/override/knappar	int		y	unit	Description
 JAS/lampprov/p1		int		y	unit	Description
 JAS/system/apu/power	int	y	unit	Alltid på för att ge lampan ström
 
+JAS/system/hud/heartbeat	int	y	unit	Description
+
 JAS/autopilot/alt	float	y	unit	Description
 JAS/autopilot/att	float	y	unit	Description
 JAS/autopilot/mode	int		y	unit	Description
@@ -95,39 +97,7 @@ JAS/system/vat/bramgd	int	y	unit	Description
 JAS/system/vat/oxykab	int	y	unit	Description
 JAS/system/vat/huvstol	int	y	unit	Description
 
-# Lampor
-JAS/system/vat/lamp/larm1	int	y	unit	Larm som inte behöver kvitteras
-JAS/system/vat/lamp/larm2	int	y	unit	Larm som behöver kviteras
 
-JAS/system/vat/lamp/normsty	int	y	unit	Description
-JAS/system/vat/lamp/luftsys	int	y	unit	Description
-JAS/system/vat/lamp/hhp1		int	y	unit	Description
-JAS/system/vat/lamp/hgen		int	y	unit	Description
-JAS/system/vat/lamp/motor	int	y	unit	Description
-JAS/system/vat/lamp/dragkr	int	y	unit	Description
-JAS/system/vat/lamp/oljetr	int	y	unit	Description
-
-JAS/system/vat/lamp/abumod	int	y	unit	Description
-JAS/system/vat/lamp/primdat	int	y	unit	Description
-JAS/system/vat/lamp/hydr1	int	y	unit	Description
-JAS/system/vat/lamp/resgen	int	y	unit	Description
-JAS/system/vat/lamp/mobrand	int	y	unit	Description
-JAS/system/vat/lamp/apu		int	y	unit	Description
-JAS/system/vat/lamp/apubrnd	int	y	unit	Description
-
-JAS/system/vat/lamp/styrsak	int	y	unit	Description
-JAS/system/vat/lamp/uppdrag	int	y	unit	Description
-JAS/system/vat/lamp/hydr2	int	y	unit	Description
-JAS/system/vat/lamp/likstrm	int	y	unit	Description
-JAS/system/vat/lamp/landst	int	y	unit	Description
-JAS/system/vat/lamp/bromsar	int	y	unit	Description
-
-JAS/system/vat/lamp/felinfo	int	y	unit	Description
-JAS/system/vat/lamp/dator	int	y	unit	Description
-JAS/system/vat/lamp/brasys	int	y	unit	Description
-JAS/system/vat/lamp/bramgd	int	y	unit	Description
-JAS/system/vat/lamp/oxykab	int	y	unit	Description
-JAS/system/vat/lamp/huvstol	int	y	unit	Description
 
 JAS/vu22/lamp/apubrand	int	y	unit	M24
 JAS/vu22/lamp/apugar	int	y	unit	M25
