@@ -110,20 +110,22 @@ dr_altitude = XLuaFindDataRef("sim/flightmodel/misc/h_ind")
 
 sim_heartbeat = 103
 -- Egna JAS dataref
-dr_jas_button_spak = XLuaFindDataRef("JAS/button/spak") 
-dr_jas_button_att = XLuaFindDataRef("JAS/button/att") 
-dr_jas_button_hojd = XLuaFindDataRef("JAS/button/hojd") 
-sim_jas_button_afk = find_dataref("JAS/button/afk")
+dr_jas_button_spak = XLuaFindDataRef("JAS/io/frontpanel/knapp/spak") 
+dr_jas_button_att = XLuaFindDataRef("JAS/io/frontpanel/knapp/att") 
+dr_jas_button_hojd = XLuaFindDataRef("JAS/io/frontpanel/knapp/hojd") 
+sim_jas_button_afk = find_dataref("JAS/io/frontpanel/knapp/afk")
 sim_heartbeat = 104
-dr_jas_lamps_spak = XLuaFindDataRef("JAS/lamps/spak") 
-dr_jas_lamps_att = XLuaFindDataRef("JAS/lamps/att") 
-dr_jas_lamps_hojd = XLuaFindDataRef("JAS/lamps/hojd")  
-sim_jas_lamps_afk = find_dataref("JAS/lamps/afk")
+dr_jas_lamps_spak = XLuaFindDataRef("JAS/io/frontpanel/lamp/spak") 
+dr_jas_lamps_att = XLuaFindDataRef("JAS/io/frontpanel/lamp/att") 
+dr_jas_lamps_hojd = XLuaFindDataRef("JAS/io/frontpanel/lamp/hojd")  
+sim_jas_lamps_afk = find_dataref("JAS/io/frontpanel/lamp/afk")
 sim_heartbeat = 105
 dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
 dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
 dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 sim_jas_auto_afk = find_dataref("JAS/autopilot/afk")
+
+sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
 
 sim_heartbeat = 106
 
@@ -837,6 +839,31 @@ function update_buttons()
 	end
 end
 
+function update_lamps()
+	
+	if (sim_jas_auto_mode == 0) then
+		XLuaSetNumber(dr_jas_lamps_spak, 0)
+		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	end
+	if (sim_jas_auto_mode == 1) then
+		XLuaSetNumber(dr_jas_lamps_spak, 1)
+		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	end
+	if (sim_jas_auto_mode == 2) then
+		XLuaSetNumber(dr_jas_lamps_spak, 0)
+		XLuaSetNumber(dr_jas_lamps_att, 1)
+		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	end
+	if (sim_jas_auto_mode == 3) then
+		XLuaSetNumber(dr_jas_lamps_spak, 0)
+		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_hojd, 1)
+	end
+	
+end
+
 
 function calculateThrottle()
 	--sim_override_throttles = 1
@@ -859,13 +886,57 @@ function calculateThrottle()
 		--sim_throttle_use[0] = sim_throttle[0]
 	end
 end
-
+sys_test_counter = 0
+function systest()
+	if (sim_jas_sys_test == 1) then
+		sys_test_counter = sys_test_counter +sim_FRP
+		time1 = math.floor(sys_test_counter)
+		if (time1 == 0) then
+			XLuaSetNumber(dr_jas_lamps_spak, 1)
+			XLuaSetNumber(dr_jas_lamps_att, 0)
+			XLuaSetNumber(dr_jas_lamps_hojd, 0)
+			sim_jas_lamps_afk = 0
+		end
+		if (time1 == 1) then
+			XLuaSetNumber(dr_jas_lamps_spak, 0)
+			XLuaSetNumber(dr_jas_lamps_att, 1)
+			XLuaSetNumber(dr_jas_lamps_hojd, 0)
+			sim_jas_lamps_afk = 0
+		end
+		if (time1 == 2) then
+			XLuaSetNumber(dr_jas_lamps_spak, 0)
+			XLuaSetNumber(dr_jas_lamps_att, 0)
+			XLuaSetNumber(dr_jas_lamps_hojd, 1)
+			sim_jas_lamps_afk = 0
+			
+		end
+		if (time1 == 3) then
+			XLuaSetNumber(dr_jas_lamps_spak, 0)
+			XLuaSetNumber(dr_jas_lamps_att, 0)
+			XLuaSetNumber(dr_jas_lamps_hojd, 0)
+			sim_jas_lamps_afk = 1
+			sys_test_counter = 0
+		end
+		if (sys_test_counter > 4) then
+			
+			sys_test_counter = 0
+		end
+	end
+end
+heartbeat = 0
 function before_physics() 
 	sim_heartbeat = 300
 	update_dataref()
 	sim_heartbeat = 301
-	update_buttons()
+	if (sim_jas_sys_test == 1) then
+		systest()
+		return
+	end
 	sim_heartbeat = 302
+	update_buttons()
+	sim_heartbeat = 303
+	update_lamps()
+	sim_heartbeat = 304
 	m_canard = 0
 	m_elevator = 0
 	m_elevator_roll = 0
@@ -876,7 +947,7 @@ function before_physics()
 	
 	
 	calculateThrottle()
-	sim_heartbeat = 303
+	sim_heartbeat = 304
 	calculateElevator()
 	calculateAileron()
 	calculateRudder()
@@ -926,10 +997,13 @@ function before_physics()
 	XLuaSetNumber(dr_vstab, s_rudder)
 	
 -- Sätt status så vi vet om det här scriuptet fungerar 
+	
 	XLuaSetNumber(dr_status, 1)
 
-
+	
 	sim_heartbeat = 399
+	sim_heartbeat = heartbeat
+	heartbeat = heartbeat + 1
 end
 
 function after_physics() 	

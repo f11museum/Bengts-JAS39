@@ -76,25 +76,43 @@ XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 110)
 sim_jas_system_ess_power = find_dataref("JAS/system/ess/power")
 sim_jas_system_ess_startup = find_dataref("JAS/system/ess/startup")
 
-sim_jas_button_lt_kran = find_dataref("JAS/button/lt_kran")
-sim_jas_button_hstrom = find_dataref("JAS/button/hstrom")
-sim_jas_button_ess = find_dataref("JAS/button/ess")
-sim_jas_button_start = find_dataref("JAS/button/start")
+sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
+
+sim_jas_button_lt_kran = find_dataref("JAS/io/vu22/knapp/ltbra")
+sim_jas_button_hstrom = find_dataref("JAS/io/vu22/knapp/hstrom")
+sim_jas_button_ess = find_dataref("JAS/io/vu22/knapp/ess")
 sim_jas_button_antikoll = find_dataref("JAS/button/antikoll")
-sim_jas_button_apu = find_dataref("JAS/button/apu")
+sim_jas_button_apu = find_dataref("JAS/io/vu22/knapp/apu")
+
+sim_jas_button_start = find_dataref("JAS/io/frontpanel/knapp/start")
+
+sim_jas_vu22_falltank = find_dataref("JAS/io/vu22/knapp/falltank")
 
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 111)
-sim_jas_lamps_spak = find_dataref("JAS/lamps/spak")
-sim_jas_lamps_att = find_dataref("JAS/lamps/att")
-sim_jas_lamps_hojd = find_dataref("JAS/lamps/hojd")
-sim_jas_lamps_afk = find_dataref("JAS/lamps/afk")
-sim_jas_lamps_airbrake = find_dataref("JAS/lamps/airbrake")
+sim_jas_lamps_spak = find_dataref("JAS/io/frontpanel/lamp/spak")
+sim_jas_lamps_att = find_dataref("JAS/io/frontpanel/lamp/att")
+sim_jas_lamps_hojd = find_dataref("JAS/io/frontpanel/lamp/hojd")
+sim_jas_lamps_afk = find_dataref("JAS/io/frontpanel/lamp/afk")
+sim_jas_lamps_airbrake = find_dataref("JAS/io/frontpanel/lamp/airbrake")
 sim_jas_lamps_gears = find_dataref("JAS/lamps/gears")
 sim_jas_lamps_master = find_dataref("JAS/lamps/master")
-sim_jas_lamps_master1 = find_dataref("JAS/lamps/master1")
-sim_jas_lamps_master2 = find_dataref("JAS/lamps/master2")
-sim_jas_lamps_apu_gar = find_dataref("JAS/lamps/apu_gar")
+sim_jas_lamps_master1 = find_dataref("JAS/io/frontpanel/lamp/master1")
+sim_jas_lamps_master2 = find_dataref("JAS/io/frontpanel/lamp/master2")
+sim_jas_lamps_apu_gar = find_dataref("JAS/io/vu22/lamp/apugar")
+sim_jas_lamps_apu_red = find_dataref("JAS/io/vu22/lamp/apured")
 
+
+-- Oanvända i vu22
+
+sim_jas_vu22_sand = find_dataref("JAS/io/vu22/knapp/sand")
+sim_jas_vu22_rhm = find_dataref("JAS/io/vu22/knapp/rhm")
+sim_jas_vu22_mkv = find_dataref("JAS/io/vu22/knapp/mkv")
+sim_jas_vu22_tb = find_dataref("JAS/io/vu22/knapp/termbatt")
+
+sim_jas_vu22_lamp_sand = find_dataref("JAS/io/vu22/lamp/sand")
+sim_jas_vu22_lamp_rhm = find_dataref("JAS/io/vu22/lamp/rhm")
+sim_jas_vu22_lamp_mkv = find_dataref("JAS/io/vu22/lamp/mkv")
+sim_jas_vu22_lamp_tb = find_dataref("JAS/io/vu22/lamp/termbatt")
 --dap
 
 sim_jas_system_dap_power = find_dataref("JAS/system/dap/power")
@@ -107,14 +125,38 @@ sim_jas_system_mot_rems = find_dataref("JAS/system/mot/rems")
 
 
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 112)
-dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
+sim_jas_auto_mode = find_dataref("JAS/autopilot/mode")
 dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
 dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 
 
+sim_apu_power = find_dataref("JAS/system/apu/power")
+sim_vat_power = find_dataref("JAS/system/vat/power")
 sim_vat_larm_bramgd = find_dataref("JAS/system/vat/bramgd")
-
 sim_vat_larm1 = find_dataref("JAS/system/vat/larm1")
+
+sim_lampprov = find_dataref("JAS/lampprov/p1")
+sim_systprov = find_dataref("JAS/io/vu22/knapp/syst")
+
+sim_vu22_lamp_apubrand = find_dataref("JAS/io/vu22/lamp/apubrand")
+--JAS/vu22/lamp/apugar	int	y	unit	M25
+sim_vu22_lamp_apugar = find_dataref("JAS/io/vu22/lamp/apugar")
+--JAS/vu22/lamp/apured	int	y	unit	M26
+sim_vu22_lamp_apured = find_dataref("JAS/io/vu22/lamp/apured")
+--/vu22/lamp/termbatt	int	y	unit	M27
+sim_vu22_lamp_termbatt = find_dataref("JAS/io/vu22/lamp/termbatt")
+--JAS/vu22/lamp/sand		int	y	unit	M28
+sim_vu22_lamp_sand = find_dataref("JAS/io/vu22/lamp/sand")
+--JAS/vu22/lamp/rhm		int	y	unit	M29
+sim_vu22_lamp_rhm = find_dataref("JAS/io/vu22/lamp/rhm")
+--JAS/vu22/lamp/mkv		int	y	unit	M30
+sim_vu22_lamp_mkv = find_dataref("JAS/io/vu22/lamp/mkv")
+--JAS/vu22/lamp/belysning	int	y	unit	M31
+--sim_vu22_lamp_belysning = find_dataref("JAS/vu22/lamp/belysning")
+
+sim_jas_override_vu22 = XLuaFindDataRef("JAS/vu22/override/knappar")
+sim_jas_override_frontpanel = XLuaFindDataRef("JAS/frontpanel/override/knappar")
+
 
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 120)
 dr_fog = XLuaFindDataRef("sim/private/controls/fog/fog_be_gone")
@@ -149,6 +191,7 @@ simCMD_engine_starter = find_command("sim/engines/engage_starters")
 
 simCMD_flare = find_command("sim/weapons/deploy_flares")
 simCMD_chaff = find_command("sim/weapons/deploy_chaff")
+simCMD_drop_tank = find_command("sim/flight_controls/drop_tank")
 
 -- publika variabler
 
@@ -176,12 +219,12 @@ function flight_start()
 	XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 299)
 	
 	-- Set all buttons on
-	sim_jas_button_lt_kran = 1
-	sim_jas_button_hstrom = 1
-	sim_jas_button_ess = 1
-	--sim_jas_button_start = 1
-	sim_jas_button_antikoll = 1
-	sim_jas_button_apu = 1
+	-- sim_jas_button_lt_kran = 1
+	-- sim_jas_button_hstrom = 1
+	-- sim_jas_button_ess = 1
+	-- --sim_jas_button_start = 1
+	-- sim_jas_button_antikoll = 1
+	-- sim_jas_button_apu = 1
 end
 
 function aircraft_unload()
@@ -289,7 +332,7 @@ function update_dataref()
 	
 	-- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 405)
 	
-	sim_jas_auto_mode = getnumber(dr_jas_auto_mode)
+	-- sim_jas_auto_mode = getnumber(dr_jas_auto_mode)
 	sim_jas_auto_alt = getnumber(dr_jas_auto_alt)
 	sim_jas_auto_att = getnumber(dr_jas_auto_att)
 	
@@ -343,14 +386,18 @@ end
 function lampAPUGar()
 	if (sim_apu_n1>99) then
 		sim_jas_lamps_apu_gar = 1
+		sim_jas_lamps_apu_red = 0
 	else
 		sim_jas_lamps_apu_gar = 0
+		if(sim_jas_button_apu == 1) then
+			sim_jas_lamps_apu_red = 1
+		end
 	end
 end
 
 apu_state = 0
 function buttonAPU()
-	if (sim_fuel1 <1) then
+	if (sim_fuel1 <1 or sim_jas_button_lt_kran == 0) then
 		simCMD_apu_off:once()
 	else
 	    if (sim_jas_button_apu == 1) then
@@ -428,21 +475,33 @@ function update_buttons()
     buttonStart()
     buttonLTKran()
     
+	if (sim_jas_vu22_falltank == 1) then
+		simCMD_drop_tank:once()
+	end
     
 end
 
+ess_uppstart = 1
 function sysESS()
 	if (sim_jas_button_ess == 1 and sim_power_bus_volt[0]>20) then
 		sim_jas_system_ess_power = 1
-		if (sim_engine_n1[0] < 15) then
+		if (ess_uppstart == 0) then
+			ess_uppstart = 1
+			sim_jas_auto_mode = 4
 			sim_jas_system_ess_startup = 1
+		end
+		if (sim_jas_system_ess_startup == 1 and sim_jas_auto_mode == 4) then
+			
 			sim_jas_lamps_spak = blink1s
 			sim_jas_lamps_att = blink1s
 			sim_jas_lamps_hojd = blink1s
-		else
+		
+		end
+		if (sim_jas_sys_test == 1) then
 			sim_jas_system_ess_startup = 0
 		end
 	else
+		ess_uppstart = 0
 		sim_jas_system_ess_power = 0
 		sim_jas_lamps_spak = 0
 		sim_jas_lamps_att = 0
@@ -458,6 +517,7 @@ chaff = 0.0
 
 function sysDAP()
 	if (sim_power_bus_volt[0]>20) then
+		sim_vat_power = 1
 		sim_jas_system_dap_power = 1
 		sim_jas_system_dap_startup = sim_jas_system_dap_startup + (sim_FRP*1000)
 		if (sim_jas_system_dap_startup > 1000*10) then
@@ -466,6 +526,7 @@ function sysDAP()
 			sim_jas_system_dap_pluv = 0
 		end
 	else
+		sim_vat_power = 0
 		sim_jas_system_dap_power = 0
 		sim_jas_system_dap_startup = 0
 		sim_jas_system_dap_pluv = 0
@@ -498,19 +559,134 @@ function larm()
 	
 end
 
+
+sand = 0
+rhm = 0
+mkv = 0
+tb = 0
+kn1 = 0
+function vu22()
+	sim_heartbeat = 500
+	-- Tänd oanvända knappar när man trycker på dom. För skoj skull
+	kn2 = 0
+	if (sim_jas_vu22_sand == 1) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (sand == 0) then
+				sand = 1
+			else
+				sand = 0
+			end
+		end
+	end
+	sim_heartbeat = 501
+	if (sim_jas_vu22_rhm == 1) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (rhm == 0) then
+				rhm = 1
+			else
+				rhm = 0
+			end
+		end
+	end
+	sim_heartbeat = 502
+	if (sim_jas_vu22_mkv == 1) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (mkv == 0) then
+				mkv = 1
+			else
+				mkv = 0
+			end
+		end
+	end
+	sim_heartbeat = 503
+	if (sim_jas_vu22_tb == 1) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (tb == 0) then
+				tb = 1
+			else
+				tb = 0
+			end
+		end
+	end
+	sim_heartbeat = 504
+	if (kn2 == 0) then
+		kn1 = 0
+	end
+		sim_heartbeat = 505
+	sim_jas_vu22_lamp_sand = sand
+	sim_heartbeat = 506
+	sim_jas_vu22_lamp_rhm = rhm
+	sim_heartbeat = 507
+	sim_jas_vu22_lamp_mkv = mkv
+	sim_heartbeat = 508
+	sim_jas_vu22_lamp_tb = tb
+	sim_heartbeat = 509
+	
+end
+
+sys_test_counter = 0
+function systest()
+	if (sim_jas_sys_test == 1) then
+		sys_test_counter = sys_test_counter +sim_FRP
+		time1 = math.floor(sys_test_counter)
+		if (time1 == 0) then
+			sim_jas_lamps_master1 = 1
+			sim_jas_lamps_master2 = 0
+			sim_jas_lamps_airbrake = 0
+		end
+		if (time1 == 1) then
+			sim_jas_lamps_master1 = 0
+			sim_jas_lamps_master2 = 1
+			sim_jas_lamps_airbrake = 0
+		end
+		if (time1 == 2) then
+			sim_jas_lamps_master1 = 0
+			sim_jas_lamps_master2 = 0
+			sim_jas_lamps_airbrake = 1
+			
+		end
+		if (time1 == 3) then
+			sim_jas_lamps_master1 = 1
+			sim_jas_lamps_master2 = 1
+			sim_jas_lamps_airbrake = 1
+		end
+		if (time1 >= 4) then
+			sys_test_counter = 0
+		end
+	end
+end
+
 heartbeat = 0
 function before_physics() 
+	sim_heartbeat = 300
 	-- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 301)
 	blink1sFunc()
 	update_dataref()
+	sim_heartbeat = 301
+	sim_apu_power = 1
 	-- -- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 302)
     update_buttons()
+	sim_heartbeat = 302
     lampAirbrake()
     lampMasterWarning()
+	sim_heartbeat = 303
 	lampAPUGar()
 	sysDAP()
 	sysESS()
 	larm()
+	sim_heartbeat = 308
+	vu22()
+	sim_heartbeat = 309
+	
+	systest()
     -- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 303)
     -- XLuaSetNumber(dr_status, heartbeat) 
 	sim_heartbeat = heartbeat

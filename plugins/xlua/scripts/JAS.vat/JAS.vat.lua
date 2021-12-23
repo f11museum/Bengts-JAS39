@@ -32,29 +32,29 @@ sim_power = find_dataref("JAS/system/vat/power")
 -- JAS/system/vat/hhp1		int	y	unit	Description
 -- JAS/system/vat/hgen		int	y	unit	Description
 sim_hgen = find_dataref("JAS/system/vat/hgen")
-dr_hgen_lamp = XLuaFindDataRef("JAS/system/vat/lamp/hgen")
+dr_hgen_lamp = XLuaFindDataRef("JAS/io/vat/lamp/hgen")
 -- JAS/system/vat/motor	int	y	unit	Description
 sim_motor = find_dataref("JAS/system/vat/motor")
-dr_motor_lamp = XLuaFindDataRef("JAS/system/vat/lamp/motor")
+dr_motor_lamp = XLuaFindDataRef("JAS/io/vat/lamp/motor")
 -- JAS/system/vat/dragkr	int	y	unit	Description
 -- JAS/system/vat/oljetr	int	y	unit	Description
 sim_oljetr = find_dataref("JAS/system/vat/oljetr")
-dr_oljetr_lamp = XLuaFindDataRef("JAS/system/vat/lamp/oljetr")
+dr_oljetr_lamp = XLuaFindDataRef("JAS/io/vat/lamp/oljetr")
 -- 
 -- JAS/system/vat/abumod	int	y	unit	Description
 -- JAS/system/vat/primdat	int	y	unit	Description
 -- JAS/system/vat/hydr1	int	y	unit	Description
 sim_hydr1 = find_dataref("JAS/system/vat/hydr1")
-dr_hydr1_lamp = XLuaFindDataRef("JAS/system/vat/lamp/hydr1")
+dr_hydr1_lamp = XLuaFindDataRef("JAS/io/vat/lamp/hydr1")
 -- JAS/system/vat/resgen	int	y	unit	Description
 sim_resgen = find_dataref("JAS/system/vat/resgen")
-dr_resgen_lamp = XLuaFindDataRef("JAS/system/vat/lamp/resgen")
+dr_resgen_lamp = XLuaFindDataRef("JAS/io/vat/lamp/resgen")
 -- JAS/system/vat/mobrand	int	y	unit	Description
 sim_mobrand = find_dataref("JAS/system/vat/mobrand")
-dr_mobrand_lamp = XLuaFindDataRef("JAS/system/vat/lamp/mobrand")
+dr_mobrand_lamp = XLuaFindDataRef("JAS/io/vat/lamp/mobrand")
 -- JAS/system/vat/apu		int	y	unit	Description
 sim_apu = find_dataref("JAS/system/vat/apu")
-dr_apu_lamp = XLuaFindDataRef("JAS/system/vat/lamp/apu")
+dr_apu_lamp = XLuaFindDataRef("JAS/io/vat/lamp/apu")
 -- JAS/system/vat/apubrnd	int	y	unit	Description
 -- 
 -- JAS/system/vat/styrsak	int	y	unit	Description
@@ -62,7 +62,7 @@ dr_apu_lamp = XLuaFindDataRef("JAS/system/vat/lamp/apu")
 -- JAS/system/vat/hydr2	int	y	unit	Description
 -- JAS/system/vat/likstrm	int	y	unit	Description
 sim_likstrm = find_dataref("JAS/system/vat/likstrm")
-dr_likstrm_lamp = XLuaFindDataRef("JAS/system/vat/lamp/likstrm")
+dr_likstrm_lamp = XLuaFindDataRef("JAS/io/vat/lamp/likstrm")
 -- JAS/system/vat/landst	int	y	unit	Description
 -- JAS/system/vat/bromsar	int	y	unit	Description
 -- 
@@ -70,24 +70,26 @@ dr_likstrm_lamp = XLuaFindDataRef("JAS/system/vat/lamp/likstrm")
 -- JAS/system/vat/dator	int	y	unit	Description
 -- JAS/system/vat/brasys	int	y	unit	Description
 sim_brasys = find_dataref("JAS/system/vat/brasys")
-dr_brasys_lamp = XLuaFindDataRef("JAS/system/vat/lamp/brasys")
+dr_brasys_lamp = XLuaFindDataRef("JAS/io/vat/lamp/brasys")
 -- JAS/system/vat/bramgd	int	y	unit	Description
 sim_bramgd = find_dataref("JAS/system/vat/bramgd")
-dr_bramgd_lamp = XLuaFindDataRef("JAS/system/vat/lamp/bramgd")
+dr_bramgd_lamp = XLuaFindDataRef("JAS/io/vat/lamp/bramgd")
 --dr_elv_trim = XLuaFindDataRef("sim/flightmodel/controls/elv_trim")
 -- JAS/system/vat/oxykab	int	y	unit	Description
 -- JAS/system/vat/huvstol	int	y	unit	Description
 
 
+sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
+
 sim_vat_larm1 = find_dataref("JAS/system/vat/larm1")
 sim_vat_larm2 = find_dataref("JAS/system/vat/larm2")
-dr_vat_larm1_lamp = XLuaFindDataRef("JAS/system/vat/lamp/larm1")
-dr_vat_larm2_lamp = XLuaFindDataRef("JAS/system/vat/lamp/larm2")
+dr_vat_larm1_lamp = XLuaFindDataRef("JAS/io/vat/lamp/larm1")
+dr_vat_larm2_lamp = XLuaFindDataRef("JAS/io/vat/lamp/larm2")
 
-sim_jas_master = find_dataref("JAS/button/master")
+sim_jas_master = find_dataref("JAS/io/frontpanel/knapp/master")
 sim_jas_lamps_master = find_dataref("JAS/lamps/master")
-sim_jas_lamps_master1 = find_dataref("JAS/lamps/master1")
-sim_jas_lamps_master2 = find_dataref("JAS/lamps/master2")
+sim_jas_lamps_master1 = find_dataref("JAS/io/frontpanel/lamp/master1")
+sim_jas_lamps_master2 = find_dataref("JAS/io/frontpanel/lamp/master2")
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 
 -- dataref från spelet för at kolla generella larm
@@ -268,6 +270,42 @@ function larm()
 	
 end
 
+sys_test_counter = 0
+function systest()
+	if (sim_jas_sys_test == 1) then
+		sys_test_counter = sys_test_counter +sim_FRP
+		time1 = math.floor(sys_test_counter)
+		if (time1 == 0) then
+			
+			XLuaSetNumber(dr_hgen_lamp, 1)
+			XLuaSetNumber(dr_resgen_lamp, 0)
+			XLuaSetNumber(dr_likstrm_lamp, 0)
+			XLuaSetNumber(dr_brasys_lamp, 0)
+		end
+		if (time1 == 1) then
+			XLuaSetNumber(dr_hgen_lamp, 0)
+			XLuaSetNumber(dr_resgen_lamp, 1)
+			XLuaSetNumber(dr_likstrm_lamp, 0)
+			XLuaSetNumber(dr_brasys_lamp, 0)
+		end
+		if (time1 == 2) then
+			XLuaSetNumber(dr_hgen_lamp, 0)
+			XLuaSetNumber(dr_resgen_lamp, 0)
+			XLuaSetNumber(dr_likstrm_lamp, 1)
+			XLuaSetNumber(dr_brasys_lamp, 0)
+			
+		end
+		if (time1 == 3) then
+			XLuaSetNumber(dr_hgen_lamp, 0)
+			XLuaSetNumber(dr_resgen_lamp, 0)
+			XLuaSetNumber(dr_likstrm_lamp, 0)
+			XLuaSetNumber(dr_brasys_lamp, 1)
+		end
+		if (time1 >= 4) then
+			sys_test_counter = 0
+		end
+	end
+end
 
 heartbeat = 0
 function before_physics() 
@@ -285,6 +323,7 @@ function before_physics()
 	sim_heartbeat = 305
 	-- 
 	
+	systest()
 	sim_heartbeat = heartbeat
     heartbeat = heartbeat + 1
 end
