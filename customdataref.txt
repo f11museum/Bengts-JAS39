@@ -1,0 +1,161 @@
+# This file uses same input format as the dataref.txt
+# Use tab character and not space to seperate after each type
+# name TAB type TAB writable TAB unit TAB description
+
+mydr/banan/testInt		int		y	unit	Description
+mydr/banan/testFloat	float	y	unit	Description
+drdb/test/working3		int		y	test	test
+JAS/test/work		int		y	test	test
+
+
+# Bengts JAS
+
+JAS/vu22/override/knappar	int		y	unit	Description
+JAS/frontpanel/override/knappar	int		y	unit	Description
+
+JAS/lampprov/p1		int		y	unit	Description
+JAS/system/apu/power	int	y	unit	Alltid på för att ge lampan ström
+
+JAS/autopilot/alt	float	y	unit	Description
+JAS/autopilot/att	float	y	unit	Description
+JAS/autopilot/mode	int		y	unit	Description
+JAS/autopilot/afk	int		y	unit	Description
+
+JAS/button/spak		int		y	unit	Description
+JAS/button/att		int		y	unit	Description
+JAS/button/hojd		int		y	unit	Description
+JAS/button/afk		int		y	unit	Description
+JAS/button/lt_kran	int		y	unit	Description
+JAS/button/apu		int		y	unit	Description
+JAS/button/hstrom	int		y	unit	Description
+JAS/button/ess		int		y	unit	Description
+JAS/button/start	int		y	unit	Description
+JAS/button/antikoll	int		y	unit	Description
+JAS/button/master	int		y	unit	Description
+
+JAS/lamps/hojd		int		y	unit	Description
+JAS/lamps/att		int		y	unit	Description
+JAS/lamps/spak		int		y	unit	Description
+JAS/lamps/afk		int		y	unit	Description
+JAS/lamps/airbrake	int		y	unit	Description
+JAS/lamps/gears		int		y	unit	Description
+JAS/lamps/master	int		y	unit	Description
+JAS/lamps/master1	int		y	unit	Description
+JAS/lamps/master2	int		y	unit	Description
+JAS/lamps/apu_gar	int		y	unit	Description
+JAS/lamps/pluv		int		y	unit	Description
+
+JAS/system/logic/heartbeat	int	y	unit	Description
+
+JAS/system/dap/power	int	y	unit	Description
+JAS/system/dap/startup	int	y	unit	Description
+JAS/system/dap/lamp/pluv	int	y	unit	Description
+
+
+JAS/system/mot/fack		int	y	unit	Description
+JAS/system/mot/rems		int	y	unit	Description
+
+JAS/system/ess/heartbeat	int	y	unit	Description
+JAS/system/ess/heartbeat2	int	y	unit	Description
+JAS/system/ess/power	int	y	unit	Description
+JAS/system/ess/startup	int	y	unit	Description
+
+JAS/system/vat/power	int	y	unit	Om systemet har ström
+JAS/system/vat/heartbeat	int	y	unit	heartbeat
+JAS/system/vat/larm1	int	y	unit	Larm som inte behöver kvitteras
+JAS/system/vat/larm2	int	y	unit	Larm som behöver kviteras
+
+JAS/system/vat/normsty	int	y	unit	Description
+JAS/system/vat/luftsys	int	y	unit	Description
+JAS/system/vat/hhp1		int	y	unit	Description
+JAS/system/vat/hgen		int	y	unit	Description
+JAS/system/vat/motor	int	y	unit	Description
+JAS/system/vat/dragkr	int	y	unit	Description
+JAS/system/vat/oljetr	int	y	unit	Description
+
+JAS/system/vat/abumod	int	y	unit	Description
+JAS/system/vat/primdat	int	y	unit	Description
+JAS/system/vat/hydr1	int	y	unit	Description
+JAS/system/vat/resgen	int	y	unit	Description
+JAS/system/vat/mobrand	int	y	unit	Description
+JAS/system/vat/apu		int	y	unit	Description
+JAS/system/vat/apubrnd	int	y	unit	Description
+
+JAS/system/vat/styrsak	int	y	unit	Description
+JAS/system/vat/uppdrag	int	y	unit	Description
+JAS/system/vat/hydr2	int	y	unit	Description
+JAS/system/vat/likstrm	int	y	unit	Description
+JAS/system/vat/landst	int	y	unit	Description
+JAS/system/vat/bromsar	int	y	unit	Description
+
+JAS/system/vat/felinfo	int	y	unit	Description
+JAS/system/vat/dator	int	y	unit	Description
+JAS/system/vat/brasys	int	y	unit	Description
+JAS/system/vat/bramgd	int	y	unit	Description
+JAS/system/vat/oxykab	int	y	unit	Description
+JAS/system/vat/huvstol	int	y	unit	Description
+
+# Lampor
+JAS/system/vat/lamp/larm1	int	y	unit	Larm som inte behöver kvitteras
+JAS/system/vat/lamp/larm2	int	y	unit	Larm som behöver kviteras
+
+JAS/system/vat/lamp/normsty	int	y	unit	Description
+JAS/system/vat/lamp/luftsys	int	y	unit	Description
+JAS/system/vat/lamp/hhp1		int	y	unit	Description
+JAS/system/vat/lamp/hgen		int	y	unit	Description
+JAS/system/vat/lamp/motor	int	y	unit	Description
+JAS/system/vat/lamp/dragkr	int	y	unit	Description
+JAS/system/vat/lamp/oljetr	int	y	unit	Description
+
+JAS/system/vat/lamp/abumod	int	y	unit	Description
+JAS/system/vat/lamp/primdat	int	y	unit	Description
+JAS/system/vat/lamp/hydr1	int	y	unit	Description
+JAS/system/vat/lamp/resgen	int	y	unit	Description
+JAS/system/vat/lamp/mobrand	int	y	unit	Description
+JAS/system/vat/lamp/apu		int	y	unit	Description
+JAS/system/vat/lamp/apubrnd	int	y	unit	Description
+
+JAS/system/vat/lamp/styrsak	int	y	unit	Description
+JAS/system/vat/lamp/uppdrag	int	y	unit	Description
+JAS/system/vat/lamp/hydr2	int	y	unit	Description
+JAS/system/vat/lamp/likstrm	int	y	unit	Description
+JAS/system/vat/lamp/landst	int	y	unit	Description
+JAS/system/vat/lamp/bromsar	int	y	unit	Description
+
+JAS/system/vat/lamp/felinfo	int	y	unit	Description
+JAS/system/vat/lamp/dator	int	y	unit	Description
+JAS/system/vat/lamp/brasys	int	y	unit	Description
+JAS/system/vat/lamp/bramgd	int	y	unit	Description
+JAS/system/vat/lamp/oxykab	int	y	unit	Description
+JAS/system/vat/lamp/huvstol	int	y	unit	Description
+
+JAS/vu22/lamp/apubrand	int	y	unit	M24
+JAS/vu22/lamp/apugar	int	y	unit	M25
+JAS/vu22/lamp/apured	int	y	unit	M26
+JAS/vu22/lamp/termbatt	int	y	unit	M27
+JAS/vu22/lamp/sand		int	y	unit	M28
+JAS/vu22/lamp/rhm		int	y	unit	M29
+JAS/vu22/lamp/mkv		int	y	unit	M30
+JAS/vu22/lamp/belysning	int	y	unit	M31
+
+JAS/vu22/knapp/lampprov	int	y	unit	M0
+JAS/vu22/knapp/syst		int	y	unit	M1
+JAS/vu22/knapp/ess		int	y	unit	M2
+JAS/vu22/knapp/hstrom	int	y	unit	M3
+JAS/vu22/knapp/apu		int	y	unit	M4
+JAS/vu22/knapp/apubrand	int	y	unit	M5
+JAS/vu22/knapp/ltbra	int	y	unit	M6
+JAS/vu22/knapp/vapenred	int	y	unit	M7
+JAS/vu22/knapp/vapenop	int	y	unit	M8
+JAS/vu22/knapp/vapensim	int	y	unit	M9
+JAS/vu22/knapp/vapenfikt	int	y	unit	M10
+JAS/vu22/knapp/fallvapen	int	y	unit	M11
+JAS/vu22/knapp/falltank	int	y	unit	M12
+JAS/vu22/knapp/elnik	int	y	unit	M13
+JAS/vu22/knapp/krig		int	y	unit	M14
+JAS/vu22/knapp/mkv		int	y	unit	M15
+JAS/vu22/knapp/sand		int	y	unit	M16
+JAS/vu22/knapp/rhm		int	y	unit	M17
+JAS/vu22/knapp/termbatt		int	y	unit	M18
+
+#Last line

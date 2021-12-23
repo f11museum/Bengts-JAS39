@@ -1,0 +1,101 @@
+# This file uses same input format as the dataref.txt
+# Use tab character and not space to seperate after each type
+# name TAB type TAB writable TAB unit TAB description
+
+#apubrand	lampa	vu22	JAS/lampprov/p1	JAS/system/ess/power	DescriptionM24
+hydr1	lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	Description
+
+#VU22
+apubrand	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M24
+apugar		lampa	vu22	JAS/lampprov/p1	JAS/system/apu/power	M25
+apured		lampa	vu22	JAS/lampprov/p1	JAS/system/apu/power	M26
+termbatt	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M27
+sand		lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M28
+rhm			lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M29
+mkv			lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M30
+belysning	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M31
+
+
+#Knappar i VU22
+lampprov	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M0
+syst		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M1
+ess			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M2
+hstrom		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M3
+apu			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M4
+apubrand	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M5
+ltbra		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M6
+vapenred	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M7
+vapenop		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M8
+vapensim	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M9
+vapenfikt	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M10
+fallvapen	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M11
+falltank	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M12
+elnik		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M13
+krig		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M14
+mkv			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M15
+sand		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M16
+rhm			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M17
+termbatt	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M18
+
+# Frontpanel
+## Lampor
+master1		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D22
+master2		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D23
+airbrake	lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D24
+spak		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D25
+att			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D26
+hojd		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D27
+a14			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D28 ej klar
+afk			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D29
+ki			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D22 ej klar
+gears		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D22 ej klar
+
+## Knappar
+spak		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D30
+att			knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D31
+hojd		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D32
+master		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D33
+fall		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D34
+afk			knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D35
+
+start		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	ej klar
+
+
+# VAT Larmtablån
+larm1	int	y	unit	Larm som inte behöver kvitteras M58
+larm2	int	y	unit	Larm som behöver kviteras	M59
+
+normsty		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M32 A1
+luftsys		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M33 ej klar
+hhp1		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M34 ej klar
+hgen		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M35 ej klar
+motor		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M36 ej klar
+dragkr		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M37 ej klar
+oljetr		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M38 ej klar
+
+abumod		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M39 A1
+primdat		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M40 B1
+hydr1		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M41 ej klar
+resgen		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M42 ej klar
+mobrand		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M43 ej klar
+apu			lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M44 ej klar
+apubrnd		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M45 ej klar
+
+styrsak		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M46 ej klar
+uppdrag		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M47 B1
+hydr2		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M48 A2
+likstrm		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M49 ej klar
+landst		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M50 ej klar
+bromsar		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M51 ej klar
+streck1		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M52 ej klar
+
+felinfo		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M53 ej klar
+dator		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M54 ej klar
+streck2		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M55 A2
+brasys		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M56 B2
+bramgd		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M57 
+oxykab		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M58 ej klar
+huvstol		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M59 ej klar
+
+
+#Last line, keep this
