@@ -2,7 +2,7 @@
 ---- Stabiliserings system för JAS
 ---- F11 Museum 2021 Bengt
 -------------------------------------------------------
-sim_heartbeat = find_dataref("JAS/system/ess/heartbeat2")
+sim_heartbeat = find_dataref("JAS/system/ess/heartbeat")
 sim_heartbeat = 100
 
 --- Helt nytt stabiliserings system för det befintliga funkade inte så bra och hamnade i super stall vid helt korrekta manövrar
@@ -26,19 +26,20 @@ alpha_correction = 100
 
 max_g_pos = 9.5
 max_g_neg = -3
-max_g_fade = 1
-max_g_fade_rate = 1
+max_g_fade = 2
+max_g_fade_rate = 2
 g_correction = 0.025
 
 motor_speed = 200 
-motor_speed = 56 -- riktiga planet 56 grader per sekund
-motor_speed_canard = 56 -- riktiga planet 56 grader per sekund
+motor_speed = 560 -- riktiga planet 56 grader per sekund
+motor_speed_canard = 560 -- riktiga planet 56 grader per sekund
+motor_speed_rudder = 56
 
 fade_out = 0.6
 
 -- Datareffar
 
-dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat") 
+dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat2") 
 dr_status2 = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
 
 sim_override_throttles = find_dataref("sim/operation/override/override_throttles") 
@@ -367,27 +368,29 @@ function update_dataref()
 	
 end
 
-function myfilter(currentValue, newValue)
+function myfilter(currentValue, newValue, amp)
 
-	return ((currentValue*3) + (newValue))/4
+	return ((currentValue*amp) + (newValue))/(amp+1)
 	
 end
 
 function motor(inval, target, spd)
+	
 	-- Lånad från Nils anim()
+	elapsedTime = constrain(sim_FRP, 0,0.040)
 	local retval = inval
 	
 	if inval == target then
 		return retval
 	else
 		if target > inval then
-			retval = inval + spd * sim_FRP
+			retval = inval + spd * elapsedTime
 			if retval > target then 
 				retval = target 
 			end
 			return retval 
 		else
-			retval = inval - spd * sim_FRP
+			retval = inval - spd * elapsedTime
 			if retval < target then 
 				retval = target 
 			end
@@ -403,8 +406,13 @@ a_cumError = 0.0
 
 wanted_roll = 0
 stick_roll = 0
+delta_prev = 0
 
 function calculateAileron()
+	fadeout = interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )
+	--fadeout = 0
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )) 
+	--m_aileron = sim_yoke_roll_ratio*8
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
 	if (sim_yoke_roll_ratio<deadzone and sim_yoke_roll_ratio > -deadzone) then
 		-- ingen rör spaken
@@ -416,12 +424,23 @@ function calculateAileron()
 		current_rate = sim_acf_rollrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = wanted_rate-current_rate
-		delta = delta * current_fade_out
+		delta = delta * current_fade_out * fadeout
 		
 		-- lägg på liten justering för att gå tillbaka dit man va när man släppte spaken
 		delta2 = wanted_roll - sim_acf_roll
-		delta2 = (delta2*delta2)
-		--delta = delta - delta2 * current_fade_out
+		XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), delta2) 
+		if (delta2>180) then
+			delta2 = wanted_roll - (sim_acf_roll+360)
+		end
+		if (delta2<-180) then
+			delta2 = wanted_roll - (sim_acf_roll-360)
+		end
+		delta = delta + (delta2 * 0.9)
+		
+		--delta = delta * fadeout
+		
+		--delta = delta2 * fadeout  * 0.1
+		delta = myfilter (delta_prev, delta2, 60)
 	else
 		wanted_roll = sim_acf_roll
 		if (sim_yoke_roll_ratio<0) then
@@ -441,8 +460,9 @@ function calculateAileron()
 	end
 	--sim_acf_roll
 	
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), max_roll_rate) 
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), sim_acf_rollrate) 
+	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_roll) 
+	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), sim_acf_roll) 
+	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), delta2) 
 	
 	m_aileron = delta
 	
@@ -466,19 +486,25 @@ function calculateAileron()
 	--m_aileron = constrain(out, -50,50)
 end
 
+rudder_delta_prev = 0
 function calculateRudder()
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
 	wanted_rate = sim_yoke_heading_ratio * max_yaw_rate
 	
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_yawrate
+	
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 	if (g_groundContact == 1) then
-		delta = wanted_rate
+		delta = 0
 	else
-		delta = wanted_rate -current_rate*0.5
+		delta = -current_rate*0.1
 	end
-	m_rudder = delta
+	
+	--delta = myfilter(rudder_delta_prev, delta, 0)
+	rudder_delta_prev = delta
+	
+	m_rudder = wanted_rate --delta
 end
 
 lock_avg = 0.0
@@ -495,7 +521,8 @@ ki = 2
 kd = 1
 
 clock_test = 0.0
-
+error_prev = 0
+rateError_prev = 0
 function calculateAutopilot(wanted_rate)
 	if (sim_jas_auto_mode == 0) then
 		return 0
@@ -534,51 +561,67 @@ function calculateAutopilot(wanted_rate)
 			XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
 		end
 		demand = sim_jas_auto_att - sim_acf_flight_angle
-		error = constrain(demand, -20,20)
+		error = constrain(demand, -10,10)
+		wanted_rate = error * math.cos(math.rad(sim_acf_roll))
+		
+		--wanted_rate = error * math.cos(math.rad(sim_acf_roll))
 		--return demand *5
 		kp = 15
-		ki = 5
-		kd = 20*current_fade_out
+		kp = constrain(interpolate(0, 15, 500, 0.1, sim_airspeed_kts_pilot ), 0.0001,100)
+		ki = 4*current_fade_out
+		kd = 0
 	end
 	
 
-	if (sim_jas_auto_mode == 1) then 
+	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then 
 		if lock_pitch_movement == 1 then
 			lock_pitch = sim_pitch
 			lock_pitch_movement = 0
 			
 		end
 		error = wanted_rate - sim_acf_pitchrate -- determine error
-		kp = 15*current_fade_out
-		kp = interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot )
-		ki = 4*current_fade_out
-		kd = 0 --0.5--/current_fade_out/current_fade_out
+		
+		-- kp = 15*current_fade_out
+		-- kp = constrain(interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot ), 0.0001,100)
+		-- ki = 4*current_fade_out
+		-- kd = 0 --0.5--/current_fade_out/current_fade_out
 		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_rate) 
 		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), error) 
 	end
 	
 	-- PID försök till att få en bättre autotrim
 
-	elapsedTime = sim_FRP
+	elapsedTime = constrain(sim_FRP, 0,0.025)
 
 	--error = lock_pitch - sim_pitch -- determine error
-	cumError = constrain(cumError + error * elapsedTime, -10,10) --compute integral
-	rateError = constrain((error - lastError)/elapsedTime, -10,10) --compute derivative
+	
+	cumError = constrain(cumError + error * (elapsedTime), -10,10) --compute integral
+	rateError = constrain((error - lastError)/elapsedTime, -20,20) --compute derivative
+	rateError = myfilter(rateError_prev, rateError, 8)
+	rateError_prev = constrain(rateError, -20,20)
+	
+	error = myfilter(error_prev, error, 0)
+	error_prev = constrain(error, -200,200)
 
-	out = kp*error + ki*cumError + kd*rateError --PID output               
+	kp = constrain(interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot ), 0.0001,100)
+	ki = 5
+	kd = 1
+	out = kp*error + ki*cumError + kd*rateError --PID output       
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/p"), kp*error) 
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/i"), ki*cumError) 
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d"), kd*rateError)         
 
 	lastError = error --remember current error
 	previousTime = currentTime --remember current time
 
-	
+	lock = (out)
 	--lock = lock_pitch -sim_pitch 
-	
-	if (sim_gear == 0 and sim_jas_auto_mode > 1) then -- använd inte låsning av vinkeln om landstället är nere
-		lock = (out)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
-		
-	else
-		lock = (out)
-	end
+	-- if (sim_gear == 0 and sim_jas_auto_mode > 1) then -- använd inte låsning av vinkeln om landstället är nere
+	-- 	lock = (out)* math.cos(math.rad(sim_acf_roll)) -- använd rollen för att inte dra fel när man rollar
+	-- 
+	-- else
+	-- 	lock = (out)
+	-- end
 	
 	lock = constrain(lock, -50,50)
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[7]"), lock) 
@@ -590,6 +633,9 @@ end
 
 
 auto1 = 0
+delta_prev = 0
+angle_prev = 0
+wanted_prev = 0
 function calculateElevator()
 	lock = 0
 	delta = 0
@@ -607,6 +653,7 @@ function calculateElevator()
 		current_rate = sim_acf_pitchrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = -current_rate*2
+		
 		
 	else
 		-- piloten rör spaken
@@ -664,13 +711,14 @@ function calculateElevator()
 		--g_rest = constrain(g_rest - 0.01, 0,1000)
 	end
 	auto1 = calculateAutopilot(wanted_rate)
-	if (sim_jas_auto_mode == 1) then
+	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
 		--auto_trim = (auto_trim*9 + auto1)/10
 		delta = 0
 		wanted_rate = auto1
-	elseif (sim_jas_auto_mode == 2) then
-		--lock = delta
-		wanted_rate = wanted_rate*0.02 + auto1 * current_fade_out
+	-- elseif (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
+	-- 	--lock = delta
+	-- 	delta = 0
+	-- 	wanted_rate = wanted_rate*0.02 + auto1 * current_fade_out
 	else
 		--lock = delta
 		wanted_rate = wanted_rate + auto1 * current_fade_out
@@ -726,18 +774,36 @@ function calculateElevator()
 	-- Vi begränsar sedan värdet så det inte överstiger dom vinklar som ger högst rotationskraft så den inte stallar
 	
 	-- Omvandla önskade ändringar på vinkeln till roderutslag i grader
-	wanted_rate = wanted_rate * current_fade_out
+	--wanted_rate = wanted_rate * current_fade_out
 	lock = lock * current_fade_out
 
 	trim = sim_elv_trim*-20*elevator_rate_to_angle
 
+	fadeout = 1 --interpolate(0, 1, 1000, 0.3, sim_airspeed_kts_pilot )
+	--delta = delta * fadeout
+	--delta = myfilter(delta_prev, delta, 5)
+	--delta_prev = delta
+	--wanted_rate = myfilter(angle_prev, wanted_rate, 10)
+	--angle_prev = wanted_rate
+	--auto_trim = auto_trim * fadeout
+	--error_correction_g = error_correction_g * fadeout
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), lock) 
 	--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), sim_pitch) 
 	--error_correction = error_correction * current_fade_out
+	
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/auto_trim"), auto_trim) 
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/delta"), delta) 
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/trim"), trim) 
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/error_correction"), error_correction) 
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/error_correction_g"), error_correction_g) 
+	
+	wanted_rate = myfilter(wanted_prev, wanted_rate, 5)
+	wanted_prev = wanted_rate
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/wanted_rate"), wanted_rate) 
 	angle = (auto_trim+delta+wanted_rate+error_correction+error_correction_g+trim) / elevator_rate_to_angle
 	canard_angle = (delta+(wanted_rate*0.3 * current_fade_out)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
-	
 	--angle = angle * current_fade_out
+	
 	
 	canard = -sim_alpha + constrain(canard_angle, -optimal_angle, optimal_angle)
 
@@ -955,9 +1021,11 @@ function before_physics()
 	--XLuaSetNumber(dr_right_canard, sim_yoke_pitch_ratio*90) -- för felkoll
 	-- Sätt värden på alla vingar efter vad som räknats ut
 	-- Framvingen ska bara ha sin uträkning från canard
+	motor_speed_error = motor_speed
 	if (error_correction>0) then
 		m_canard = constrain(m_canard, -55-10, 25+20) -- ge den lite extra spelrumm när den ska göra nödvändiga stabiliseringar
-		s_canard = motor(s_canard, m_canard, motor_speed_canard*4)
+		s_canard = motor(s_canard, m_canard, motor_speed_canard*8)
+		motor_speed_error = motor_speed*8
 	else
 		m_canard = constrain(m_canard, -55, 25+10)
 		s_canard = motor(s_canard, m_canard, motor_speed_canard)
@@ -965,31 +1033,31 @@ function before_physics()
 	
 	--s_canard = m_canard
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
-	m_elevator_l = constrain(m_elevator+m_aileron/2, -30, 30)
-	m_elevator_r = constrain(m_elevator-m_aileron/2, -30, 30)
+	m_elevator_l = constrain(m_elevator, -30, 30)
+	m_elevator_r = constrain(m_elevator, -30, 30)
 	--m_elevator_l = constrain(m_elevator, -40, 40)
 	--m_elevator_r = constrain(m_elevator, -40, 40)
-	s_elevator_l = motor(s_elevator_l, m_elevator_l, motor_speed)
-	s_elevator_r = motor(s_elevator_r, m_elevator_r, motor_speed)
+	s_elevator_l = motor(s_elevator_l, m_elevator_l, motor_speed_error)
+	s_elevator_r = motor(s_elevator_r, m_elevator_r, motor_speed_error)
 	
 	-- Skevrodret på bakvingen ska ha bara ha input från roll
 	m_aileron_l = constrain(m_aileron, -40, 40)
 	--m_aileron_r = constrain(-m_aileron, -40, 40)
-	s_aileron_l = motor(s_aileron_l, m_aileron_l, motor_speed*2)
+	s_aileron_l = motor(s_aileron_l, m_aileron_l, 60)
 	--s_aileron_r = motor(s_aileron_r, m_aileron_r, motor_speed)
 
 	-- sidoroder
 	m_rudder = constrain(m_rudder, -40, 40)
 	--m_aileron_r = constrain(-m_aileron, -40, 40)
-	s_rudder = motor(s_rudder, m_rudder, motor_speed)
+	s_rudder = motor(s_rudder, m_rudder, motor_speed_rudder)
 
 	
 	
 	XLuaSetNumber(dr_left_canard, s_canard )
 	XLuaSetNumber(dr_right_canard, s_canard )
 	
-	XLuaSetNumber(dr_left_elevator , s_elevator_l)
-	XLuaSetNumber(dr_right_elevator, s_elevator_r)
+	XLuaSetNumber(dr_left_elevator , s_elevator_l+s_aileron_l/2)
+	XLuaSetNumber(dr_right_elevator, s_elevator_r-s_aileron_l/2)
 	
 	XLuaSetNumber(dr_left_aileron, s_aileron_l)
 	XLuaSetNumber(dr_right_aileron, -s_aileron_l)
