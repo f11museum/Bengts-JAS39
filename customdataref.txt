@@ -6,12 +6,27 @@ mydr/banan/testInt		int		y	unit	Description
 mydr/banan/testFloat	float	y	unit	Description
 drdb/test/working3		int		y	test	test
 JAS/test/work		int		y	test	test
-
+JAS/debug/p	float	y	unit	Description
+JAS/debug/i	float	y	unit	Description
+JAS/debug/d	float	y	unit	Description
+JAS/debug/d1	float	y	unit	Description
+JAS/debug/d2	float	y	unit	Description
+JAS/debug/d3	float	y	unit	Description
+JAS/debug/d4	float	y	unit	Description
+JAS/debug/d5	float	y	unit	Description
+JAS/debug/wanted_rate	float	y	unit	Description
+JAS/debug/auto_trim	float	y	unit	Description
+JAS/debug/delta	float	y	unit	Description
+JAS/debug/trim	float	y	unit	Description
+JAS/debug/error_correction	float	y	unit	Description
+JAS/debug/error_correction_g	float	y	unit	Description
 
 # Bengts JAS
 
 JAS/vu22/override/knappar	int		y	unit	Description
 JAS/frontpanel/override/knappar	int		y	unit	Description
+
+JAS/knapparfunkar	int		y	unit	Description
 
 JAS/lampprov/p1		int		y	unit	Description
 JAS/system/apu/power	int	y	unit	Alltid på för att ge lampan ström
@@ -21,7 +36,8 @@ JAS/system/hud/heartbeat	int	y	unit	Description
 JAS/autopilot/alt	float	y	unit	Description
 JAS/autopilot/att	float	y	unit	Description
 JAS/autopilot/mode	int		y	unit	Description
-JAS/autopilot/afk	int		y	unit	Description
+JAS/autopilot/afk	float		y	unit	Description
+JAS/autopilot/afk_mode	int		y	unit	Description
 
 JAS/button/spak		int		y	unit	Description
 JAS/button/att		int		y	unit	Description

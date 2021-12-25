@@ -81,8 +81,12 @@ sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
 sim_jas_button_lt_kran = find_dataref("JAS/io/vu22/knapp/ltbra")
 sim_jas_button_hstrom = find_dataref("JAS/io/vu22/knapp/hstrom")
 sim_jas_button_ess = find_dataref("JAS/io/vu22/knapp/ess")
-sim_jas_button_antikoll = find_dataref("JAS/button/antikoll")
 sim_jas_button_apu = find_dataref("JAS/io/vu22/knapp/apu")
+
+sim_jas_button_lt_kran_io = find_dataref("JAS/io/vu22/di/ltbra")
+sim_jas_button_hstrom_io = find_dataref("JAS/io/vu22/di/hstrom")
+sim_jas_button_ess_io = find_dataref("JAS/io/vu22/di/ess")
+sim_jas_button_apu_io = find_dataref("JAS/io/vu22/di/apu")
 
 sim_jas_button_start = find_dataref("JAS/io/frontpanel/knapp/start")
 
@@ -173,6 +177,7 @@ sim_power_bus_volt = find_dataref("sim/cockpit2/electrical/bus_volts")
 sim_fuel_tank_pump = find_dataref("sim/cockpit2/fuel/fuel_tank_pump_on")
 sim_fuel_pump = find_dataref("sim/cockpit/engine/fuel_pump_on")
 
+sim_knapparfunkar = find_dataref("JAS/knapparfunkar")
 
 
 -- Kommandon
@@ -218,13 +223,14 @@ function flight_start()
 	--logMsg("Flight started with LUA")
 	XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 299)
 	
-	-- Set all buttons on
-	-- sim_jas_button_lt_kran = 1
-	-- sim_jas_button_hstrom = 1
-	-- sim_jas_button_ess = 1
-	-- --sim_jas_button_start = 1
-	-- sim_jas_button_antikoll = 1
-	-- sim_jas_button_apu = 1
+	-- Set alla knappar på om knappar inte funkar
+	if (sim_knapparfunkar == 0) then
+		sim_jas_button_lt_kran_io = 1
+		sim_jas_button_hstrom_io = 1
+		sim_jas_button_ess_io = 1
+		--sim_jas_button_start = 1
+		sim_jas_button_apu_io = 1
+	end
 end
 
 function aircraft_unload()
@@ -635,6 +641,7 @@ end
 sys_test_counter = 0
 function systest()
 	if (sim_jas_sys_test == 1) then
+		sim_knapparfunkar = 1
 		sys_test_counter = sys_test_counter +sim_FRP
 		time1 = math.floor(sys_test_counter)
 		if (time1 == 0) then
