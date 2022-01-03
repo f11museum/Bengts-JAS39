@@ -113,6 +113,8 @@ sim_jas_vu22_rhm = find_dataref("JAS/io/vu22/knapp/rhm")
 sim_jas_vu22_mkv = find_dataref("JAS/io/vu22/knapp/mkv")
 sim_jas_vu22_tb = find_dataref("JAS/io/vu22/knapp/termbatt")
 
+sim_jas_vu22_vapensim = find_dataref("JAS/io/vu22/knapp/vapensim")
+
 sim_jas_vu22_lamp_sand = find_dataref("JAS/io/vu22/lamp/sand")
 sim_jas_vu22_lamp_rhm = find_dataref("JAS/io/vu22/lamp/rhm")
 sim_jas_vu22_lamp_mkv = find_dataref("JAS/io/vu22/lamp/mkv")
@@ -179,6 +181,8 @@ sim_fuel_pump = find_dataref("sim/cockpit/engine/fuel_pump_on")
 
 sim_knapparfunkar = find_dataref("JAS/knapparfunkar")
 
+sim_fuel = find_dataref("sim/flightmodel/weight/m_fuel1")
+
 
 -- Kommandon
 simCMD_apu_start = find_command("sim/electrical/APU_start")
@@ -197,6 +201,8 @@ simCMD_engine_starter = find_command("sim/engines/engage_starters")
 simCMD_flare = find_command("sim/weapons/deploy_flares")
 simCMD_chaff = find_command("sim/weapons/deploy_chaff")
 simCMD_drop_tank = find_command("sim/flight_controls/drop_tank")
+
+simCMD_reset_flight = find_command("sim/operation/reset_flight")
 
 -- publika variabler
 
@@ -638,6 +644,46 @@ function vu22()
 	
 end
 
+function fusk()
+	
+	if (sim_jas_vu22_vapensim == 1) then
+		
+		kn2 = 0
+		if (sim_jas_vu22_sand == 1) then
+			kn2 = 1
+			if (kn1 == 0) then
+				kn1 = 1
+				sim_fuel = 3000
+			end
+		end
+		if (sim_jas_vu22_rhm == 1) then
+			kn2 = 1
+			if (kn1 == 0) then
+				kn1 = 1
+				
+			end
+		end
+		if (sim_jas_vu22_mkv == 1) then
+			kn2 = 1
+			if (kn1 == 0) then
+				kn1 = 1
+				
+			end
+		end
+		if (sim_jas_vu22_tb == 1) then
+			kn2 = 1
+			if (kn1 == 0) then
+				kn1 = 1
+				simCMD_reset_flight:once()
+			end
+		end
+		if (kn2 == 0) then
+			kn1 = 0
+		end
+	end
+	
+end
+
 sys_test_counter = 0
 function systest()
 	if (sim_jas_sys_test == 1) then
@@ -692,7 +738,8 @@ function before_physics()
 	sim_heartbeat = 308
 	vu22()
 	sim_heartbeat = 309
-	
+	fusk()
+	sim_heartbeat = 310
 	systest()
     -- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 303)
     -- XLuaSetNumber(dr_status, heartbeat) 
