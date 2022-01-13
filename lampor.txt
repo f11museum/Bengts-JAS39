@@ -6,36 +6,36 @@
 hydr1	lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	Description
 
 #VU22
-apubrand	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M24
-apugar		lampa	vu22	JAS/lampprov/p1	JAS/system/apu/power	M25
-apured		lampa	vu22	JAS/lampprov/p1	JAS/system/apu/power	M26
-termbatt	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M27
-sand		lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M28
-rhm			lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M29
-mkv			lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M30
-belysning	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M31
+apubrand	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M24 0:PB0
+apugar		lampa	vu22	JAS/lampprov/p1	JAS/system/apu/power	M25 0:PB1
+apured		lampa	vu22	JAS/lampprov/p1	JAS/system/apu/power	M26 0:PB2
+termbatt	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M27 0:PB3
+sand		lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M28 0:PB4
+rhm			lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M29 0:PB5
+mkv			lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M30 0:PB6
+belysning	lampa	vu22	JAS/lampprov/p1	JAS/system/vat/power	M31 0:PB7
 
 
 #Knappar i VU22
-lampprov	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M0
-syst		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M1
-ess			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M2
-hstrom		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M3
-apu			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M4
-apubrand	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M5
-ltbra		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M6
-vapenred	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M7
-vapenop		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M8
-vapensim	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M9
-vapenfikt	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M10
-fallvapen	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M11
-falltank	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M12
-elnik		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M13
-krig		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M14
-mkv			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M15
-sand		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M16
-rhm			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M17
-termbatt	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M18
+lampprov	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M0 0:PA0
+syst		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M1 0:PA1
+ess			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M2 0:PA2
+hstrom		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M3 0:PA3
+apu			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M4 0:PA4
+apubrand	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M5 0:PA5
+ltbra		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M6 0:PA6
+vapenred	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M7 0:PA7
+vapenop		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M8 0:PB0
+vapensim	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M9 0:PB1
+vapenfikt	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M10 0:PB2
+fallvapen	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M11 0:PB3
+falltank	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M12 0:PB4
+elnik		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M13 0:PB5
+krig		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M14 0:PB6
+mkv			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M15 0:PB7
+sand		knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M16 1:PA0
+rhm			knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M17 1:PA1
+termbatt	knapp	vu22	JAS/vu22/override/knappar	JAS/system/vat/power	M18 1:PA2
 
 # Frontpanel
 ## Lampor

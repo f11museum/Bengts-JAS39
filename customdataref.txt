@@ -33,6 +33,10 @@ JAS/system/apu/power	int	y	unit	Alltid på för att ge lampan ström
 
 JAS/system/hud/heartbeat	int	y	unit	Description
 
+JAS/system/mkv/heartbeat	int	y	unit	Description
+JAS/system/mkv/larm			int	y	unit	Description
+JAS/system/mkv/eta			float	y	unit	Tidkvar till markkontakt
+
 JAS/autopilot/alt	float	y	unit	Description
 JAS/autopilot/att	float	y	unit	Description
 JAS/autopilot/mode	int		y	unit	Description
