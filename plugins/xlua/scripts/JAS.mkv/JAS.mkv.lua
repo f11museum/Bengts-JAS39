@@ -13,6 +13,7 @@ jas_io_vu22_knapp_syst = find_dataref("JAS/io/vu22/knapp/syst")
 -- Egna dataref
 jas_sys_mkv_eta = find_dataref("JAS/system/mkv/eta")
 jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
+jas_sys_vat_larmmkv = find_dataref("JAS/system/vat/larmmkv")
 
 -- Dataref från x-plane
 sim_FRP = find_dataref("sim/operation/misc/frame_rate_period")
@@ -77,7 +78,11 @@ function mkv()
 		-- TODO
 	end
 	jas_sys_mkv_larm = larm
-
+	if (larm == 1) then
+		jas_sys_vat_larmmkv = 1
+	else
+		jas_sys_vat_larmmkv = 0
+	end
 end
 
 
