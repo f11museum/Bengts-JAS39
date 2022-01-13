@@ -2,6 +2,12 @@
 # Use tab character and not space to seperate after each type
 # name TAB type TAB writable TAB unit TAB description
 
+# Variabler
+JAS/system/mkv/heartbeat	int	sys	unit	unit2	Description
+JAS/system/mkv/larm			int	sys	unit	unit2	Description
+JAS/system/mkv/eta			float	sys	unit	unit2	Tidkvar till markkontakt
+
+
 #apubrand	lampa	vu22	JAS/lampprov/p1	JAS/system/ess/power	DescriptionM24
 hydr1	lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	Description
 
