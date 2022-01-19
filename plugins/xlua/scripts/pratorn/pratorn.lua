@@ -6,7 +6,7 @@
 -- Sätt till 3 för att spela upprepande men med lite längre mellanrum
 
 
-sim_heartbeat = find_dataref("JAS/system/pratorn/heartbeat") 
+sim_heartbeat = find_dataref("JAS/system/pratornlua/heartbeat") 
 
 sim_heartbeat = 100
 
