@@ -54,12 +54,15 @@ sim_apu = find_dataref("JAS/system/vat/apu")
 -- JAS/system/vat/apubrnd	int	y	unit	Description
 -- 
 -- JAS/system/vat/styrsak	int	y	unit	Description
+sim_styrsak = find_dataref("JAS/system/vat/styrsak")
 -- JAS/system/vat/uppdrag	int	y	unit	Description
 -- JAS/system/vat/hydr2	int	y	unit	Description
 -- JAS/system/vat/likstrm	int	y	unit	Description
 sim_likstrm = find_dataref("JAS/system/vat/likstrm")
 -- JAS/system/vat/landst	int	y	unit	Description
+sim_landst = find_dataref("JAS/system/vat/landst")
 -- JAS/system/vat/bromsar	int	y	unit	Description
+sim_bromsar = find_dataref("JAS/system/vat/bromsar")
 -- 
 -- JAS/system/vat/felinfo	int	y	unit	Description
 -- JAS/system/vat/dator	int	y	unit	Description
@@ -96,12 +99,15 @@ dr_apu_lamp = XLuaFindDataRef("JAS/io/vat/lamp/apu")
 -- JAS/system/vat/apubrnd	int	y	unit	Description
 -- 
 -- JAS/system/vat/styrsak	int	y	unit	Description
+dr_styrsak_lamp = XLuaFindDataRef("JAS/io/vat/lamp/styrsak")
 -- JAS/system/vat/uppdrag	int	y	unit	Description
 -- JAS/system/vat/hydr2	int	y	unit	Description
 -- JAS/system/vat/likstrm	int	y	unit	Description
 dr_likstrm_lamp = XLuaFindDataRef("JAS/io/vat/lamp/likstrm")
 -- JAS/system/vat/landst	int	y	unit	Description
+dr_landst_lamp = XLuaFindDataRef("JAS/io/vat/lamp/landst")
 -- JAS/system/vat/bromsar	int	y	unit	Description
+dr_bromsar_lamp = XLuaFindDataRef("JAS/io/vat/lamp/bromsar")
 -- 
 -- JAS/system/vat/felinfo	int	y	unit	Description
 -- JAS/system/vat/dator	int	y	unit	Description
@@ -148,11 +154,7 @@ sim_warn_generator_off = find_dataref("sim/cockpit/warnings/annunciators/generat
 sim_engine_n1 = find_dataref("sim/flightmodel2/engines/N1_percent")
 
 
-function flight_start() 
-	sim_heartbeat = 200
-    
-    sim_heartbeat = 299
-end
+
 
 function aircraft_unload()
 	--XLuaSetNumber(dr_override_surfaces, 0) 
@@ -238,25 +240,28 @@ function updateLarm(col, row, signal, lamp, sticky)
 end
 
 function checkLarm()
-	
+	sim_heartbeat = 500
 	updateLarm(1, 4, sim_hgen, dr_hgen_lamp, 1)
 	updateLarm(1, 5, sim_motor, dr_motor_lamp, 1)
 	updateLarm(1, 7, sim_oljetr, dr_oljetr_lamp, 1)
-	
+	sim_heartbeat = 501
 	updateLarm(2, 3, sim_hydr1, dr_hydr1_lamp, 1)
 	updateLarm(2, 4, sim_resgen, dr_resgen_lamp, 1)
 	updateLarm(2, 5, sim_mobrand, dr_mobrand_lamp, 1)
 	updateLarm(2, 6, sim_apu, dr_apu_lamp, 1)
-	
+	sim_heartbeat = 502
+	updateLarm(3, 1, sim_styrsak, dr_styrsak_lamp, 1)
 	updateLarm(3, 4, sim_likstrm, dr_likstrm_lamp, 1)
-	
+	updateLarm(3, 5, sim_landst, dr_landst_lamp, 0)
+	updateLarm(3, 6, sim_bromsar, dr_bromsar_lamp, 1)
+	sim_heartbeat = 503
 	updateLarm(4, 4, sim_brasys, dr_brasys_lamp, 1)
 	updateLarm(4, 5, sim_bramgd, dr_bramgd_lamp, 1)
-	
+	sim_heartbeat = 504
 	updateLarm(5, 1, sim_vat_larm1, dr_vat_larm1_lamp, 0)
 	updateLarm(5, 2, sim_vat_larm2, dr_vat_larm2_lamp, 0)
 	updateLarm(5, 3, jas_sys_vat_larmmkv, dr_vat_larmmkv_lamp, 0)
-	
+	sim_heartbeat = 505
 	sim_vat_larm1 = 0
 end
 
@@ -285,6 +290,11 @@ function kvittera()
 	else
 		sim_jas_lamps_master = 0
 	end
+end
+
+function kvitteraStart()
+	sim_jas_master = 1
+	 kvittera()
 end
 
 function larm()
@@ -375,5 +385,11 @@ end
 
 function after_physics() 	
 	
+end
+
+function flight_start() 
+	sim_heartbeat = 200
+    run_after_time(kvitteraStart, 2)
+    sim_heartbeat = 299
 end
 sim_heartbeat = 199

@@ -3,6 +3,8 @@
 -- Minska fart larm
 -- Transsonik
 -- Öka pådrag
+-- Landställ ej ute
+-- Parkeringsbroms på i luften
 
 sim_heartbeat = find_dataref("JAS/system/larm/heartbeat") 
 
@@ -17,12 +19,19 @@ jas_io_vu22_knapp_syst = find_dataref("JAS/io/vu22/knapp/syst")
 jas_sys_larm_transsonik = find_dataref("JAS/system/larm/transsonik")
 jas_sys_larm_minskafart = find_dataref("JAS/system/larm/minskafart")
 
+jas_system_vat_landst = find_dataref("JAS/system/vat/landst")
+jas_system_vat_bromsar = find_dataref("JAS/system/vat/bromsar")
+
 -- Dataref från x-plane
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 dr_mach = find_dataref("sim/flightmodel/misc/machno")
 dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
 dr_gear = find_dataref("sim/cockpit/switches/gear_handle_status") 
 dr_nose_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[0]") 
+
+dr_gear_warning = find_dataref("sim/cockpit2/annunciators/gear_warning")
+dr_parking_brake = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
+
 
 sim_heartbeat = 101
 
@@ -73,7 +82,21 @@ function minskafart()
     
 end
 
-function okapadrag()
+
+function gearWarning()
+    if (dr_gear_warning >=1) then
+        jas_system_vat_landst = 1
+    else 
+        jas_system_vat_landst = 0
+    end
+end
+
+function bromsar()
+    if (dr_parking_brake > 0) then
+        jas_system_vat_bromsar = 1
+    else
+        jas_system_vat_bromsar = 0
+    end
     
 end
 
@@ -102,7 +125,13 @@ function before_physics()
     sim_heartbeat = 300
 	
 	minskafart()
+    sim_heartbeat = 301
 	transsonic()
+    sim_heartbeat = 302
+    gearWarning()
+    sim_heartbeat = 303
+    bromsar()
+    sim_heartbeat = 304
 	systest()
 	sim_heartbeat = heartbeat
     heartbeat = heartbeat + 1
