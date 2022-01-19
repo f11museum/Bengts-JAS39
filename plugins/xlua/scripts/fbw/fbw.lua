@@ -128,6 +128,9 @@ dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 sim_jas_auto_afk = find_dataref("JAS/autopilot/afk")
 sim_jas_auto_afk_mode = find_dataref("JAS/autopilot/afk_mode")
 
+jas_pratorn_tal_alfa12 = find_dataref("JAS/pratorn/tal/alfa12")
+jas_pratorn_tal_spak = find_dataref("JAS/pratorn/tal/spak")
+
 sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
 
 sim_heartbeat = 106
@@ -539,6 +542,8 @@ function calculateAutopilot(wanted_rate)
 	end
 	lock = 0
 	error = 0
+	
+	-- Koppla ur auitopiloten om man dra mycket i spaken
 	if (sim_yoke_pitch_ratio>autopilot_disable or sim_yoke_pitch_ratio < -autopilot_disable) then
 		if (sim_jas_auto_mode > 1) then
 			autopilot_hold_alti = 0
@@ -547,6 +552,7 @@ function calculateAutopilot(wanted_rate)
 			XLuaSetNumber(dr_jas_lamps_att, 0)
 			XLuaSetNumber(dr_jas_lamps_hojd, 0)
 			XLuaSetNumber(dr_jas_auto_mode, 1) 
+			jas_pratorn_tal_spak = 1
 		end
 		
 	end
@@ -874,6 +880,8 @@ function update_buttons()
 				XLuaSetNumber(dr_jas_lamps_hojd, 0)
 				
 				XLuaSetNumber(dr_jas_auto_mode, 1) 
+				
+				jas_pratorn_tal_spak = 1
 			end
 		end
 	else
@@ -911,6 +919,7 @@ function update_buttons()
 				else
 					-- vi är i avstängt läge eller normalläge och ska gå till läge 12
 					sim_jas_auto_afk_mode = 2
+					jas_pratorn_tal_alfa12 = 1
 					current_th = sim_throttle[0]
 				end
 			else

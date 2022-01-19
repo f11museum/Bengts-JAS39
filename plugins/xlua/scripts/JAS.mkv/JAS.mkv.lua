@@ -15,10 +15,14 @@ jas_sys_mkv_eta = find_dataref("JAS/system/mkv/eta")
 jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
 jas_sys_vat_larmmkv = find_dataref("JAS/system/vat/larmmkv")
 
+jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
+
 -- Dataref från x-plane
 sim_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 sim_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 sim_vy = find_dataref("sim/flightmodel/position/local_vy")
+dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
+
 
 sim_gear = find_dataref("sim/cockpit/switches/gear_handle_status")
 
@@ -74,9 +78,24 @@ function mkv()
 			end
 		end
 	else
-		-- Markkollitionsvarning fast vi har stället ute om en hög hastighet nedåt uppstår
+		-- Markkollitionsvarning fast vi har stället ute om en hög hastighet nedåt uppstår, ska kunna ske enligt haveriraporten om man tolkat rätt?
 		-- TODO
 	end
+	
+	-- Öka pådrag larmet
+	jas_sys_larm_okapadrag = 0
+	-- Larm vid hastighet under 300km/h(160knop) och höjd under 300m(1000foot) och markkontakt inom 12s
+	if (gear == 0 and dr_ias < 160 and radaralt < 1000) then
+		if (vy < 0) then
+			if ( (-vy * 12) > radaralt) then
+				jas_sys_larm_okapadrag = 1
+			end
+		end
+	else
+		-- Markkollitionsvarning fast vi har stället ute om en hög hastighet nedåt uppstår, ska kunna ske enligt haveriraporten om man tolkat rätt?
+		-- TODO
+	end
+	
 	jas_sys_mkv_larm = larm
 	if (larm == 1) then
 		jas_sys_vat_larmmkv = 1

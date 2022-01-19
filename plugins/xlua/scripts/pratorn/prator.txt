@@ -1,0 +1,55 @@
+*SPAK
+Manuellt val mellan HÖJD, ATT och SPAK-mod sker genom att trycka
+på respektive modvalsströmställare på instrumentpanel 1VU. 
+Flygföraren får meddelandet "SPAK” via pratom vid manuell 
+återgång till SPAK via SPAK-strömställaren.
+
+*TA UPP
+MKV-symbol tänds på samtliga indikatorer med fast sken en viss tid, X
+s, innan banvinkeldifferensen Ay skulle bli noll, dvs innan en eventuellt
+presenterad marksymbol skulle passera fartvektorsymbolen underifrån,
+jfr Avsnitt 3.4.24. Dessutom fås följande indikering:
+- Talmeddelande "Ta upp" ges i prator.
+
+*ÖKA PÅDRAG
+Om fpl har låg fart (ca a > 15°) på låg höjd (<300 m), dock inte vid
+landning, används vissa specialfunktioner:
+• Talmeddelande "Öka pådrag" ges 1-1,5 s innan MKV-symbolen skulle
+tändas om pådraget är lågt.
+
+*ALFA 12
+Om a 12° rekommenderas kan ff inte välja a 14°. Om ff i detta fall försöker
+att välja a 14° ges varning med tal- och textmeddelande ”ALFA 12” och a
+12° bibehålls.
+
+*FIX
+--Se pärm presentation och navigering flik3
+
+*MINSKA FART
+Maxfart beräknas under flygning med infällt landställ som en funktion av
+flyghöjd och hängd last enligt flygenvelopen. Före lättning och vid visuell
+mod VISLAND sätts värdet till max tillåten rullhastighet, 350 km/h. Vid
+flygning med utfällt landställ sätts värdet till 600 km/h. Överskrids
+maxfarten ges tal- och textmeddelande MINSKA FART.
+
+*EJ TILS
+--Se pärm presentation och navigering flik3
+
+*HÖJD
+Vid inflygning för landning ges bottenvarning om uppmätt radarhöjd är
+mindre än hälften av filtrerad temperatur- och marktryckskorrigerad höjd,
+HFJM, minus 30 m, se Bild 10. För att bottenvarning ska ges krävs även att
+något av följande villkor är uppfyllt:
+• Landstället är utfällt.
+• En landningsbas är aktuell destination, styrordergeometri GS eller IP är
+vald, och avståndet till basen är mindre än 40 km.
+Bottenvaming kan inte ges om höjdvarningsfunktionen är bortkopplad.
+
+*MARKTRYCK FEL
+--Se sista sidan pärm presentation och navigering flik3
+
+*TRANSSONIK
+Vid ingång i transsonik, både uppifrån och nedifrån, ges tal- och
+textmeddelande TRANSSONIK.
+Fartskalan utgörs av en vertikal linje med en lucka för transsonikområdet
+M 0,95 - M 1,05

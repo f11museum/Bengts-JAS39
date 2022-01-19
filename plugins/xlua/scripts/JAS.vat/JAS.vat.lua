@@ -128,7 +128,7 @@ dr_vat_larm2_lamp = XLuaFindDataRef("JAS/io/vat/lamp/larm2")
 dr_vat_larmmkv_lamp = XLuaFindDataRef("JAS/io/vat/lamp/streck1")
 
 sim_jas_master = find_dataref("JAS/io/frontpanel/knapp/master")
-sim_jas_lamps_master = find_dataref("JAS/lamps/master")
+sim_jas_lamps_master = find_dataref("JAS/system/larm/master")
 sim_jas_lamps_master1 = find_dataref("JAS/io/frontpanel/lamp/master1")
 sim_jas_lamps_master2 = find_dataref("JAS/io/frontpanel/lamp/master2")
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")

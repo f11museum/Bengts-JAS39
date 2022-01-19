@@ -98,7 +98,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118796684
+P _gear/0/_stat_def 0.118796639
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -132,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.711948633
+P _gear/1/_stat_def 0.711948216
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -166,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.711948633
+P _gear/2/_stat_def 0.711948216
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -15012,7 +15012,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.521806240
-P _part/86/_part_y -3.407325506
+P _part/86/_part_y -3.407325983
 P _part/86/_part_z 27.800683975
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -16482,7 +16482,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.521806240
-P _part/87/_part_y -3.407325506
+P _part/87/_part_y -3.407325983
 P _part/87/_part_z 27.800683975
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -21195,7 +21195,7 @@ P _wpna/1/_v10_att_psi_ref 0.0
 P _wpna/1/_v10_att_the_ref -5.0
 P _wpna/1/_v10_att_x_acf_prt_ref 0.0
 P _wpna/1/_v10_att_y_acf_prt_ref -0.918635190
-P _wpna/1/_v10_att_z_acf_prt_ref 0.492125988
+P _wpna/1/_v10_att_z_acf_prt_ref 26.738843918
 P _wpna/1/_v10_is_internal 1284781781
 P _wpna/1/_v10_steers_with_gear 0
 P _wpna/2/_v10_att_file_stl placeholder.wpn
@@ -24413,7 +24413,7 @@ P acf/_warn_gear 1
 P acf/_warn_hirot_EQ 0
 P acf/_warn_lorot_EQ 0
 P acf/_warn_stall 1
-P acf/_warn_transonic_EQ 1
+P acf/_warn_transonic_EQ 0
 P acf/_warn_verbal_500_agl 0
 P acf/_wate_xyz/0 0.0
 P acf/_wate_xyz/1 -0.100000001
