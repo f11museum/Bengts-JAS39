@@ -141,7 +141,8 @@ sim_vat_power = find_dataref("JAS/system/vat/power")
 sim_vat_larm_bramgd = find_dataref("JAS/system/vat/bramgd")
 sim_vat_larm1 = find_dataref("JAS/system/vat/larm1")
 
-sim_lampprov = find_dataref("JAS/lampprov/p1")
+jas_lampprov_p1 = find_dataref("JAS/lampprov/p1")
+jas_io_vu22_knapp_lampprov = find_dataref("JAS/io/vu22/knapp/lampprov")
 sim_systprov = find_dataref("JAS/io/vu22/knapp/syst")
 
 sim_vu22_lamp_apubrand = find_dataref("JAS/io/vu22/lamp/apubrand")
@@ -641,6 +642,12 @@ function vu22()
 	sim_heartbeat = 508
 	sim_jas_vu22_lamp_tb = tb
 	sim_heartbeat = 509
+	if jas_io_vu22_knapp_lampprov == 1 then
+		jas_lampprov_p1 = 1
+	else
+		jas_lampprov_p1 = 0
+	end
+	
 	
 end
 
