@@ -121,6 +121,8 @@ dr_jas_lamps_att = XLuaFindDataRef("JAS/io/frontpanel/lamp/att")
 dr_jas_lamps_hojd = XLuaFindDataRef("JAS/io/frontpanel/lamp/hojd")  
 sim_jas_lamps_afk = find_dataref("JAS/io/frontpanel/lamp/afk")
 sim_jas_lamps_a14 = find_dataref("JAS/io/frontpanel/lamp/a14")
+sim_jas_lamps_ks = find_dataref("JAS/io/frontpanel/lamp/ks")
+
 sim_heartbeat = 105
 dr_jas_auto_mode = XLuaFindDataRef("JAS/autopilot/mode")
 dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
@@ -420,6 +422,7 @@ a_cumError = 0.0
 wanted_roll = 0
 stick_roll = 0
 delta_prev = 0
+ks_mode = 0
 
 function calculateAileron()
 	fadeout = interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )
@@ -441,6 +444,11 @@ function calculateAileron()
 		
 		-- lägg på liten justering för att gå tillbaka dit man va när man släppte spaken
 		delta2 = wanted_roll - sim_acf_roll
+		if (ks_mode == 1 and sim_jas_auto_mode == 3) then -- om höjd styrning och planet är i level så håller den kvar det
+			delta2 = 0 - sim_acf_roll
+			sim_jas_lamps_ks = 1
+		end	
+		
 		XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), delta2) 
 		if (delta2>180) then
 			delta2 = wanted_roll - (sim_acf_roll+360)
@@ -455,6 +463,12 @@ function calculateAileron()
 		--delta = delta2 * fadeout  * 0.1
 		delta = myfilter (delta_prev, delta2, 60)
 	else
+		if (ks_mode == 1 and sim_jas_auto_mode == 3) then
+			sim_jas_lamps_ks = blink1s
+		else
+			sim_jas_lamps_ks = 0
+		end
+		
 		wanted_roll = sim_acf_roll
 		if (sim_yoke_roll_ratio<0) then
 			sim_yoke_roll_ratio = sim_yoke_roll_ratio + deadzone
@@ -514,10 +528,23 @@ function calculateRudder()
 		delta = -current_rate*0.1
 	end
 	
-	--delta = myfilter(rudder_delta_prev, delta, 0)
 	rudder_delta_prev = delta
 	
-	m_rudder = wanted_rate --delta
+	m_rudder = wanted_rate -delta
+	
+	
+	-- ## GAMLA roderuträkningen
+	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
+	wanted_rate = sim_yoke_heading_ratio * max_yaw_rate
+	
+	-- Kollar vad planet har för nuvarande rotationshastighet 
+	current_rate = sim_acf_yawrate
+	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
+	delta = wanted_rate-current_rate
+	if (g_groundContact == 1) then
+		delta = wanted_rate
+	end
+	m_rudder = delta * current_fade_out
 end
 
 lock_avg = 0.0
@@ -903,6 +930,11 @@ function update_buttons()
 		XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti)
 		XLuaSetNumber(dr_jas_auto_mode, 3)  
 		
+		if (sim_acf_roll <5 and sim_acf_roll >-5) then
+			ks_mode = 1
+		else
+			ks_mode = 0
+		end
 	end
 	
 	
@@ -976,6 +1008,8 @@ heartbeat = 0
 function before_physics() 
 	sim_heartbeat = 300
 	update_dataref()
+	sim_heartbeat = 3001
+	blink1sFunc()
 	sim_heartbeat = 301
 	if (sim_jas_sys_test == 1) then
 		systest()

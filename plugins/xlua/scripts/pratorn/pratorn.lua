@@ -116,15 +116,7 @@ heartbeat = 0
 function before_physics() 
     sim_heartbeat = 300
 	
-	if (jas_sys_mkv_larm >= 1) then
-		jas_pratorn_tal_taupp = 2
-		--jas_pratorn_tal_hojd = 2
-		jas_pratorn_larm_mkv = 2
-	else
-		jas_pratorn_tal_taupp = 0
-		--jas_pratorn_tal_hojd = 0
-		jas_pratorn_larm_mkv = 0
-	end
+	
 	
 	--transsonic()
 	if (jas_sys_larm_transsonik >= 1) then

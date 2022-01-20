@@ -43,7 +43,7 @@ dr_parking_brake = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
 
 dr_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
 dr_fuel1 = find_dataref("sim/flightmodel/weight/m_fuel_total")
-
+dr_warn_fuel_press = find_dataref("sim/cockpit/warnings/annunciators/fuel_pressure")
 
 sim_heartbeat = 101
 

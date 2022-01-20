@@ -1,5 +1,22 @@
 
 
+-- 1.12.4 Markkollisionsvarningssystemet (MKV)
+-- För föraren presenteras markkollisionsvarning i fyra olika nivåer beroende på vilken grad av
+-- manövrering som krävs för att häva tillståndet. Nedan följer en kortfattad förklaring av
+-- nivåerna som benämns A, B, C och D.
+-- A MKV-symbolen (pilar) tänds upp med fast sken på samtliga indikatorer och pratorvarning
+-- ”ta upp” ges under en viss förvarningstid (3 sek i detta fall) innan föraren måste ansätta
+-- upptagningsmanöver med motsvarande 80 % av tillgänglig lyftkraft.
+-- B MKV-symbolen börjar blinka och höjdvarningslampan tänds när halva denna förvarningstid
+-- gått utan att föraren vidtagit åtgärder. I samband med detta så aktiveras den akustiska
+-- varningen i form av en tonorgel med max volym. Blinkningarna upphör när tillräcklig åtgärd
+-- vidtagits.
+-- C Förvarningstiden är slut och MKV symbolen passerar fartvektorsymbolen.
+-- 16
+-- D Därefter räcker det inte med manövrering enligt förutbestämda värden (a=80 % av MLLgräns). Då börjar MKV-symbolens pilspetsar att växa och den nödvändiga lastfaktorn skrivs ut
+-- i numeriska värden vid symbolens nederkant.
+
+
 sim_mkv_heartbeat = find_dataref("JAS/system/mkv/heartbeat") 
 
 sim_mkv_heartbeat = 100
@@ -17,6 +34,9 @@ jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
 jas_sys_vat_larmmkv = find_dataref("JAS/vat/larm/larmmkv")
 
 jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
+
+jas_pratorn_tal_taupp = find_dataref("JAS/pratorn/tal/taupp")
+jas_pratorn_larm_mkv = find_dataref("JAS/pratorn/larm/mkv")
 
 -- debug
 d_ground_diff = create_dataref("JAS/debug/mkv/ground_diff", "number")
@@ -74,7 +94,7 @@ function mkv()
 	larm = 0
 	if (gear == 0) then
 		if (vy < 0) then
-			if ( (-vy * 7) > radaralt) then
+			if ( (-vy * (7+3)) > radaralt) then
 				timeLeft = radaralt/-vy
 				jas_sys_mkv_eta = timeLeft
 				larm = 1
@@ -114,12 +134,25 @@ function mkv()
 	
 	jas_sys_mkv_larm = larm
 	if (larm == 1) then
-		jas_sys_vat_larmmkv = 1
-		jas_io_frontpanel_lamp_hojdvarn = 1
+		-- Nivå A
+		jas_pratorn_tal_taupp = 2
+		if (timeLeft < 7) then
+			-- Nivå B aktivera tonorgel och höjdvarningslampa
+			jas_sys_vat_larmmkv = 1
+			jas_pratorn_larm_mkv = 2
+			jas_io_frontpanel_lamp_hojdvarn = 1
+		end
+		if (timeLeft < 5) then
+			-- Nivå C
+		end
+		
 	else
+		jas_pratorn_tal_taupp = 0
+		jas_pratorn_larm_mkv = 0
 		jas_sys_vat_larmmkv = 0
 		jas_io_frontpanel_lamp_hojdvarn = 0
 	end
+	
 end
 
 
