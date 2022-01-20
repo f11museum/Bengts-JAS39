@@ -2,18 +2,23 @@
 # Use tab character and not space to seperate after each type
 # name TAB type TAB writable TAB unit TAB description
 
+JAS/arraytest	int[4]		sys	unit	unit2	Description
+JAS/arraybanan	int[10]		sys	unit	unit2	Description
+
 # Variabler
-JAS/system/mkv/heartbeat	int		sys	unit	unit2	Description
 JAS/system/mkv/larm			int		sys	unit	unit2	Description
 JAS/system/mkv/eta			float	sys	unit	unit2	Tidkvar till markkontakt
 
+#Heartbeats
+JAS/system/mkv/heartbeat	int		sys	unit	unit2	Description
 JAS/system/sys/heartbeat	int	sys	unit	unit2	Description
 JAS/system/org/heartbeat	int	sys	unit	unit2	Description
-
-JAS/system/pratorn/heartbeat	int	sys	unit	unit2	Description
-JAS/system/pratornlua/heartbeat	int	sys	unit	unit2	Description
-
 JAS/system/larm/heartbeat	int	sys	unit	unit2	Description
+JAS/system/hud/heartbeat	int	sys	unit	unit2	Description
+JAS/heartbeat/autopilot		int	sys	unit	unit2	Description
+JAS/heartbeat/pratorn		int	sys	unit	unit2	Description
+JAS/heartbeat/pratornlua	int	sys	unit	unit2	Description
+
 
 JAS/debug/p		float	sys	unit	unit2	Description
 JAS/debug/i		float	sys	unit	unit2	Description
@@ -40,7 +45,6 @@ JAS/knapparfunkar	int		sys	unit	unit2	Description
 JAS/lampprov/p1		int		sys	unit	unit2	Description
 JAS/system/apu/power	int		sys	unit	unit2		Alltid på för att ge lampan ström
 
-JAS/system/hud/heartbeat	int	sys	unit	unit2	Description
 
 
 JAS/autopilot/alt		float	sys	unit	unit2	Description
@@ -65,6 +69,7 @@ JAS/pratorn/tal/systemtest		int		sys	unit	unit2	Description
 JAS/pratorn/larm/mkv			int		sys	unit	unit2	Description
 JAS/pratorn/larm/transsonik		int		sys	unit	unit2	Description
 JAS/pratorn/larm/gransvarde		int		sys	unit	unit2	Description
+JAS/pratorn/larm/master			int		sys	unit	unit2	Description
 
 # Övriga larm
 JAS/system/larm/transsonik		int		sys	unit	unit2	Description
@@ -172,10 +177,11 @@ airbrake	lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D24
 spak		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D25
 att			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D26
 hojd		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D27
-a14			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D28 ej klar
+a14			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D28
 afk			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D29
-ki			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D22 ej klar
-gears		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D22 ej klar
+ki			lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D? ej klar
+gears		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	D? ej klar
+hojdvarn	lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	M60 3:PB4
 
 ## Knappar
 spak		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/system/vat/power	D30
@@ -221,6 +227,11 @@ bramgd		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M57 3:PB1
 oxykab		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M58 3:PB2
 huvstol		lampa	vat	JAS/lampprov/p1	JAS/system/vat/power	M59 3:PB3
 
-hojdvarn		lampa	frontpanel	JAS/lampprov/p1	JAS/system/vat/power	M60 3:PB4
+
+
+#Knappar runt skärmar
+JAS/io/fi/knapp/knappram	int[10]		sys	unit	unit2	Description
+JAS/io/ti/knapp/knappram	int[10]		sys	unit	unit2	Description
+JAS/io/mi/knapp/knappram	int[10]		sys	unit	unit2	Description
 
 #Last line, keep this
