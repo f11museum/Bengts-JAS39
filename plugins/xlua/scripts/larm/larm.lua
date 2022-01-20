@@ -35,6 +35,8 @@ dr_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 dr_gear_warning = find_dataref("sim/cockpit2/annunciators/gear_warning")
 dr_parking_brake = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
 
+dr_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
+
 
 sim_heartbeat = 101
 
@@ -87,18 +89,24 @@ end
 
 
 function gearWarning()
+    jas_system_vat_landst = 0
     if (dr_gear_warning >=1) then
         jas_system_vat_landst = 1
-    else 
-        jas_system_vat_landst = 0
     end
+    if (dr_gear == 0 and dr_nose_gear_depress > 0) then
+        jas_system_vat_landst = 1
+    end
+    
 end
 
 function bromsar()
+    jas_system_vat_bromsar = 0
     if (dr_parking_brake > 0 and dr_left_gear_depress == 0 and dr_radar_alt>10) then
         jas_system_vat_bromsar = 1
-    else
-        jas_system_vat_bromsar = 0
+    end
+    
+    if (dr_throttle[0]>0.5 and dr_parking_brake > 0) then -- Parkeringsbroms på och gas över 50%
+        jas_system_vat_bromsar = 1
     end
     
 end

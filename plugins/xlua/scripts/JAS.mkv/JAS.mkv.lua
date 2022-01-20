@@ -6,6 +6,7 @@ sim_mkv_heartbeat = 100
 
 -- Lampor
 jas_io_vu22_lamp_mkv = find_dataref("JAS/io/vu22/lamp/mkv")
+jas_io_frontpanel_lamp_hojdvarn = find_dataref("JAS/io/frontpanel/lamp/hojdvarn")
 
 -- Knappar
 jas_io_vu22_knapp_syst = find_dataref("JAS/io/vu22/knapp/syst")
@@ -17,9 +18,13 @@ jas_sys_vat_larmmkv = find_dataref("JAS/system/vat/larmmkv")
 
 jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
 
+-- debug
+d_ground_diff = create_dataref("JAS/debug/mkv/ground_diff", "number")
+
 -- Dataref från x-plane
 sim_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 sim_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
+dr_above_sea_alt = find_dataref("sim/flightmodel/position/elevation")
 sim_vy = find_dataref("sim/flightmodel/position/local_vy")
 dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
 
@@ -41,33 +46,29 @@ function do_on_exit()
 
 end
 
+
+ground_max = 0
+
 function mkv()
-	-- 
---     float vy = getVY();
---     float radaralt = getRadarAltitude();
---     int gear = getGear();
--- 
---     if (!gear) {
---         if (vy < 0) {
---             if (-vy * 7 > radaralt) {
---                 float timeLeft = radaralt / -vy;
---                 SetGLTransparentLines();
---                 SetGLText();
---                 sprintf(temp, "MARKKOLLISION %.1f", timeLeft);
---                 DrawHUDText(temp, &fontMain, 0, (50) - ((textHeight(1.0) * text_scale) / 2), 1, color);
---                 setWarning(1);
---             } else {
---                 setWarning(0);
---             }
---         }
---     }    
+
 	sim_mkv_heartbeat = 400
 
 	radaralt = sim_radar_alt
+	seaalt = dr_above_sea_alt
 	gear = sim_gear
 	vy  = sim_vy
 
+	sim_mkv_heartbeat = 400
 
+	-- Beräkna en terrängprofil
+	ground = seaalt - radaralt
+	if (ground> ground_max) then
+		ground_max = ground
+	end
+	ground_diff = ground_max - ground
+	d_ground_diff = ground_diff
+	
+	
 	larm = 0
 	if (gear == 0) then
 		if (vy < 0) then
@@ -79,7 +80,15 @@ function mkv()
 		end
 	else
 		-- Markkollitionsvarning fast vi har stället ute om en hög hastighet nedåt uppstår, ska kunna ske enligt haveriraporten om man tolkat rätt?
-		-- TODO
+
+		if (vy < -6) then
+			if ( (-vy * 6) > radaralt) then
+				timeLeft = radaralt/-vy
+				jas_sys_mkv_eta = timeLeft
+				larm = 1
+			end
+		end
+		
 	end
 	
 	-- Öka pådrag larmet
@@ -99,8 +108,10 @@ function mkv()
 	jas_sys_mkv_larm = larm
 	if (larm == 1) then
 		jas_sys_vat_larmmkv = 1
+		jas_io_frontpanel_lamp_hojdvarn = 1
 	else
 		jas_sys_vat_larmmkv = 0
+		jas_io_frontpanel_lamp_hojdvarn = 0
 	end
 end
 
