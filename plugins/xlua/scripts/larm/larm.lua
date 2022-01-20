@@ -28,6 +28,9 @@ dr_mach = find_dataref("sim/flightmodel/misc/machno")
 dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
 dr_gear = find_dataref("sim/cockpit/switches/gear_handle_status") 
 dr_nose_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[0]") 
+dr_left_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[1]") 
+
+dr_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 
 dr_gear_warning = find_dataref("sim/cockpit2/annunciators/gear_warning")
 dr_parking_brake = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
@@ -92,7 +95,7 @@ function gearWarning()
 end
 
 function bromsar()
-    if (dr_parking_brake > 0) then
+    if (dr_parking_brake > 0 and dr_left_gear_depress == 0 and dr_radar_alt>10) then
         jas_system_vat_bromsar = 1
     else
         jas_system_vat_bromsar = 0

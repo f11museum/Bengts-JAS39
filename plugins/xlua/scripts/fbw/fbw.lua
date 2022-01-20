@@ -905,37 +905,7 @@ function update_buttons()
 		
 	end
 	
-	if (sim_jas_button_afk == 1) then
-		if (knapp2 == 0) then
-			knapp2 = 1
-			if (sim_gear == 1) then
-				-- Lås mellan alfa 12 eller alfa 14
-				if (sim_jas_auto_afk_mode == 2) then
-					sim_jas_auto_afk_mode = 3
-					-- vi är i läge 12 och ska välja läge 14
-				elseif (sim_jas_auto_afk_mode == 3) then
-					-- vi är i läge 14 och ska välja avstängt läge
-					sim_jas_auto_afk_mode = 0
-				else
-					-- vi är i avstängt läge eller normalläge och ska gå till läge 12
-					sim_jas_auto_afk_mode = 2
-					jas_pratorn_tal_alfa12 = 1
-					current_th = sim_throttle[0]
-				end
-			else
-				if (sim_jas_auto_afk_mode == 0) then
-					sim_jas_auto_afk_mode = 1
-					sim_jas_auto_afk = sim_airspeed_kts_pilot
-					current_th = sim_throttle[0]
-				else
-					sim_jas_auto_afk = 0
-					sim_jas_auto_afk_mode = 0
-				end
-			end
-		end
-	else
-		knapp2 = 0
-	end
+	
 end
 
 function update_lamps()
@@ -963,62 +933,6 @@ function update_lamps()
 	
 end
 
-alpha_filtered = 0
-alpha_prev = 0
-speed_prev = 0
-
-function calculateThrottle()
-	--sim_override_throttles = 1
-	alpha_prev = myfilter(alpha_prev, sim_true_alpha, 100)
-	if (sim_jas_auto_afk_mode == 1) then
-		
-		
-		sim_jas_lamps_a14 = 0
-	elseif (sim_jas_auto_afk_mode == 2) then
-		--alfa 12
-		
-		alpha_delta = 11.8-alpha_prev
-		sim_jas_auto_afk = sim_airspeed_kts_pilot - alpha_delta*10
-		sim_jas_auto_afk = myfilter(speed_prev, sim_jas_auto_afk, 100)
-		speed_prev = sim_jas_auto_afk
-		
-		
-		sim_jas_lamps_a14 = 0
-	elseif (sim_jas_auto_afk_mode == 3) then
-		-- alfa 14
-		
-		alpha_delta = 13.8-alpha_prev
-		sim_jas_auto_afk = sim_airspeed_kts_pilot - alpha_delta*10
-		sim_jas_auto_afk = myfilter(speed_prev, sim_jas_auto_afk, 100)
-		speed_prev = sim_jas_auto_afk
-		sim_jas_lamps_a14 = 1
-	else
-		
-		sim_jas_lamps_afk = 0
-		sim_jas_lamps_a14 = 0
-	end
-	
-	if (sim_jas_auto_afk >= 1 and sim_jas_auto_afk_mode >= 1) then
-		
-		sim_override_throttles = 1
-		sim_jas_lamps_afk = 1
-		
-		error = sim_jas_auto_afk - sim_airspeed_kts_pilot
-		
-		demand = constrain(PIDth(error), 0.0,1.0)
-		sim_throttle_use[0] = demand
-		sim_throttle_burner[0] = constrain( (demand-0.9)*10, 0.0,1.0)
-		
-		if (sim_throttle[0]>current_th+0.1 or sim_throttle[0]<current_th-0.1) then
-			-- stäng av auto throttle om någon rör vid gasen
-			sim_jas_auto_afk_mode = 0
-		end
-	else
-		sim_override_throttles = 0
-		sim_jas_lamps_afk = 0
-		--sim_throttle_use[0] = sim_throttle[0]
-	end
-end
 
 
 sys_test_counter = 0
@@ -1030,26 +944,26 @@ function systest()
 			XLuaSetNumber(dr_jas_lamps_spak, 1)
 			XLuaSetNumber(dr_jas_lamps_att, 0)
 			XLuaSetNumber(dr_jas_lamps_hojd, 0)
-			sim_jas_lamps_afk = 0
+			--sim_jas_lamps_afk = 0
 		end
 		if (time1 == 1) then
 			XLuaSetNumber(dr_jas_lamps_spak, 0)
 			XLuaSetNumber(dr_jas_lamps_att, 1)
 			XLuaSetNumber(dr_jas_lamps_hojd, 0)
-			sim_jas_lamps_afk = 0
+			--sim_jas_lamps_afk = 0
 		end
 		if (time1 == 2) then
 			XLuaSetNumber(dr_jas_lamps_spak, 0)
 			XLuaSetNumber(dr_jas_lamps_att, 0)
 			XLuaSetNumber(dr_jas_lamps_hojd, 1)
-			sim_jas_lamps_afk = 0
+			--sim_jas_lamps_afk = 0
 			
 		end
 		if (time1 == 3) then
 			XLuaSetNumber(dr_jas_lamps_spak, 0)
 			XLuaSetNumber(dr_jas_lamps_att, 0)
 			XLuaSetNumber(dr_jas_lamps_hojd, 0)
-			sim_jas_lamps_afk = 1
+			--sim_jas_lamps_afk = 1
 			sys_test_counter = 0
 		end
 		if (sys_test_counter > 4) then
@@ -1080,8 +994,6 @@ function before_physics()
 	XLuaSetNumber(dr_override_surfaces, 1) 
 	--XLuaSetNumber(dr_right_elevator, sim_yoke_pitch_ratio*90) -- för felkoll
 	
-	
-	calculateThrottle()
 	sim_heartbeat = 304
 	calculateElevator()
 	calculateAileron()

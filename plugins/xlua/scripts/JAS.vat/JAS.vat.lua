@@ -253,7 +253,7 @@ function checkLarm()
 	updateLarm(3, 1, sim_styrsak, dr_styrsak_lamp, 1)
 	updateLarm(3, 4, sim_likstrm, dr_likstrm_lamp, 1)
 	updateLarm(3, 5, sim_landst, dr_landst_lamp, 0)
-	updateLarm(3, 6, sim_bromsar, dr_bromsar_lamp, 1)
+	updateLarm(3, 6, sim_bromsar, dr_bromsar_lamp, 0)
 	sim_heartbeat = 503
 	updateLarm(4, 4, sim_brasys, dr_brasys_lamp, 1)
 	updateLarm(4, 5, sim_bramgd, dr_bramgd_lamp, 1)

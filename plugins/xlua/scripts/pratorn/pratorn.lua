@@ -6,7 +6,7 @@
 -- Sätt till 3 för att spela upprepande men med lite längre mellanrum
 
 
-sim_heartbeat = find_dataref("JAS/system/pratornlua/heartbeat") 
+sim_heartbeat = find_dataref("JAS/heartbeat/pratornlua") 
 
 sim_heartbeat = 100
 
@@ -26,6 +26,7 @@ jas_pratorn_tal_systemtest = find_dataref("JAS/pratorn/tal/systemtest")
 jas_pratorn_larm_mkv = find_dataref("JAS/pratorn/larm/mkv")
 jas_pratorn_larm_transsonik = find_dataref("JAS/pratorn/larm/transsonik")
 jas_pratorn_larm_gransvarde = find_dataref("JAS/pratorn/larm/gransvarde")
+jas_pratorn_larm_master = find_dataref("JAS/pratorn/larm/master")
 
 
 -- Knappar
@@ -37,6 +38,7 @@ jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
 jas_sys_larm_transsonik = find_dataref("JAS/system/larm/transsonik")
 jas_sys_larm_minskafart = find_dataref("JAS/system/larm/minskafart")
 jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
+jas_sys_larm_master = find_dataref("JAS/system/larm/master")
 
 -- Dataref från x-plane
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")
@@ -145,6 +147,13 @@ function before_physics()
 	if (jas_sys_larm_okapadrag >= 1) then
 		jas_pratorn_tal_okapadrag = 1
 		--jas_pratorn_larm_gransvarde = 1
+	end
+	
+	-- Huvudvarning
+	if (jas_sys_larm_master >=1) then
+		jas_pratorn_larm_master = 2
+	else
+		jas_pratorn_larm_master = 0
 	end
 	
 	systest()
