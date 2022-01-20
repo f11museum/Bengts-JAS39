@@ -27,7 +27,7 @@ sim_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 dr_above_sea_alt = find_dataref("sim/flightmodel/position/elevation")
 sim_vy = find_dataref("sim/flightmodel/position/local_vy")
 dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
-
+dr_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
 
 sim_gear = find_dataref("sim/cockpit/switches/gear_handle_status")
 
@@ -48,6 +48,8 @@ end
 
 
 ground_max = 0
+
+speed_prev = 0
 
 function mkv()
 
@@ -92,11 +94,16 @@ function mkv()
 	end
 	
 	-- Öka pådrag larmet
+	fart_minskar = 0
+	if (dr_ias < speed_prev) then
+		fart_minskar = 1
+	end
+	speed_prev = dr_ias
 	jas_sys_larm_okapadrag = 0
-	-- Larm vid hastighet under 300km/h(160knop) och höjd under 300m(1000foot) och markkontakt inom 12s
-	if (gear == 0 and dr_ias < 160 and radaralt < 1000) then
+	-- Larm vid hastighet under 300km/h(160knop) och höjd under 300m(1000foot) och markkontakt inom 12s, och lågt pådrag
+	if (gear == 0 and dr_ias < 160 and radaralt < 1000 and fart_minskar == 1 and dr_throttle[0] < 0.55) then
 		if (vy < 0) then
-			if ( (-vy * 12) > radaralt) then
+			if ( (-vy * 15) > radaralt) then
 				jas_sys_larm_okapadrag = 1
 			end
 		end

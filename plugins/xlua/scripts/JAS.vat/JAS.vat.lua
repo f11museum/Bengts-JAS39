@@ -302,7 +302,7 @@ end
 
 function larm()
 	sim_hgen = sim_warn_generator_off[0]
-	sim_brasys = sim_warn_fuel_press
+	
 	sim_mobrand = sim_warn_eng_fire
 	sim_oljetr = sim_warn_oil_press
 	sim_hydr1 = sim_warn_hyd_press
