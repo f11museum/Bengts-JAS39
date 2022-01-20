@@ -182,7 +182,7 @@ att			lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D26
 hojd		lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D27
 a14			lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D28
 afk			lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D29
-ki			lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D? ej klar
+ks			lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D? ej klar
 gears		lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	D? ej klar
 hojdvarn	lampa	frontpanel	JAS/lampprov/p1	JAS/vat/power	M60 3:PB4
 
