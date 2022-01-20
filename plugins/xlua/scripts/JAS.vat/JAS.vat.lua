@@ -1,6 +1,6 @@
 
 
-sim_heartbeat = find_dataref("JAS/system/vat/heartbeat") 
+sim_heartbeat = find_dataref("JAS/heartbeat/vat") 
 sim_heartbeat = 100
 
 -- local sound_master = load_WAV_file(SYSTEM_DIRECTORY .. "Resources/sounds/alert/gear_warn_2.wav")  -- sound file I want to play
@@ -25,104 +25,106 @@ for i=1, 5 do
 end
 
 sim_heartbeat = 101
--- JAS/system/vat/power	int	y	unit	Om systemet har ström
-sim_power = find_dataref("JAS/system/vat/power")
+-- JAS/vat/power	int	y	unit	Om systemet har ström
+sim_power = find_dataref("JAS/vat/power")
 
 -- Alla larmsignaler och lampor i VAT:
 
--- JAS/system/vat/normsty	int	y	unit	Description
--- JAS/system/vat/luftsys	int	y	unit	Description
--- JAS/system/vat/hhp1		int	y	unit	Description
--- JAS/system/vat/hgen		int	y	unit	Description
-sim_hgen = find_dataref("JAS/system/vat/hgen")
--- JAS/system/vat/motor	int	y	unit	Description
-sim_motor = find_dataref("JAS/system/vat/motor")
--- JAS/system/vat/dragkr	int	y	unit	Description
--- JAS/system/vat/oljetr	int	y	unit	Description
-sim_oljetr = find_dataref("JAS/system/vat/oljetr")
+-- JAS/vat/larm/normsty	int	y	unit	Description
+-- JAS/vat/larm/luftsys	int	y	unit	Description
+-- JAS/vat/larm/hhp1		int	y	unit	Description
+-- JAS/vat/larm/hgen		int	y	unit	Description
+sim_hgen = find_dataref("JAS/vat/larm/hgen")
+-- JAS/vat/larm/motor	int	y	unit	Description
+sim_motor = find_dataref("JAS/vat/larm/motor")
+-- JAS/vat/larm/dragkr	int	y	unit	Description
+sim_dragkr = find_dataref("JAS/vat/larm/dragkr")
+-- JAS/vat/larm/oljetr	int	y	unit	Description
+sim_oljetr = find_dataref("JAS/vat/larm/oljetr")
 -- 
--- JAS/system/vat/abumod	int	y	unit	Description
--- JAS/system/vat/primdat	int	y	unit	Description
--- JAS/system/vat/hydr1	int	y	unit	Description
-sim_hydr1 = find_dataref("JAS/system/vat/hydr1")
--- JAS/system/vat/resgen	int	y	unit	Description
-sim_resgen = find_dataref("JAS/system/vat/resgen")
--- JAS/system/vat/mobrand	int	y	unit	Description
-sim_mobrand = find_dataref("JAS/system/vat/mobrand")
--- JAS/system/vat/apu		int	y	unit	Description
-sim_apu = find_dataref("JAS/system/vat/apu")
--- JAS/system/vat/apubrnd	int	y	unit	Description
+-- JAS/vat/larm/abumod	int	y	unit	Description
+-- JAS/vat/larm/primdat	int	y	unit	Description
+-- JAS/vat/larm/hydr1	int	y	unit	Description
+sim_hydr1 = find_dataref("JAS/vat/larm/hydr1")
+-- JAS/vat/larm/resgen	int	y	unit	Description
+sim_resgen = find_dataref("JAS/vat/larm/resgen")
+-- JAS/vat/larm/mobrand	int	y	unit	Description
+sim_mobrand = find_dataref("JAS/vat/larm/mobrand")
+-- JAS/vat/larm/apu		int	y	unit	Description
+sim_apu = find_dataref("JAS/vat/larm/apu")
+-- JAS/vat/larm/apubrnd	int	y	unit	Description
 -- 
--- JAS/system/vat/styrsak	int	y	unit	Description
-sim_styrsak = find_dataref("JAS/system/vat/styrsak")
--- JAS/system/vat/uppdrag	int	y	unit	Description
--- JAS/system/vat/hydr2	int	y	unit	Description
--- JAS/system/vat/likstrm	int	y	unit	Description
-sim_likstrm = find_dataref("JAS/system/vat/likstrm")
--- JAS/system/vat/landst	int	y	unit	Description
-sim_landst = find_dataref("JAS/system/vat/landst")
--- JAS/system/vat/bromsar	int	y	unit	Description
-sim_bromsar = find_dataref("JAS/system/vat/bromsar")
+-- JAS/vat/larm/styrsak	int	y	unit	Description
+sim_styrsak = find_dataref("JAS/vat/larm/styrsak")
+-- JAS/vat/larm/uppdrag	int	y	unit	Description
+-- JAS/vat/larm/hydr2	int	y	unit	Description
+-- JAS/vat/larm/likstrm	int	y	unit	Description
+sim_likstrm = find_dataref("JAS/vat/larm/likstrm")
+-- JAS/vat/larm/landst	int	y	unit	Description
+sim_landst = find_dataref("JAS/vat/larm/landst")
+-- JAS/vat/larm/bromsar	int	y	unit	Description
+sim_bromsar = find_dataref("JAS/vat/larm/bromsar")
 -- 
--- JAS/system/vat/felinfo	int	y	unit	Description
--- JAS/system/vat/dator	int	y	unit	Description
--- JAS/system/vat/brasys	int	y	unit	Description
-sim_brasys = find_dataref("JAS/system/vat/brasys")
--- JAS/system/vat/bramgd	int	y	unit	Description
-sim_bramgd = find_dataref("JAS/system/vat/bramgd")
--- JAS/system/vat/oxykab	int	y	unit	Description
--- JAS/system/vat/huvstol	int	y	unit	Description
+-- JAS/vat/larm/felinfo	int	y	unit	Description
+-- JAS/vat/larm/dator	int	y	unit	Description
+-- JAS/vat/larm/brasys	int	y	unit	Description
+sim_brasys = find_dataref("JAS/vat/larm/brasys")
+-- JAS/vat/larm/bramgd	int	y	unit	Description
+sim_bramgd = find_dataref("JAS/vat/larm/bramgd")
+-- JAS/vat/larm/oxykab	int	y	unit	Description
+-- JAS/vat/larm/huvstol	int	y	unit	Description
 
 -- ####### Lampor i VAT
 -- ####### 
--- JAS/system/vat/normsty	int	y	unit	Description
--- JAS/system/vat/luftsys	int	y	unit	Description
--- JAS/system/vat/hhp1		int	y	unit	Description
--- JAS/system/vat/hgen		int	y	unit	Description
+-- JAS/vat/larm/normsty	int	y	unit	Description
+-- JAS/vat/larm/luftsys	int	y	unit	Description
+-- JAS/vat/larm/hhp1		int	y	unit	Description
+-- JAS/vat/larm/hgen		int	y	unit	Description
 dr_hgen_lamp = XLuaFindDataRef("JAS/io/vat/lamp/hgen")
--- JAS/system/vat/motor	int	y	unit	Description
+-- JAS/vat/larm/motor	int	y	unit	Description
 dr_motor_lamp = XLuaFindDataRef("JAS/io/vat/lamp/motor")
--- JAS/system/vat/dragkr	int	y	unit	Description
--- JAS/system/vat/oljetr	int	y	unit	Description
+-- JAS/vat/larm/dragkr	int	y	unit	Description
+dr_dragkr_lamp = XLuaFindDataRef("JAS/io/vat/lamp/dragkr")
+-- JAS/vat/larm/oljetr	int	y	unit	Description
 dr_oljetr_lamp = XLuaFindDataRef("JAS/io/vat/lamp/oljetr")
 -- 
--- JAS/system/vat/abumod	int	y	unit	Description
--- JAS/system/vat/primdat	int	y	unit	Description
--- JAS/system/vat/hydr1	int	y	unit	Description
+-- JAS/vat/larm/abumod	int	y	unit	Description
+-- JAS/vat/larm/primdat	int	y	unit	Description
+-- JAS/vat/larm/hydr1	int	y	unit	Description
 dr_hydr1_lamp = XLuaFindDataRef("JAS/io/vat/lamp/hydr1")
--- JAS/system/vat/resgen	int	y	unit	Description
+-- JAS/vat/larm/resgen	int	y	unit	Description
 dr_resgen_lamp = XLuaFindDataRef("JAS/io/vat/lamp/resgen")
--- JAS/system/vat/mobrand	int	y	unit	Description
+-- JAS/vat/larm/mobrand	int	y	unit	Description
 dr_mobrand_lamp = XLuaFindDataRef("JAS/io/vat/lamp/mobrand")
--- JAS/system/vat/apu		int	y	unit	Description
+-- JAS/vat/larm/apu		int	y	unit	Description
 dr_apu_lamp = XLuaFindDataRef("JAS/io/vat/lamp/apu")
--- JAS/system/vat/apubrnd	int	y	unit	Description
+-- JAS/vat/larm/apubrnd	int	y	unit	Description
 -- 
--- JAS/system/vat/styrsak	int	y	unit	Description
+-- JAS/vat/larm/styrsak	int	y	unit	Description
 dr_styrsak_lamp = XLuaFindDataRef("JAS/io/vat/lamp/styrsak")
--- JAS/system/vat/uppdrag	int	y	unit	Description
--- JAS/system/vat/hydr2	int	y	unit	Description
--- JAS/system/vat/likstrm	int	y	unit	Description
+-- JAS/vat/larm/uppdrag	int	y	unit	Description
+-- JAS/vat/larm/hydr2	int	y	unit	Description
+-- JAS/vat/larm/likstrm	int	y	unit	Description
 dr_likstrm_lamp = XLuaFindDataRef("JAS/io/vat/lamp/likstrm")
--- JAS/system/vat/landst	int	y	unit	Description
+-- JAS/vat/larm/landst	int	y	unit	Description
 dr_landst_lamp = XLuaFindDataRef("JAS/io/vat/lamp/landst")
--- JAS/system/vat/bromsar	int	y	unit	Description
+-- JAS/vat/larm/bromsar	int	y	unit	Description
 dr_bromsar_lamp = XLuaFindDataRef("JAS/io/vat/lamp/bromsar")
 -- 
--- JAS/system/vat/felinfo	int	y	unit	Description
--- JAS/system/vat/dator	int	y	unit	Description
--- JAS/system/vat/brasys	int	y	unit	Description
+-- JAS/vat/larm/felinfo	int	y	unit	Description
+-- JAS/vat/larm/dator	int	y	unit	Description
+-- JAS/vat/larm/brasys	int	y	unit	Description
 dr_brasys_lamp = XLuaFindDataRef("JAS/io/vat/lamp/brasys")
--- JAS/system/vat/bramgd	int	y	unit	Description
+-- JAS/vat/larm/bramgd	int	y	unit	Description
 dr_bramgd_lamp = XLuaFindDataRef("JAS/io/vat/lamp/bramgd")
--- JAS/system/vat/oxykab	int	y	unit	Description
--- JAS/system/vat/huvstol	int	y	unit	Description
+-- JAS/vat/larm/oxykab	int	y	unit	Description
+-- JAS/vat/larm/huvstol	int	y	unit	Description
 
 
 -- Övriga larmsignaler
-jas_sys_vat_larmmkv = find_dataref("JAS/system/vat/larmmkv")
-sim_vat_larm1 = find_dataref("JAS/system/vat/larm1")
-sim_vat_larm2 = find_dataref("JAS/system/vat/larm2")
+jas_sys_vat_larmmkv = find_dataref("JAS/vat/larm/larmmkv")
+sim_vat_larm1 = find_dataref("JAS/vat/larm/larm1")
+sim_vat_larm2 = find_dataref("JAS/vat/larm/larm2")
 
 
 sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
@@ -220,7 +222,7 @@ function updateLarm(col, row, signal, lamp, sticky)
 		if (sticky == 1 and vat_kvitt[col][row] == 0) then
 			vat_kvitt[col][row] = 1
 		end
-		if (sticky == 0) then
+		if (sticky == 0 and vat_kvitt[col][row] ~= 3) then
 			vat_kvitt[col][row] = 2
 		end
 	else
@@ -243,6 +245,7 @@ function checkLarm()
 	sim_heartbeat = 500
 	updateLarm(1, 4, sim_hgen, dr_hgen_lamp, 1)
 	updateLarm(1, 5, sim_motor, dr_motor_lamp, 1)
+	updateLarm(1, 6, sim_dragkr, dr_dragkr_lamp, 0)
 	updateLarm(1, 7, sim_oljetr, dr_oljetr_lamp, 1)
 	sim_heartbeat = 501
 	updateLarm(2, 3, sim_hydr1, dr_hydr1_lamp, 1)
@@ -269,7 +272,7 @@ function kvittera()
 	if (sim_jas_master == 1) then
 		for i=1, 5 do
 			for j=1, 7 do
-				if (vat_kvitt[i][j] == 1) then
+				if (vat_kvitt[i][j] == 1 or vat_kvitt[i][j] == 2) then
 					vat_kvitt[i][j] = 3
 				end
 			end

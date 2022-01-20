@@ -14,7 +14,7 @@ jas_io_vu22_knapp_syst = find_dataref("JAS/io/vu22/knapp/syst")
 -- Egna dataref
 jas_sys_mkv_eta = find_dataref("JAS/system/mkv/eta")
 jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
-jas_sys_vat_larmmkv = find_dataref("JAS/system/vat/larmmkv")
+jas_sys_vat_larmmkv = find_dataref("JAS/vat/larm/larmmkv")
 
 jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
 

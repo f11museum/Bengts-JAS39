@@ -43,6 +43,7 @@ dr_right_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[2]"
 
 dr_airspeed_kts_pilot = find_dataref("sim/flightmodel/position/indicated_airspeed") 
 dr_gear = find_dataref("sim/cockpit/switches/gear_handle_status") 
+dr_groundspeed = find_dataref("sim/flightmodel/position/groundspeed") 
 
 dr_altitude = find_dataref("sim/flightmodel/misc/h_ind") 
 
@@ -63,6 +64,9 @@ jas_pratorn_tal_alfa12 = find_dataref("JAS/pratorn/tal/alfa12")
 jas_pratorn_tal_spak = find_dataref("JAS/pratorn/tal/spak")
 
 sim_jas_sys_test = find_dataref("JAS/io/vu22/knapp/syst")
+
+jas_io_pedaler_left = find_dataref("JAS/io/pedaler/left")
+jas_io_pedaler_right = find_dataref("JAS/io/pedaler/right")
 
 sim_heartbeat = 106
 
@@ -368,6 +372,22 @@ function calculateThrottle()
 	end
 end
 
+function bromsar()
+	-- Gör så fotbromsarna bromsar lika mycket höger och vänster i högre hastigheter
+	left = 0
+	right = 0
+	if (dr_groundspeed > 15) then
+		total = math.max(jas_io_pedaler_left, jas_io_pedaler_right)
+		left = total
+		right = total
+	else
+		left = jas_io_pedaler_left
+		right = jas_io_pedaler_right
+	end
+	
+	dr_braking_ratio_left = left
+	dr_braking_ratio_right = right
+end
 
 sys_test_counter = 0
 function systest()
@@ -406,8 +426,9 @@ function before_physics()
 	sim_heartbeat = 304
 	
 	calculateThrottle()
-	sim_heartbeat = 304
-    
+	sim_heartbeat = 305
+	bromsar()
+    sim_heartbeat = 306
 	systest()
     
 	sim_heartbeat = 399

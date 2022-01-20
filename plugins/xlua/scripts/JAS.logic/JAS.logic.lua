@@ -137,9 +137,8 @@ dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 
 
 sim_apu_power = find_dataref("JAS/system/apu/power")
-sim_vat_power = find_dataref("JAS/system/vat/power")
-sim_vat_larm_bramgd = find_dataref("JAS/system/vat/bramgd")
-sim_vat_larm1 = find_dataref("JAS/system/vat/larm1")
+sim_vat_power = find_dataref("JAS/vat/power")
+sim_vat_larm1 = find_dataref("JAS/vat/larm/larm1")
 
 jas_lampprov_p1 = find_dataref("JAS/lampprov/p1")
 jas_io_vu22_knapp_lampprov = find_dataref("JAS/io/vu22/knapp/lampprov")
@@ -563,14 +562,7 @@ function sysDAP()
 	end
 end
 
-function larm()
-	if (sim_fuel1 <500) then
-		sim_vat_larm_bramgd = 1
-	else
-		sim_vat_larm_bramgd = 0
-	end
-	
-end
+
 
 
 sand = 0
@@ -741,7 +733,6 @@ function before_physics()
 	lampAPUGar()
 	sysDAP()
 	sysESS()
-	larm()
 	sim_heartbeat = 308
 	vu22()
 	sim_heartbeat = 309
