@@ -144,6 +144,7 @@ dr_baro_set = XLuaFindDataRef("sim/cockpit/misc/barometer_setting")
 dr_baro_current = XLuaFindDataRef("sim/weather/barometer_sealevel_inhg")
 
 
+jas_fbw_max_roll_rate = find_dataref("JAS/fbw/max_roll_rate")
 
 -- publika variabler
 s_canard = 0
@@ -368,7 +369,7 @@ function update_dataref()
 	max_roll_rate = interpolate(150, min_roll_rate,320, max_roll_rate_val, sim_airspeed_kts_pilot )
 	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val)
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
-	
+	jas_fbw_max_roll_rate = max_roll_rate
 
 	-- XLuaSetNumber(dr_fog, 0.1) 
 	-- XLuaSetNumber(dr_cloud_shadow, 1.0) 

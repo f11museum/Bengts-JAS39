@@ -31,15 +31,25 @@ jas_io_vu22_knapp_syst = find_dataref("JAS/io/vu22/knapp/syst")
 -- Egna dataref
 jas_sys_mkv_eta = find_dataref("JAS/system/mkv/eta")
 jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
+jas_sys_mkv_gneed = find_dataref("JAS/system/mkv/gneed")
+jas_sys_mkv_needmore = find_dataref("JAS/system/mkv/needmore")
 jas_sys_vat_larmmkv = find_dataref("JAS/vat/larm/larmmkv")
 
 jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
 
 jas_pratorn_tal_taupp = find_dataref("JAS/pratorn/tal/taupp")
 jas_pratorn_larm_mkv = find_dataref("JAS/pratorn/larm/mkv")
+jas_pratorn_tal_hojd = find_dataref("JAS/pratorn/tal/hojd")
+
+jas_fbw_max_roll_rate = find_dataref("JAS/fbw/max_roll_rate")
 
 -- debug
 d_ground_diff = create_dataref("JAS/debug/mkv/ground_diff", "number")
+d_upprullningstid = create_dataref("JAS/debug/mkv/upprull", "number")
+d_gneed = create_dataref("JAS/debug/mkv/gneed", "number")
+d_radie = create_dataref("JAS/debug/mkv/radie", "number")
+d_vinkel = create_dataref("JAS/debug/mkv/vinkel", "number")
+d_uppalt = create_dataref("JAS/debug/mkv/uppalt", "number")
 
 -- Dataref från x-plane
 sim_FRP = find_dataref("sim/operation/misc/frame_rate_period")
@@ -47,7 +57,12 @@ sim_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 dr_above_sea_alt = find_dataref("sim/flightmodel/position/elevation")
 sim_vy = find_dataref("sim/flightmodel/position/local_vy")
 dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
+dr_true_speed = find_dataref("sim/flightmodel/position/true_airspeed") -- är i meter/s
 dr_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
+dr_acf_roll = find_dataref("sim/flightmodel/position/phi") 
+dr_alpha = find_dataref("sim/flightmodel/position/alpha") 
+dr_acf_pitch = find_dataref("sim/flightmodel/position/theta") 
+dr_g_nrml = find_dataref("sim/flightmodel/forces/g_nrml") 
 
 sim_gear = find_dataref("sim/cockpit/switches/gear_handle_status")
 
@@ -66,10 +81,45 @@ function do_on_exit()
 
 end
 
+blink1s = 0
+blink025s = 0
+blinktimer = 0
+function blink1sFunc()
+	sim_heartbeat = 400
+	blinktimer = blinktimer + sim_FRP
+	t2 = math.floor(blinktimer)
+	if (t2 % 2 == 0) then
+		blink1s = 1
+	else 
+		blink1s = 0
+	end
+	sim_heartbeat = 402
+    t2 = math.floor(blinktimer*4)
+	if (t2 % 2 == 0) then
+		blink025s = 1
+	else 
+		blink025s = 0
+	end
+	sim_heartbeat = 499
+end
+
 
 ground_max = 0
 
 speed_prev = 0
+
+--profil1 = {64,128,192,256,320,384,448,512}
+profil1 = {}
+profil1[1] = 5
+profil1[2] = 64
+profil1[3] = 128
+profil1[4] = 192
+profil1[5] = 256
+profil1[6] = 320
+profil1[7] = 384
+profil1[8] = 448
+profil1[9] = 512
+--profil2 = {128,256,384,512, 640, 768, 896, 1024 1152,1280,1408,1536,1664,1792,1920}
 
 function mkv()
 
@@ -79,7 +129,10 @@ function mkv()
 	seaalt = dr_above_sea_alt
 	gear = sim_gear
 	vy  = sim_vy
-
+	roll = math.abs(dr_acf_roll)
+	
+	max_roll_rate = jas_fbw_max_roll_rate
+	
 	sim_mkv_heartbeat = 400
 
 	-- Beräkna en terrängprofil
@@ -89,12 +142,64 @@ function mkv()
 	end
 	ground_diff = ground_max - ground
 	d_ground_diff = ground_diff
+	sim_mkv_heartbeat = 401	
+	local i = 1
+	while profil1[i] do
+		if (profil1[i] > ground) then
+			break
+		end
+		i = i + 1
+	end
 	
+	-- if (radaralt < profil1[i]) then
+	-- 	jas_pratorn_tal_hojd = 1
+	-- end
+	sim_mkv_heartbeat = 402
+	hsak = radaralt - radaralt*0.01
 	
+	if (hsak < 1) then
+		hsak = 1
+	end
+	
+	upprullningstid = (roll/max_roll_rate)*3
+	d_upprullningstid = upprullningstid
+	kollitionstid = 7+upprullningstid
+	
+	uppbyggnadstid = (9-dr_g_nrml)*0.12
+	
+	sim_mkv_heartbeat = 403
+	upp_alt = (radaralt*0.90) - (-vy*upprullningstid) - (-vy*uppbyggnadstid)
+	d_uppalt = upp_alt
+	sim_mkv_heartbeat = 4031
+	if (upp_alt<=1) then
+		upp_alt = 1
+	end
+	sim_mkv_heartbeat = 4032
+	-- Räkna ut halvcirkellängd baserat på planets vinkel och avstånd till marken 
+	-- pi/180 = 0.01745329251
+	
+	-- Räkna ut radien först
+
+	vinkel = -math.rad(dr_acf_pitch-dr_alpha)
+	d_vinkel = vinkel
+	radie = upp_alt/(1-math.cos(vinkel))
+	d_radie = radie
+
+	gneed = (dr_true_speed*dr_true_speed) / radie
+	
+	jas_sys_mkv_gneed = gneed/9.82 +1
+	
+	if (dr_g_nrml < jas_sys_mkv_gneed) then
+		jas_sys_mkv_needmore = blink025s
+	else
+		jas_sys_mkv_needmore = 0
+	end
+	
+	sim_mkv_heartbeat = 405
 	larm = 0
 	if (gear == 0) then
 		if (vy < 0) then
-			if ( (-vy * (7+3)) > radaralt) then
+			if ( (-vy * (kollitionstid)) > upp_alt) then
 				timeLeft = radaralt/-vy
 				jas_sys_mkv_eta = timeLeft
 				larm = 1
@@ -112,7 +217,7 @@ function mkv()
 		end
 		
 	end
-	
+	sim_mkv_heartbeat = 406
 	-- Öka pådrag larmet
 	fart_minskar = 0
 	if (dr_ias < speed_prev) then
@@ -136,7 +241,7 @@ function mkv()
 	if (larm == 1) then
 		-- Nivå A
 		jas_pratorn_tal_taupp = 2
-		if (timeLeft < 7) then
+		if (timeLeft < 7 or (jas_sys_mkv_needmore and jas_sys_mkv_gneed>3) ) then
 			-- Nivå B aktivera tonorgel och höjdvarningslampa
 			jas_sys_vat_larmmkv = 1
 			jas_pratorn_larm_mkv = 2
@@ -179,6 +284,7 @@ end
 heartbeat = 0
 function before_physics() 
     sim_mkv_heartbeat = 300
+	blink1sFunc()
 	mkv()
 	systest()
 	sim_mkv_heartbeat = heartbeat
