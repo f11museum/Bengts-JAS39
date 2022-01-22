@@ -169,7 +169,11 @@ end
 
 blink1s = 0
 blink05s = 0
+blink032s = 0
+blink025s = 0
 blinktimer = 0
+
+--ATT/HÖJD ska blinka med 650ms, 325ms släckt 325ms tänd
 function blink1sFunc()
 	blinktimer = blinktimer + sim_FRP
 	t2 = math.floor(blinktimer)
@@ -183,6 +187,18 @@ function blink1sFunc()
 		blink05s = 1
 	else 
 		blink05s = 0
+	end
+	t2 = math.floor(blinktimer*3)
+	if (t2 % 2 == 0) then
+		blink032s = 1
+	else 
+		blink032s = 0
+	end
+	t2 = math.floor(blinktimer*4)
+	if (t2 % 2 == 0) then
+		blink025s = 1
+	else 
+		blink025s = 0
 	end
 end
 
@@ -431,12 +447,12 @@ function update_lamps()
 	jas_lamps_hojd = 0
 	if (jas_auto_mode == 20) then
 		jas_lamps_spak = 1
-		jas_lamps_att = blink05s
+		jas_lamps_att = blink032s
 	end
 	if (jas_auto_mode == 30) then
 		jas_lamps_spak = 1
-		jas_lamps_att = blink05s
-		jas_lamps_hojd = blink05s
+		jas_lamps_att = blink032s
+		jas_lamps_hojd = blink032s
 	end
 	if (jas_auto_mode == 1) then
 		jas_lamps_spak = 1

@@ -209,7 +209,7 @@ clocktimer = 0
 function lampMasterWarning()
     if ( sim_jas_lamps_master == 1) then
 
-        if (blink025s == 1) then
+        if (blink025s == 1) then -- Syns i video att blinkfrekvensen är 250ms
 			sim_jas_lamps_master1 = 1
 			sim_jas_lamps_master2 = 0
         else
