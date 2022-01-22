@@ -33,6 +33,8 @@ jas_sys_mkv_eta = find_dataref("JAS/system/mkv/eta")
 jas_sys_mkv_larm = find_dataref("JAS/system/mkv/larm")
 jas_sys_mkv_gneed = find_dataref("JAS/system/mkv/gneed")
 jas_sys_mkv_needmore = find_dataref("JAS/system/mkv/needmore")
+jas_sys_mkv_lastfaktor = find_dataref("JAS/system/mkv/lastfaktor")
+
 jas_sys_vat_larmmkv = find_dataref("JAS/vat/larm/larmmkv")
 
 jas_sys_larm_okapadrag = find_dataref("JAS/system/larm/okapadrag")
@@ -69,16 +71,21 @@ sim_gear = find_dataref("sim/cockpit/switches/gear_handle_status")
 
 sim_mkv_heartbeat = 101
 
-function flight_start() 
-	sim_mkv_heartbeat = 200
+
+
+-- Hjälpfunktioner
+
+function constrain(val, lower, upper)
+    
+    if lower > upper then 
+        lower, upper = upper, lower 
+    end -- swap if boundaries supplied the wrong way
+    return math.max(lower, math.min(upper, val))
 end
 
-function aircraft_unload()
-
-end
-
-function do_on_exit()
-
+function interpolate(x1, y1, x2, y2, value)
+	y = y1 + (y2-y1)/(x2-x1)*(value-x1)
+	return y
 end
 
 blink1s = 0
@@ -121,6 +128,8 @@ profil1[8] = 448
 profil1[9] = 512
 --profil2 = {128,256,384,512, 640, 768, 896, 1024 1152,1280,1408,1536,1664,1792,1920}
 
+
+hojd_timer = 0
 function mkv()
 
 	sim_mkv_heartbeat = 400
@@ -133,8 +142,12 @@ function mkv()
 	
 	max_roll_rate = jas_fbw_max_roll_rate
 	
-	sim_mkv_heartbeat = 400
-
+	sim_mkv_heartbeat = 4001
+	
+	-- Beräkna maximal tillåten lastfaktor
+	lastfaktor = interpolate(200, 1.0, 550, 5.0, dr_ias* 1.85200 )
+	lastfaktor = constrain(lastfaktor, 1.0,5.0)
+	jas_sys_mkv_lastfaktor = lastfaktor
 	-- Beräkna en terrängprofil
 	ground = seaalt - radaralt
 	if (ground> ground_max) then
@@ -151,9 +164,12 @@ function mkv()
 		i = i + 1
 	end
 	
-	-- if (radaralt < profil1[i]) then
-	-- 	jas_pratorn_tal_hojd = 1
-	-- end
+	if (radaralt < profil1[i]) then
+		if (hojd_timer < blinktimer) then
+			jas_pratorn_tal_hojd = 1
+			hojd_timer = blinktimer + 3.0
+		end
+	end
 	sim_mkv_heartbeat = 402
 	hsak = radaralt - radaralt*0.01
 	
@@ -161,7 +177,7 @@ function mkv()
 		hsak = 1
 	end
 	
-	upprullningstid = (roll/max_roll_rate)*3
+	upprullningstid = (roll/max_roll_rate)*2.5
 	d_upprullningstid = upprullningstid
 	kollitionstid = 7+upprullningstid
 	
@@ -186,8 +202,8 @@ function mkv()
 	d_radie = radie
 
 	gneed = (dr_true_speed*dr_true_speed) / radie
-	
-	jas_sys_mkv_gneed = gneed/9.82 +1
+	gneed = gneed/9.82 +1
+	jas_sys_mkv_gneed = gneed
 	
 	if (dr_g_nrml < jas_sys_mkv_gneed) then
 		jas_sys_mkv_needmore = blink025s
@@ -198,8 +214,14 @@ function mkv()
 	sim_mkv_heartbeat = 405
 	larm = 0
 	if (gear == 0) then
+		
 		if (vy < 0) then
-			if ( (-vy * (kollitionstid)) > upp_alt) then
+			if (gneed>3.0) then
+				timeLeft = radaralt/-vy
+				jas_sys_mkv_eta = timeLeft
+				larm = 1
+			end
+			if ( (-vy * (7)) > upp_alt) then
 				timeLeft = radaralt/-vy
 				jas_sys_mkv_eta = timeLeft
 				larm = 1
@@ -241,7 +263,7 @@ function mkv()
 	if (larm == 1) then
 		-- Nivå A
 		jas_pratorn_tal_taupp = 2
-		if (timeLeft < 7 or (jas_sys_mkv_needmore and jas_sys_mkv_gneed>3) ) then
+		if ((jas_sys_mkv_needmore and jas_sys_mkv_gneed>3) ) then
 			-- Nivå B aktivera tonorgel och höjdvarningslampa
 			jas_sys_vat_larmmkv = 1
 			jas_pratorn_larm_mkv = 2
@@ -284,6 +306,7 @@ end
 heartbeat = 0
 function before_physics() 
     sim_mkv_heartbeat = 300
+	
 	blink1sFunc()
 	mkv()
 	systest()
@@ -291,4 +314,15 @@ function before_physics()
     heartbeat = heartbeat + 1
 end
 
+function flight_start() 
+	sim_mkv_heartbeat = 200
+end
+
+function aircraft_unload()
+
+end
+
+function do_on_exit()
+
+end
 sim_mkv_heartbeat = 199

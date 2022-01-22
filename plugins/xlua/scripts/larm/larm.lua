@@ -27,6 +27,8 @@ jas_vat_larm_brasys = find_dataref("JAS/vat/larm/brasys")
 
 jas_vat_larmkod = find_dataref("JAS/vat/larmkod")
 
+jas_pratorn_larm_gransvarde = find_dataref("JAS/pratorn/larm/gransvarde")
+
 -- Dataref från x-plane
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 dr_mach = find_dataref("sim/flightmodel/misc/machno")
@@ -35,6 +37,8 @@ dr_gear = find_dataref("sim/cockpit/switches/gear_handle_status")
 dr_nose_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[0]") 
 dr_left_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[1]") 
 dr_right_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[2]") 
+dr_alpha = find_dataref("sim/flightmodel/position/alpha") 
+dr_g_nrml = find_dataref("sim/flightmodel/forces/g_nrml") 
 
 dr_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 
@@ -171,6 +175,20 @@ function bramgd()
 	end
 end
 
+function stall()
+	
+	if (dr_ias>50 and dr_alpha>20) then
+		jas_pratorn_larm_gransvarde = 1
+	end
+end
+
+function maxg()
+	
+	if (dr_g_nrml > 9.1 or dr_g_nrml < -3.1) then
+		jas_pratorn_larm_gransvarde = 1
+	end
+end
+
 sys_test_counter = 0
 function systest()
 	sim_heartbeat = 900
@@ -214,6 +232,9 @@ function before_physics()
 	sim_heartbeat = 306
 	brasys()
 	sim_heartbeat = 307
+	stall()
+	sim_heartbeat = 308
+	maxg()
 	
 	systest()
 	sim_heartbeat = heartbeat

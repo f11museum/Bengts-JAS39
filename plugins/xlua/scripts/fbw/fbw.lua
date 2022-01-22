@@ -17,7 +17,7 @@ max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
 
-deadzone = 0.10
+deadzone = 0.050
 autopilot_disable = 0.45
 max_alpha_up = 30
 max_alpha_down = -15
@@ -954,13 +954,13 @@ function update_lamps()
 		XLuaSetNumber(dr_jas_lamps_hojd, 0)
 	end
 	if (sim_jas_auto_mode == 2) then
-		XLuaSetNumber(dr_jas_lamps_spak, 0)
+		XLuaSetNumber(dr_jas_lamps_spak, 1)
 		XLuaSetNumber(dr_jas_lamps_att, 1)
 		XLuaSetNumber(dr_jas_lamps_hojd, 0)
 	end
 	if (sim_jas_auto_mode == 3) then
-		XLuaSetNumber(dr_jas_lamps_spak, 0)
-		XLuaSetNumber(dr_jas_lamps_att, 0)
+		XLuaSetNumber(dr_jas_lamps_spak, 1)
+		XLuaSetNumber(dr_jas_lamps_att, 1)
 		XLuaSetNumber(dr_jas_lamps_hojd, 1)
 	end
 	

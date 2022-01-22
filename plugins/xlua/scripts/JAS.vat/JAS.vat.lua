@@ -178,6 +178,7 @@ end
 
 blink1s = 0
 blink05s = 0
+blink025s = 0
 blinktimer = 0
 function blink1sFunc()
 	sim_heartbeat = 400
@@ -195,6 +196,12 @@ function blink1sFunc()
 	else 
 		blink05s = 0
 	end
+	t2 = math.floor(blinktimer*4)
+	if (t2 % 2 == 0) then
+		blink025s = 1
+	else 
+		blink025s = 0
+	end
 	sim_heartbeat = 499
 end
 
@@ -202,7 +209,7 @@ clocktimer = 0
 function lampMasterWarning()
     if ( sim_jas_lamps_master == 1) then
 
-        if (blink05s == 1) then
+        if (blink025s == 1) then
 			sim_jas_lamps_master1 = 1
 			sim_jas_lamps_master2 = 0
         else

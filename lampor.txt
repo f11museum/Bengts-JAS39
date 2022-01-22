@@ -6,8 +6,16 @@ JAS/arraytest	int[4]		sys	unit	unit2	Description
 JAS/arraybanan	int[10]		sys	unit	unit2	Description
 
 # Variabler
+
+## MKV
 JAS/system/mkv/larm			int		sys	unit	unit2	Description
 JAS/system/mkv/eta			float	sys	unit	unit2	Tidkvar till markkontakt
+JAS/system/mkv/gneed		float	sys	unit	unit2	Lastfaktor som behövs för att klara sig ur
+JAS/system/mkv/needmore		int		sys	unit	unit2	Lastfaktorn måste ökas
+JAS/system/mkv/lastfaktor	float	sys	unit	unit2	Beräknad lastfaktor
+
+# Variabler från Fly-by-wire beräkningar
+JAS/fbw/max_roll_rate	float	sys	unit	unit2	Nuvarande max rollrate baserat på hastighet
 
 #Heartbeats
 JAS/system/mkv/heartbeat	int	sys	unit	unit2	Description
