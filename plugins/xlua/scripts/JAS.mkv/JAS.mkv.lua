@@ -44,6 +44,7 @@ jas_pratorn_larm_mkv = find_dataref("JAS/pratorn/larm/mkv")
 jas_pratorn_tal_hojd = find_dataref("JAS/pratorn/tal/hojd")
 
 jas_fbw_max_roll_rate = find_dataref("JAS/fbw/max_roll_rate")
+jas_auto_mode = find_dataref("JAS/autopilot/mode")
 
 -- debug
 d_ground_diff = create_dataref("JAS/debug/mkv/ground_diff", "number")
@@ -51,6 +52,7 @@ d_upprullningstid = create_dataref("JAS/debug/mkv/upprull", "number")
 d_gneed = create_dataref("JAS/debug/mkv/gneed", "number")
 d_radie = create_dataref("JAS/debug/mkv/radie", "number")
 d_vinkel = create_dataref("JAS/debug/mkv/vinkel", "number")
+d_vinkel_m = create_dataref("JAS/debug/mkv/vinkel_m", "number")
 d_uppalt = create_dataref("JAS/debug/mkv/uppalt", "number")
 
 -- Dataref från x-plane
@@ -130,10 +132,14 @@ profil1[9] = 512
 
 
 hojd_timer = 0
+vinkel_m_prev = 0
+eta_prev = 1
+skillnad_prev = 1
+
 function mkv()
 
 	sim_mkv_heartbeat = 400
-
+	speed = dr_true_speed
 	radaralt = sim_radar_alt
 	seaalt = dr_above_sea_alt
 	gear = sim_gear
@@ -164,6 +170,8 @@ function mkv()
 		i = i + 1
 	end
 	
+	-- Säg HÖJD om vi flyger på en höjd som kan träffa ett plötsligt berg
+	
 	if (radaralt < profil1[i]) then
 		if (hojd_timer < blinktimer) then
 			jas_pratorn_tal_hojd = 1
@@ -171,46 +179,105 @@ function mkv()
 		end
 	end
 	sim_mkv_heartbeat = 402
-	hsak = radaralt - radaralt*0.01
 	
-	if (hsak < 1) then
-		hsak = 1
+	
+	hsak_alt = radaralt - 7 -- 7 meter säkerhetshöjd
+	
+	if (hsak_alt < 1) then
+		hsak_alt = 1
 	end
 	
+	-- Räkna ut upprullningstid och uppbyggnadstid
 	upprullningstid = (roll/max_roll_rate)*2.5
 	d_upprullningstid = upprullningstid
-	kollitionstid = 7+upprullningstid
 	
-	uppbyggnadstid = (9-dr_g_nrml)*0.12
+	-- 5g ska ta 1s att bygga upp
+	uppbyggnadstid = (9-dr_g_nrml)*0.2
 	
 	sim_mkv_heartbeat = 403
-	upp_alt = (radaralt*0.90) - (-vy*upprullningstid) - (-vy*uppbyggnadstid)
-	d_uppalt = upp_alt
-	sim_mkv_heartbeat = 4031
+	-- Räkna ut höjden efter upprullning och uppbyggnad
+	upp_alt = (hsak_alt*0.90) - (-vy*upprullningstid) - (-vy*uppbyggnadstid)
 	if (upp_alt<=1) then
 		upp_alt = 1
 	end
+	d_uppalt = upp_alt
 	sim_mkv_heartbeat = 4032
-	-- Räkna ut halvcirkellängd baserat på planets vinkel och avstånd till marken 
-	-- pi/180 = 0.01745329251
 	
-	-- Räkna ut radien först
-
+	-- Räkna ut vinkeln på cirkeln med lastfaktorn
+	radie_m = (speed * speed) / (lastfaktor * 9.82);
+	bb = radie_m - upp_alt;
+	vinkel_m = math.acos(bb / radie_m);
+	d_vinkel_m = vinkel_m
+	
+	-- Räkna ut vinkeln på våran cirkel
 	vinkel = -math.rad(dr_acf_pitch-dr_alpha)
 	d_vinkel = vinkel
 	radie = upp_alt/(1-math.cos(vinkel))
 	d_radie = radie
+	
+	-- Räkna ut deltan mellan våran vinkel och vinkeln för upptagningskurvan
+	sim_mkv_heartbeat = 404
+	skillnad = vinkel-vinkel_m
+	delta_skillnad = skillnad-skillnad_prev
+	
+	
+	if (sim_FRP>0) then
+		delta = delta_skillnad / sim_FRP
+	end
+	d_uppalt = delta
+	sim_mkv_heartbeat = 4041
+	ny_eta = 15.0
+	if (delta ~= 0 and skillnad < 1000 and skillnad > -1000) then
+		ny_eta = -skillnad/delta
+	end
+	if (skillnad <0 and ny_eta <0 and delta<0) then
+		if (ny_eta<0) then
+			ny_eta = -ny_eta
+		end
+	end
+	if (skillnad > skillnad_prev) then
+		
+	end
+	
+	math.abs(ny_eta)
+	skillnad_prev = skillnad
+	d_radie = skillnad
+	sim_mkv_heartbeat = 4042
+	if (ny_eta < 2000 and ny_eta > -2000) then
+		ny_eta2 = (eta_prev*9 + ny_eta) /10
+	end
+	
+	sim_mkv_heartbeat = 4043
+	
+	eta_prev = ny_eta2
+	jas_sys_mkv_eta = ny_eta2
+	
+	sim_mkv_heartbeat = 4044
+	ny_eta = ny_eta2
+	sim_mkv_heartbeat = 4045
 
 	gneed = (dr_true_speed*dr_true_speed) / radie
 	gneed = gneed/9.82 +1
 	jas_sys_mkv_gneed = gneed
+	sim_mkv_heartbeat = 4046
 	
-	if (dr_g_nrml < jas_sys_mkv_gneed) then
-		jas_sys_mkv_needmore = blink025s
-	else
-		jas_sys_mkv_needmore = 0
+	sim_mkv_heartbeat = 4047
+	
+	larmtid = 3.0
+	larmtid2 = 1.8
+	if (dr_acf_pitch-dr_alpha) < 5 then
+		larmtid = 1.6
+		larmtid2 = 1.1
 	end
 	
+	sim_mkv_heartbeat = 4048
+	
+	if (jas_auto_mode >1) then
+		larmtid =  5.0
+		larmtid2 = 2.8
+		
+	end
+	sim_mkv_heartbeat = 4049
 	sim_mkv_heartbeat = 405
 	larm = 0
 	if (gear == 0) then
@@ -218,12 +285,12 @@ function mkv()
 		if (vy < 0) then
 			if (gneed>3.0) then
 				timeLeft = radaralt/-vy
-				jas_sys_mkv_eta = timeLeft
+				--jas_sys_mkv_eta = timeLeft
 				larm = 1
 			end
-			if ( (-vy * (7)) > upp_alt) then
-				timeLeft = radaralt/-vy
-				jas_sys_mkv_eta = timeLeft
+			if ( ny_eta < larmtid) then
+				--timeLeft = radaralt/-vy
+				--jas_sys_mkv_eta = timeLeft
 				larm = 1
 			end
 		end
@@ -233,7 +300,7 @@ function mkv()
 		if (vy < -6) then
 			if ( (-vy * 6) > radaralt) then
 				timeLeft = radaralt/-vy
-				jas_sys_mkv_eta = timeLeft
+				--jas_sys_mkv_eta = timeLeft
 				larm = 1
 			end
 		end
@@ -258,20 +325,28 @@ function mkv()
 		-- Markkollitionsvarning fast vi har stället ute om en hög hastighet nedåt uppstår, ska kunna ske enligt haveriraporten om man tolkat rätt?
 		-- TODO
 	end
-	
+	sim_mkv_heartbeat = 407
 	jas_sys_mkv_larm = larm
 	if (larm == 1) then
+		sim_mkv_heartbeat = 4071
 		-- Nivå A
 		jas_pratorn_tal_taupp = 2
-		if ((jas_sys_mkv_needmore and jas_sys_mkv_gneed>3) ) then
+		jas_sys_mkv_needmore = 0
+		if (ny_eta < larmtid2  ) then
+			sim_mkv_heartbeat = 4072
 			-- Nivå B aktivera tonorgel och höjdvarningslampa
 			jas_sys_vat_larmmkv = 1
 			jas_pratorn_larm_mkv = 2
 			jas_io_frontpanel_lamp_hojdvarn = 1
+			if (dr_g_nrml < jas_sys_mkv_gneed ) then
+				jas_sys_mkv_needmore = blink025s
+			else
+				jas_sys_mkv_needmore = 0
+			end
 		end
-		if (timeLeft < 5) then
-			-- Nivå C
-		end
+		-- if (6 < 5) then
+		-- 	-- Nivå C
+		-- end
 		
 	else
 		jas_pratorn_tal_taupp = 0
@@ -279,7 +354,7 @@ function mkv()
 		jas_sys_vat_larmmkv = 0
 		jas_io_frontpanel_lamp_hojdvarn = 0
 	end
-	
+	sim_mkv_heartbeat = 499
 end
 
 
