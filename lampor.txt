@@ -143,6 +143,18 @@ JAS/vat/larm/huvstol	int	sys	unit	unit2	Description
 
 JAS/vat/larmkod		int[200]	vat	unit	unit2	Description
 
+#Elektronik system
+JAS/el/strömskena/huvud_vac_a	int	sys	unit	unit2	AFK AMOT TNS fenpitotrör alfagivare-vänster RT36 FR38 FRM39 IK f/s EP17-TI-FI-SI förbandbelys taxistrålk identbelys
+JAS/el/strömskena/sekundar_vac_a	int	sys	unit	unit2	AVAP+balkar nospitotrör alfagivare-höger betagivare MIP CEM TS EP17-pp2-MI lant antikol strålk
+JAS/el/strömskena/sekundar_vac_b	int	sys	unit	unit2	radar
+JAS/el/strömskena/huvud_a	int	sys	unit	unit2	AFPL huvudblock
+JAS/el/strömskena/huvud_a1	int	sys	unit	unit2	AMOT hydraul el TNS DAP LD7 utlopp-rpm-ind horizontgyro broms ident indiker belys 
+JAS/el/strömskena/huvud_a2	int	sys	unit	unit2	NÖDF RGENsys
+JAS/el/strömskena/huvud_c	int	sys	unit	unit2	AMOT RHM TILS SSR vingspetsljus CEM SD EP17 minnes hålln
+JAS/el/strömskena/huvud_e	int	sys	unit	unit2	ESS
+JAS/el/strömskena/sekundar_a	int	sys	unit	unit2	AVAP + balkar lampkontr radar-EFF-HFE
+JAS/el/strömskena/batteri_c	int	sys	unit	unit2	AFPL krikiska block samt broms
+
 #apubrand	lampa	vu22	JAS/lampprov/p1	JAS/system/ess/power	DescriptionM24
 hydr1	lampa	vat	JAS/lampprov/p1	JAS/vat/power	Description
 
