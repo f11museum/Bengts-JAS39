@@ -62,6 +62,9 @@ JAS/autopilot/att		float	sys	unit	unit2	Description
 JAS/autopilot/mode		int		sys	unit	unit2	Description
 JAS/autopilot/afk		float	sys	unit	unit2	Description
 JAS/autopilot/afk_mode	int		sys	unit	unit2	Description
+JAS/autopilot/ks_mode	int		sys	unit	unit2	Description
+JAS/autopilot/ks_roll	float	sys	unit	unit2	Description
+
 
 # Pratorn
 JAS/pratorn/tal/spak			int		sys	unit	unit2	Description
@@ -141,7 +144,7 @@ JAS/vat/larm/bramgd	int	sys	unit	unit2	Description
 JAS/vat/larm/oxykab	int	sys	unit	unit2	Description
 JAS/vat/larm/huvstol	int	sys	unit	unit2	Description
 
-JAS/vat/larmkod		int[200]	vat	unit	unit2	Description
+JAS/vat/larmkod		int[400]	vat	unit	unit2	Description
 
 #Elektronik system
 JAS/el/stromskena/huvud_vac_a	int	sys	unit	unit2	AFK AMOT TNS fenpitotrör alfagivare-vänster RT36 FR38 FRM39 IK f/s EP17-TI-FI-SI förbandbelys taxistrålk identbelys

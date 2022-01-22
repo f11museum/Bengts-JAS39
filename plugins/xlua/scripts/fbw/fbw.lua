@@ -18,7 +18,11 @@ max_yaw_rate = 50
 elevator_rate_to_angle = 2
 
 deadzone = 0.050
-autopilot_disable = 0.45
+autopilot_disable = 0.192307692308 -- 1.5 grader
+autopilot_disable_roll = 0.192307692308 -- 1.5 grader
+autopilot_disable_pitch = 0.166666666667 -- detta stämmer för spak mot magen 2.5 grader av totalt 15 grader
+autopilot_disable_pitch_up = 0.357142857143 -- detta stämmer för spak FRÅN magen 2.5 grader av totalt 7 grader
+
 max_alpha_up = 30
 max_alpha_down = -15
 max_alpha_fade = 10
@@ -129,6 +133,8 @@ dr_jas_auto_att = XLuaFindDataRef("JAS/autopilot/att")
 dr_jas_auto_alt = XLuaFindDataRef("JAS/autopilot/alt")
 sim_jas_auto_afk = find_dataref("JAS/autopilot/afk")
 sim_jas_auto_afk_mode = find_dataref("JAS/autopilot/afk_mode")
+jas_auto_ks_mode = find_dataref("JAS/autopilot/ks_mode")
+jas_auto_ks_roll = find_dataref("JAS/autopilot/ks_roll")
 
 jas_pratorn_tal_alfa12 = find_dataref("JAS/pratorn/tal/alfa12")
 jas_pratorn_tal_spak = find_dataref("JAS/pratorn/tal/spak")
@@ -424,6 +430,7 @@ wanted_roll = 0
 stick_roll = 0
 delta_prev = 0
 ks_mode = 0
+autoback_timer = 0
 
 function calculateAileron()
 	fadeout = interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )
@@ -431,7 +438,17 @@ function calculateAileron()
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )) 
 	--m_aileron = sim_yoke_roll_ratio*8
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
-	if (sim_yoke_roll_ratio<deadzone and sim_yoke_roll_ratio > -deadzone) then
+	stick = 1
+	current_deadzone = deadzone
+	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 ) then
+		current_deadzone = autopilot_disable_roll
+	end
+		
+	if (sim_yoke_roll_ratio<current_deadzone and sim_yoke_roll_ratio > -current_deadzone) then
+		stick = 0
+	end
+	if (stick == 0) then
+		
 		-- ingen rör spaken
 		if (stick_roll == 1) then
 			stick_roll = 0
@@ -445,8 +462,9 @@ function calculateAileron()
 		
 		-- lägg på liten justering för att gå tillbaka dit man va när man släppte spaken
 		delta2 = wanted_roll - sim_acf_roll
-		if (ks_mode == 1 and sim_jas_auto_mode == 3) then -- om höjd styrning och planet är i level så håller den kvar det
-			delta2 = 0 - sim_acf_roll
+		if (jas_auto_ks_mode == 1 and sim_jas_auto_mode == 3) then -- om höjd styrning och planet är i level så håller den kvar det
+			delta2 = jas_auto_ks_roll - sim_acf_roll
+			wanted_roll = jas_auto_ks_roll
 			sim_jas_lamps_ks = 1
 		end	
 		
@@ -457,14 +475,21 @@ function calculateAileron()
 		if (delta2<-180) then
 			delta2 = wanted_roll - (sim_acf_roll-360)
 		end
+		
+		
+		delta3 = delta2*delta2
+		if (delta2<0) then
+			delta3 = -delta3
+		end
+		--delta2 = delta3
 		delta = delta + (delta2 * 0.9)
 		
 		--delta = delta * fadeout
 		
 		--delta = delta2 * fadeout  * 0.1
-		delta = myfilter (delta_prev, delta2, 60)
+		delta = myfilter (delta_prev, delta2, 10)
 	else
-		if (ks_mode == 1 and sim_jas_auto_mode == 3) then
+		if (jas_auto_ks_mode == 1 and sim_jas_auto_mode == 3) then
 			sim_jas_lamps_ks = blink1s
 		else
 			sim_jas_lamps_ks = 0
@@ -491,7 +516,7 @@ function calculateAileron()
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_roll) 
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), sim_acf_roll) 
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), delta2) 
-	
+	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d"), delta) 
 	m_aileron = delta
 	
 	-- PID försök till att få en bättre trim
@@ -572,26 +597,26 @@ function calculateAutopilot(wanted_rate)
 	error = 0
 	
 	-- Koppla ur auitopiloten om man dra mycket i spaken
-	if (sim_yoke_pitch_ratio>autopilot_disable or sim_yoke_pitch_ratio < -autopilot_disable) then
-		if (sim_jas_auto_mode > 1) then
-			autopilot_hold_alti = 0
-			autopilot_hold_att = 0
-			XLuaSetNumber(dr_jas_lamps_spak, 1)
-			XLuaSetNumber(dr_jas_lamps_att, 0)
-			XLuaSetNumber(dr_jas_lamps_hojd, 0)
-			XLuaSetNumber(dr_jas_auto_mode, 1) 
-			jas_pratorn_tal_spak = 1
-		end
-		
-	end
+	-- if (sim_yoke_pitch_ratio>autopilot_disable or sim_yoke_pitch_ratio < -autopilot_disable) then
+	-- 	if (sim_jas_auto_mode > 1) then
+	-- 		autopilot_hold_alti = 0
+	-- 		autopilot_hold_att = 0
+	-- 		XLuaSetNumber(dr_jas_lamps_spak, 1)
+	-- 		XLuaSetNumber(dr_jas_lamps_att, 0)
+	-- 		XLuaSetNumber(dr_jas_lamps_hojd, 0)
+	-- 		XLuaSetNumber(dr_jas_auto_mode, 1) 
+	-- 		jas_pratorn_tal_spak = 1
+	-- 	end
+	-- 
+	-- end
 	if (sim_jas_auto_mode == 3) then
 		if lock_pitch_movement == 1 then
 			lock_pitch_movement = 0
 			--autopilot_hold_alti = sim_altitude
-			autopilot_hold_alti = autopilot_hold_alti + wanted_rate
-			XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti) 
+			--autopilot_hold_alti = autopilot_hold_alti + wanted_rate
+			--XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti) 
 		end
-		demand = -(sim_altitude - sim_jas_auto_alt)/100
+		demand = -(sim_altitude - sim_jas_auto_alt)/50
 		
 		autopilot_hold_att = constrain(demand, -10,10)
 		XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
@@ -601,8 +626,8 @@ function calculateAutopilot(wanted_rate)
 	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
 		if (lock_pitch_movement == 1 and sim_jas_auto_mode == 2) then
 			lock_pitch_movement = 0
-			autopilot_hold_att = autopilot_hold_att + wanted_rate/100
-			XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
+			--autopilot_hold_att = autopilot_hold_att + wanted_rate/100
+			--XLuaSetNumber(dr_jas_auto_att, autopilot_hold_att) 
 		end
 		demand = sim_jas_auto_att - sim_acf_flight_angle
 		error = constrain(demand, -10,10)
@@ -617,7 +642,7 @@ function calculateAutopilot(wanted_rate)
 	end
 	
 
-	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then 
+	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 20 or sim_jas_auto_mode == 30) then 
 		if lock_pitch_movement == 1 then
 			lock_pitch = sim_pitch
 			lock_pitch_movement = 0
@@ -755,7 +780,7 @@ function calculateElevator()
 		--g_rest = constrain(g_rest - 0.01, 0,1000)
 	end
 	auto1 = calculateAutopilot(wanted_rate)
-	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
+	if (sim_jas_auto_mode >= 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
 		--auto_trim = (auto_trim*9 + auto1)/10
 		delta = 0
 		wanted_rate = auto1
@@ -1017,9 +1042,9 @@ function before_physics()
 		return
 	end
 	sim_heartbeat = 302
-	update_buttons()
+	--update_buttons()
 	sim_heartbeat = 303
-	update_lamps()
+	--update_lamps()
 	sim_heartbeat = 304
 	m_canard = 0
 	m_elevator = 0

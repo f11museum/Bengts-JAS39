@@ -8,6 +8,9 @@ sim_heartbeat = 100
 --- Helt nytt stabiliserings system för det befintliga funkade inte så bra och hamnade i super stall vid helt korrekta manövrar
 
 -- Kalibreringsvariabler
+autopilot_disable_roll = 0.192307692308 -- 1.5 grader
+autopilot_disable_pitch = 0.166666666667 -- detta stämmer för spak mot magen 2.5 grader av totalt 15 grader
+autopilot_disable_pitch_up = 0.357142857143 -- detta stämmer för spak FRÅN magen 2.5 grader av totalt 7 grader
 
 
 -- Datareffar
@@ -21,13 +24,16 @@ dr_throttle_burner = find_dataref("sim/flightmodel/engine/ENGN_burnrat")
 dr_FRP = XLuaFindDataRef("sim/operation/misc/frame_rate_period")
 sim_heartbeat = 101
 -- input från användaren
-
+-- input från användaren
+dr_yoke_roll_ratio = find_dataref("sim/joystick/yoke_roll_ratio") 
+dr_yoke_heading_ratio = find_dataref("sim/joystick/yoke_heading_ratio") 
+dr_yoke_pitch_ratio = find_dataref("sim/joystick/yoke_pitch_ratio") 
 
 dr_pitch = find_dataref("sim/flightmodel/position/theta") 
 dr_acf_vx = find_dataref("sim/flightmodel/position/local_vx") 
 dr_acf_vy = find_dataref("sim/flightmodel/position/local_vy") 
 dr_acf_vz = find_dataref("sim/flightmodel/position/local_vz") 
-
+dr_acf_roll = find_dataref("sim/flightmodel/position/phi") 
 
 sim_heartbeat = 102
 
@@ -44,21 +50,37 @@ dr_right_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[2]"
 dr_airspeed_kts_pilot = find_dataref("sim/flightmodel/position/indicated_airspeed") 
 dr_gear = find_dataref("sim/cockpit/switches/gear_handle_status") 
 dr_groundspeed = find_dataref("sim/flightmodel/position/groundspeed") 
+dr_true_speed = find_dataref("sim/flightmodel/position/true_airspeed")
 
 dr_altitude = find_dataref("sim/flightmodel/misc/h_ind") 
 
 sim_heartbeat = 103
 -- Egna JAS dataref
 
+
+
+jas_button_spak = find_dataref("JAS/io/frontpanel/knapp/spak")
+jas_button_att = find_dataref("JAS/io/frontpanel/knapp/att")
+jas_button_hojd = find_dataref("JAS/io/frontpanel/knapp/hojd")
 jas_button_afk = find_dataref("JAS/io/frontpanel/knapp/afk")
+
 sim_heartbeat = 104
 
+jas_lamps_spak = find_dataref("JAS/io/frontpanel/lamp/spak") 
+jas_lamps_att = find_dataref("JAS/io/frontpanel/lamp/att") 
+jas_lamps_hojd = find_dataref("JAS/io/frontpanel/lamp/hojd")
+jas_lamps_ks = find_dataref("JAS/io/frontpanel/lamp/ks")
 jas_lamps_afk = find_dataref("JAS/io/frontpanel/lamp/afk")
 jas_lamps_a14 = find_dataref("JAS/io/frontpanel/lamp/a14")
 sim_heartbeat = 105
 
+jas_auto_mode = find_dataref("JAS/autopilot/mode")
+jas_auto_att = find_dataref("JAS/autopilot/att")
+jas_auto_alt = find_dataref("JAS/autopilot/alt")
 jas_auto_afk = find_dataref("JAS/autopilot/afk")
 jas_auto_afk_mode = find_dataref("JAS/autopilot/afk_mode")
+jas_auto_ks_mode = find_dataref("JAS/autopilot/ks_mode")
+jas_auto_ks_roll = find_dataref("JAS/autopilot/ks_roll")
 
 jas_pratorn_tal_alfa12 = find_dataref("JAS/pratorn/tal/alfa12")
 jas_pratorn_tal_spak = find_dataref("JAS/pratorn/tal/spak")
@@ -74,7 +96,6 @@ sim_heartbeat = 106
 
 
 -- publika variabler
-
 
 g_groundContact = 0
 
@@ -249,12 +270,54 @@ stick_roll = 0
 delta_prev = 0
 
 
+autostick_timer = 0
+function read_stick()
+	
+	-- Roll rörelser
+	if (jas_auto_mode>=2) then
+		
+		if (dr_yoke_roll_ratio<autopilot_disable_roll and dr_yoke_roll_ratio > -autopilot_disable_roll and dr_yoke_pitch_ratio<autopilot_disable_pitch and dr_yoke_pitch_ratio > -autopilot_disable_pitch) then
+			-- ingen rör spaken
+			if (autostick_timer<blinktimer) then
+				if (jas_auto_mode == 20) then
+					jas_auto_mode = 2
+				end
+				if (jas_auto_mode == 30) then
+					autopilot_hold_alti = dr_altitude
+					jas_auto_alt = autopilot_hold_alti
+					jas_auto_mode = 3
+				end
+				
+			end
+		else
+			-- någon rör i spaken
+			
+			if (jas_auto_mode == 2) then
+				jas_auto_mode = 20
+			end
+			if (jas_auto_mode == 3) then
+				jas_auto_mode = 30
+			end
+			autostick_timer = blinktimer + 1.0
+		end
+	end
+	
+
+	if (jas_auto_mode == 4 and dr_true_speed > 13) then
+		jas_auto_mode = 1
+	end
+end
+
+
+
 knapp = 0
 knapp2 = 0
 current_th = 0
 
 function update_buttons()
 	sim_heartbeat = 600
+	
+	-- AFK
 	if (jas_button_afk == 1) then
 		sim_heartbeat = 601
 		if (knapp2 == 0) then
@@ -278,6 +341,9 @@ function update_buttons()
 				if (jas_auto_afk_mode == 0) then
 					jas_auto_afk_mode = 1
 					jas_auto_afk = dr_airspeed_kts_pilot
+					if (jas_auto_afk<172) then
+						jas_auto_afk = 172
+					end
 					current_th = dr_throttle[0]
 				else
 					jas_auto_afk = 0
@@ -285,11 +351,68 @@ function update_buttons()
 				end
 			end
 		else
-			sim_heartbeat = 602
+			sim_heartbeat = 603
 		end
 	else
 		knapp2 = 0
 	end
+	sim_heartbeat = 604
+	-- SPAK
+	if (jas_button_spak == 1) then
+		if (knapp == 0) then
+			knapp = 1
+			if (sim_jas_auto_mode == 1) then
+				jas_auto_mode = 0
+			else
+				jas_auto_mode = 1
+				
+				jas_pratorn_tal_spak = 1
+			end
+		end
+	else
+		knapp = 0
+	end
+	sim_heartbeat = 605
+	koppla_roll = 0
+	-- ATT
+	if (jas_button_att == 1) then
+		autopilot_hold_att = myGetFlightAngle()
+		jas_auto_att = autopilot_hold_att
+		jas_auto_mode = 2
+		koppla_roll = 1
+	end
+	sim_heartbeat = 606
+	-- HÖJD
+	if (jas_button_hojd == 1) then
+		autopilot_hold_alti = dr_altitude
+		jas_auto_alt = autopilot_hold_alti
+		jas_auto_mode = 3
+		koppla_roll = 1
+		
+	end
+	if (koppla_roll == 1) then
+		if (dr_acf_roll <12 and dr_acf_roll >-12) then
+			jas_auto_ks_mode = 1
+			jas_auto_ks_roll = 0
+		else
+			jas_auto_ks_mode = 1
+			jas_auto_ks_roll = dr_acf_roll
+		end
+		
+		if (jas_auto_ks_roll>90 or jas_auto_ks_roll<-90) then
+			jas_auto_ks_roll = 0
+		end
+		maxroll = interpolate(350, 30.0, 600, 60.0, dr_ias* 1.85200 )
+		maxroll = constrain(maxroll, 30.0,60.0)
+		if (jas_auto_ks_roll>maxroll) then
+			jas_auto_ks_roll = maxroll
+		end
+		if (jas_auto_ks_roll<-maxroll) then
+			jas_auto_ks_roll = -maxroll
+		end
+	end
+	
+	
 	--sim_heartbeat = 699
 end
 
@@ -303,8 +426,30 @@ function update_lamps()
 		jas_lamps_afk = 0
 		jas_lamps_a14 = 0
 	end
-	
-
+	jas_lamps_spak = 0
+	jas_lamps_att = 0
+	jas_lamps_hojd = 0
+	if (jas_auto_mode == 20) then
+		jas_lamps_spak = 1
+		jas_lamps_att = blink05s
+	end
+	if (jas_auto_mode == 30) then
+		jas_lamps_spak = 1
+		jas_lamps_att = blink05s
+		jas_lamps_hojd = blink05s
+	end
+	if (jas_auto_mode == 1) then
+		jas_lamps_spak = 1
+	end
+	if (jas_auto_mode == 2) then
+		jas_lamps_spak = 1
+		jas_lamps_att = 1
+	end
+	if (jas_auto_mode == 3) then
+		jas_lamps_spak = 1
+		jas_lamps_att = 1
+		jas_lamps_hojd = 1
+	end
 end
 
 alpha_filtered = 0
@@ -321,7 +466,10 @@ function calculateThrottle()
 	if (dr_gear == 0 and jas_auto_afk_mode >= 2) then
 		-- Byt läge till vanlig afk om stället fälls upp igen
 		jas_auto_afk_mode = 1
-		jas_auto_afk = 200
+		jas_auto_afk = dr_airspeed_kts_pilot
+		if (jas_auto_afk<172) then
+			jas_auto_afk = 172
+		end
 	end
 	
 	--dr_override_throttles = 1
@@ -416,6 +564,8 @@ end
 heartbeat = 0
 function before_physics() 
 	sim_heartbeat = 300
+	blink1sFunc()
+	
 	update_dataref()
 	sim_heartbeat = 301
 
@@ -428,9 +578,12 @@ function before_physics()
 	calculateThrottle()
 	sim_heartbeat = 305
 	bromsar()
-    sim_heartbeat = 306
+	sim_heartbeat = 306
+	read_stick()
+	sim_heartbeat = 307
+	
 	systest()
-    
+
 	sim_heartbeat = 399
 	sim_heartbeat = heartbeat
 	heartbeat = heartbeat + 1
