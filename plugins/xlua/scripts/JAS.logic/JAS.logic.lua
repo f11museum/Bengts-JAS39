@@ -643,6 +643,7 @@ function vu22()
 	
 end
 
+kn11 = 0
 function fusk()
 	
 	if (sim_jas_vu22_vapensim == 1) then
@@ -650,34 +651,34 @@ function fusk()
 		kn2 = 0
 		if (sim_jas_vu22_sand == 1) then
 			kn2 = 1
-			if (kn1 == 0) then
-				kn1 = 1
+			if (kn11 == 0) then
+				kn11 = 1
 				sim_fuel = 3000
 			end
 		end
 		if (sim_jas_vu22_rhm == 1) then
 			kn2 = 1
-			if (kn1 == 0) then
-				kn1 = 1
+			if (kn11 == 0) then
+				kn11 = 1
 				
 			end
 		end
 		if (sim_jas_vu22_mkv == 1) then
 			kn2 = 1
-			if (kn1 == 0) then
-				kn1 = 1
+			if (kn11 == 0) then
+				kn11 = 1
 				
 			end
 		end
 		if (sim_jas_vu22_tb == 1) then
 			kn2 = 1
-			if (kn1 == 0) then
-				kn1 = 1
+			if (kn11 == 0) then
+				kn11 = 1
 				simCMD_reset_flight:once()
 			end
 		end
 		if (kn2 == 0) then
-			kn1 = 0
+			kn11 = 0
 		end
 	end
 	
