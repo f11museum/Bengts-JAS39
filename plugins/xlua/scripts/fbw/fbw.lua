@@ -8,11 +8,24 @@ sim_heartbeat = 100
 --- Helt nytt stabiliserings system för det befintliga funkade inte så bra och hamnade i super stall vid helt korrekta manövrar
 
 -- Kalibreringsvariabler
+
+soft_stop = 0.86 -- Softstoppet i styrspaken. omvandlas till att ge 73% utslag
+soft_stop_prc = 0.733
+hard_stop_fram = 0.433 -- max utslag på spaken framåt
+
 optimal_angle = 20 -- För fram vingen
-max_pitch_rate = 30
-max_roll_rate_val = 320 
-max_roll_rate = 320 -- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
-min_roll_rate = 70 -- orginal 60
+
+max_pitch_rate = 20
+
+max_pitch_rate_0 = 10
+max_pitch_rate_300 = 15
+max_pitch_rate_500 = 25 -- vid 500 måste vi börja plocka upp en godtycklig max alpha istället för max g
+max_pitch_rate_600 = 35
+max_pitch_rate_1000 = 19
+max_pitch_rate_1300 = 14
+max_roll_rate_val = 320+100 -- den här bestämmer max roll rate-- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
+max_roll_rate = 320 -- uppdateras i beräkning tiull nuvarande max
+min_roll_rate = 70+30 -- orginal 60
 max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
@@ -23,13 +36,14 @@ autopilot_disable_roll = 0.192307692308 -- 1.5 grader
 autopilot_disable_pitch = 0.166666666667 -- detta stämmer för spak mot magen 2.5 grader av totalt 15 grader
 autopilot_disable_pitch_up = 0.357142857143 -- detta stämmer för spak FRÅN magen 2.5 grader av totalt 7 grader
 
-max_alpha_up = 30
+max_alpha_up = 28 -- 26 är max tillåten alfa
+max_alpha_up_normal = 28 -- 26 är max tillåten alfa
 max_alpha_down = -15
-max_alpha_fade = 10
+max_alpha_fade = 2
 alpha_correction = 100
 
-max_g_pos = 9.5
-max_g_neg = -3
+max_g_pos = 10
+max_g_neg = -4
 max_g_fade = 2
 max_g_fade_rate = 2
 g_correction = 0.025
@@ -43,6 +57,11 @@ fade_out = 0.6
 
 -- Datareffar
 
+-- Debug
+d_true_alpha = create_dataref("JAS/debug/fbw/true_alpha", "number")
+d_soft_stop = create_dataref("JAS/debug/fbw/soft_stop", "number")
+
+-- 
 dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat2") 
 dr_status2 = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
 
@@ -310,6 +329,20 @@ function update_dataref()
 
 
 	sim_yoke_pitch_ratio = getnumber(dr_yoke_pitch_ratio) 
+	
+	
+	if (sim_yoke_pitch_ratio>soft_stop) then
+		sim_yoke_pitch_ratio = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
+	elseif (sim_yoke_pitch_ratio>0) then
+		sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
+	end
+	
+	if (sim_yoke_pitch_ratio<0) then
+		sim_yoke_pitch_ratio = interpolate(-1.0, -hard_stop_fram, 0.0, 0.0,  sim_yoke_pitch_ratio )
+	end
+	d_soft_stop = sim_yoke_pitch_ratio
+	
+	
 	sim_yoke_roll_ratio = getnumber(dr_yoke_roll_ratio) 
 	sim_yoke_heading_ratio = getnumber(dr_yoke_heading_ratio)
 	sim_elv_trim = getnumber(dr_elv_trim)
@@ -317,6 +350,7 @@ function update_dataref()
 	sim_acf_pitchrate = getnumber(dr_acf_pitchrate)
 	sim_acf_rollrate = getnumber(dr_acf_rollrate)
 	sim_acf_yawrate = getnumber(dr_acf_yawrate)
+	sim_acf_pitch = getnumber(dr_acf_pitch)
 	sim_pitch = getnumber(dr_acf_pitch)
 	sim_acf_roll = getnumber(dr_acf_roll)
 	sim_alpha = getnumber(dr_alpha)
@@ -359,6 +393,7 @@ function update_dataref()
 	
 
 	sim_true_alpha = myGetAlpha()
+	d_true_alpha = sim_true_alpha
 	
 	if (sim_nose_gear_depress) > 0 then 
 		g_groundContact = 1 
@@ -377,6 +412,35 @@ function update_dataref()
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	jas_fbw_max_roll_rate = max_roll_rate
 
+
+	if (sim_airspeed_kts_pilot > 1000*0.539957) then
+		max_pitch_rate = interpolate(1000*0.539957, max_pitch_rate_1000, 1300*0.539957, max_pitch_rate_1300, sim_airspeed_kts_pilot )
+		max_pitch_rate = constrain(max_pitch_rate, max_pitch_rate_1300,max_pitch_rate_1000)
+	elseif (sim_airspeed_kts_pilot > 600*0.539957) then
+		max_pitch_rate = interpolate(600*0.539957, max_pitch_rate_600, 1000*0.539957, max_pitch_rate_1000, sim_airspeed_kts_pilot )
+		max_pitch_rate = constrain(max_pitch_rate, max_pitch_rate_1000,max_pitch_rate_600)
+	elseif (sim_airspeed_kts_pilot > 500*0.539957) then
+		max_pitch_rate = interpolate(500*0.539957, max_pitch_rate_500, 600*0.539957, max_pitch_rate_600, sim_airspeed_kts_pilot )
+		max_pitch_rate = constrain(max_pitch_rate, max_pitch_rate_600,max_pitch_rate_500)
+	elseif (sim_airspeed_kts_pilot > 300*0.539957) then
+		max_pitch_rate = interpolate(300*0.539957, max_pitch_rate_300, 500*0.539957, max_pitch_rate_500, sim_airspeed_kts_pilot )
+		max_pitch_rate = constrain(max_pitch_rate, max_pitch_rate_500,max_pitch_rate_300)
+	elseif (sim_airspeed_kts_pilot > 0*0.539957) then
+		max_pitch_rate = interpolate(0*0.539957, max_pitch_rate_0, 300*0.539957, max_pitch_rate_300, sim_airspeed_kts_pilot )
+		max_pitch_rate = constrain(max_pitch_rate, max_pitch_rate_300,max_pitch_rate_0)
+	end
+	extra_rate = 1.0
+	if (sim_alpha>0 and sim_yoke_pitch_ratio<0) then
+		max_pitch_rate = max_pitch_rate*2
+	end
+	if (sim_alpha<0 and sim_yoke_pitch_ratio>0) then
+		max_pitch_rate = max_pitch_rate*2
+	end
+	
+	max_alpha_up = interpolate(500*0.539957, max_alpha_up_normal, 600*0.539957, 20, sim_airspeed_kts_pilot )
+	max_alpha_up = constrain(max_alpha_up, 20,max_alpha_up_normal)
+	
+	
 	-- XLuaSetNumber(dr_fog, 0.1) 
 	-- XLuaSetNumber(dr_cloud_shadow, 1.0) 
 	-- 
@@ -396,12 +460,18 @@ function myfilter(currentValue, newValue, amp)
 	
 end
 
+function motor2(inval, target, spd)
+	
+	return target
+end
+
 function motor(inval, target, spd)
 	
 	-- Lånad från Nils anim()
 	elapsedTime = constrain(sim_FRP, 0,0.040)
 	local retval = inval
-	
+	-- retval = target
+	-- return retval
 	if inval == target then
 		return retval
 	else
@@ -432,9 +502,18 @@ delta_prev = 0
 ks_mode = 0
 autoback_timer = 0
 
+
+d_ail_req = create_dataref("JAS/debug/fbw/ail_req", "number")
+d_ail_fade = create_dataref("JAS/debug/fbw/ail_fade", "number")
+d_ail_wanted = create_dataref("JAS/debug/fbw/ail_wanted", "number")
+
+sim_acf_rollrate_filtered = 0
+
 function calculateAileron()
+	rate_to_deg = 120/320
 	fadeout = interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )
-	--fadeout = 0
+	sim_acf_rollrate_filtered = myfilter (sim_acf_rollrate_filtered, sim_acf_rollrate, 2)
+	--fadeout = 1
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )) 
 	--m_aileron = sim_yoke_roll_ratio*8
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
@@ -458,10 +537,15 @@ function calculateAileron()
 		current_rate = sim_acf_rollrate
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = wanted_rate-current_rate
-		delta = delta * current_fade_out * fadeout
+		delta = delta * fadeout * fadeout
 		
 		-- lägg på liten justering för att gå tillbaka dit man va när man släppte spaken
-		delta2 = wanted_roll - sim_acf_roll
+		delta2 = 0
+		if (sim_acf_pitch <60 and sim_acf_pitch>-60) then -- den här ifsatsen kopplar ur roll hållningen när man loopar, annars så vill den dra 180 efter loopen
+			delta2 = wanted_roll - sim_acf_roll
+		else 
+			wanted_roll = sim_acf_roll
+		end
 		if (jas_auto_ks_mode == 1 and sim_jas_auto_mode == 3) then -- om höjd styrning och planet är i level så håller den kvar det
 			delta2 = jas_auto_ks_roll - sim_acf_roll
 			wanted_roll = jas_auto_ks_roll
@@ -495,6 +579,7 @@ function calculateAileron()
 			sim_jas_lamps_ks = 0
 		end
 		
+		
 		wanted_roll = sim_acf_roll
 		if (sim_yoke_roll_ratio<0) then
 			sim_yoke_roll_ratio = sim_yoke_roll_ratio + deadzone
@@ -506,11 +591,14 @@ function calculateAileron()
 		wanted_rate = sim_yoke_roll_ratio * max_roll_rate
 		
 		-- Kollar vad planet har för nuvarande rotationshastighet 
-		current_rate = sim_acf_rollrate
+		
+		current_rate = sim_acf_rollrate_filtered
 		-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 		delta = wanted_rate-current_rate
-		delta = delta * current_fade_out
+		delta = delta*rate_to_deg * fadeout
 	end
+	d_ail_wanted = wanted_rate
+	d_ail_fade = fadeout
 	--sim_acf_roll
 	
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_roll) 
@@ -518,7 +606,7 @@ function calculateAileron()
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), delta2) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d"), delta) 
 	m_aileron = delta
-	
+	d_ail_req = m_aileron
 	-- PID försök till att få en bättre trim
 	a_kp = 5
 	a_kp = interpolate(0, a_kp, 1000, 0.01, sim_airspeed_kts_pilot )
@@ -540,10 +628,13 @@ function calculateAileron()
 end
 
 rudder_delta_prev = 0
+sim_acf_yawrate_filtered = 1
 function calculateRudder()
+	rate_to_deg = 120/320
+	
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
 	wanted_rate = sim_yoke_heading_ratio * max_yaw_rate
-	
+	sim_acf_yawrate_filtered = myfilter (sim_acf_yawrate_filtered, sim_acf_yawrate, 2)
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_yawrate
 	
@@ -570,7 +661,7 @@ function calculateRudder()
 	if (g_groundContact == 1) then
 		delta = wanted_rate
 	end
-	m_rudder = delta * current_fade_out
+	m_rudder = delta*rate_to_deg * current_fade_out
 end
 
 lock_avg = 0.0
@@ -589,10 +680,14 @@ kd = 1
 clock_test = 0.0
 error_prev = 0
 rateError_prev = 0
+sim_acf_pitchrate_filtered = 1
+
 function calculateAutopilot(wanted_rate)
 	if (sim_jas_auto_mode == 0) then
 		return 0
 	end
+	--sim_acf_pitchrate_filtered = myfilter (sim_acf_pitchrate_filtered, sim_acf_pitchrate, 2)
+	sim_acf_pitchrate_filtered = sim_acf_pitchrate
 	lock = 0
 	error = 0
 	
@@ -648,7 +743,7 @@ function calculateAutopilot(wanted_rate)
 			lock_pitch_movement = 0
 			
 		end
-		error = wanted_rate - sim_acf_pitchrate -- determine error
+		error = (wanted_rate - sim_acf_pitchrate_filtered) * 0.3 -- determine error
 		
 		-- kp = 15*current_fade_out
 		-- kp = constrain(interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot ), 0.0001,100)
@@ -672,7 +767,7 @@ function calculateAutopilot(wanted_rate)
 	error = myfilter(error_prev, error, 0)
 	error_prev = constrain(error, -200,200)
 
-	kp = constrain(interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot ), 0.0001,100)
+	kp = constrain(interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot ), 0.0001,5)
 	ki = 5
 	kd = 1
 	out = kp*error + ki*cumError + kd*rateError --PID output       
@@ -708,7 +803,11 @@ wanted_prev = 0
 function calculateElevator()
 	lock = 0
 	delta = 0
-
+	if (sim_airspeed_kts_pilot >10) then
+		rate_to_deg = 30/sim_airspeed_kts_pilot
+	else
+		rate_to_deg = 30/10
+	end
 	
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
@@ -728,7 +827,7 @@ function calculateElevator()
 		-- piloten rör spaken
 		if (sim_yoke_pitch_ratio<0) then
 			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio + deadzone
-			wanted_rate = math.sin(sim_yoke_pitch_ratio*math.pi/2)*0.5 * max_pitch_rate
+			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
 		else
 			sim_yoke_pitch_ratio = sim_yoke_pitch_ratio -deadzone
 			wanted_rate = sim_yoke_pitch_ratio * max_pitch_rate
@@ -870,7 +969,7 @@ function calculateElevator()
 	wanted_prev = wanted_rate
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/wanted_rate"), wanted_rate) 
 	angle = (auto_trim+delta+wanted_rate+error_correction+error_correction_g+trim) / elevator_rate_to_angle
-	canard_angle = (delta+(wanted_rate*0.3 * current_fade_out)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
+	canard_angle = (delta+(wanted_rate*0.9 * current_fade_out)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
 	--angle = angle * current_fade_out
 	
 	
@@ -1068,7 +1167,7 @@ function before_physics()
 		s_canard = motor(s_canard, m_canard, motor_speed_canard*8)
 		motor_speed_error = motor_speed*8
 	else
-		m_canard = constrain(m_canard, -55, 25+10)
+		m_canard = constrain(m_canard, -55, 25)
 		s_canard = motor(s_canard, m_canard, motor_speed_canard)
 	end
 	
