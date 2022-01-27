@@ -172,7 +172,7 @@ function mkv()
 	
 	-- Säg HÖJD om vi flyger på en höjd som kan träffa ett plötsligt berg
 	
-	if (radaralt < profil1[i]) then
+	if (radaralt < profil1[i] and dr_gear == 0) then
 		if (hojd_timer < blinktimer) then
 			jas_pratorn_tal_hojd = 1
 			hojd_timer = blinktimer + 3.0
