@@ -98,7 +98,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118796647
+P _gear/0/_stat_def 0.118796676
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -132,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.711948514
+P _gear/1/_stat_def 0.711948276
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -166,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.711948514
+P _gear/2/_stat_def 0.711948276
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -24412,7 +24412,7 @@ P acf/_warn_fuelP 1.0
 P acf/_warn_gear 0
 P acf/_warn_hirot_EQ 0
 P acf/_warn_lorot_EQ 0
-P acf/_warn_stall 1
+P acf/_warn_stall 0
 P acf/_warn_transonic_EQ 0
 P acf/_warn_verbal_500_agl 0
 P acf/_wate_xyz/0 0.0
