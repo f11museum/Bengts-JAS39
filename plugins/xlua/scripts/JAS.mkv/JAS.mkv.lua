@@ -22,11 +22,22 @@ sim_mkv_heartbeat = find_dataref("JAS/system/mkv/heartbeat")
 sim_mkv_heartbeat = 100
 
 -- Lampor
-jas_io_vu22_lamp_mkv = find_dataref("JAS/io/vu22/lamp/mkv")
 jas_io_frontpanel_lamp_hojdvarn = find_dataref("JAS/io/frontpanel/lamp/hojdvarn")
 
 -- Knappar
 jas_io_vu22_knapp_syst = find_dataref("JAS/io/vu22/knapp/syst")
+
+-- Knappar VU22
+jas_io_vu22_sand = find_dataref("JAS/io/vu22/knapp/sand")
+jas_io_vu22_rhm = find_dataref("JAS/io/vu22/knapp/rhm")
+jas_io_vu22_mkv = find_dataref("JAS/io/vu22/knapp/mkv")
+jas_io_vu22_tb = find_dataref("JAS/io/vu22/knapp/termbatt")
+
+-- Lampor VU22
+jas_io_vu22_lamp_sand = find_dataref("JAS/io/vu22/lamp/sand")
+jas_io_vu22_lamp_rhm = find_dataref("JAS/io/vu22/lamp/rhm")
+jas_io_vu22_lamp_mkv = find_dataref("JAS/io/vu22/lamp/mkv")
+jas_io_vu22_lamp_tb = find_dataref("JAS/io/vu22/lamp/termbatt")
 
 -- Egna dataref
 jas_sys_mkv_eta = find_dataref("JAS/system/mkv/eta")
@@ -135,6 +146,95 @@ hojd_timer = 0
 vinkel_m_prev = 0
 eta_prev = 1
 skillnad_prev = 1
+
+sand_off = 0
+rhm_off = 0
+mkv_off = 0
+tb_off = 0
+kn1 = 0
+function vu22()
+	sim_mkv_heartbeat = 500
+	kn2 = 0
+	if (jas_io_vu22_sand == 1) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (sand_off == 1) then
+				sand_off = 0
+				if (rhm_off == 1) then
+					rhm_off = 0
+				end
+				if (mkv_off == 1) then
+					mkv_off = 0
+				end
+			else
+				sand_off = 1
+				if (rhm_off == 0) then
+					rhm_off = 1
+				end
+				if (mkv_off == 0) then
+						mkv_off = 1
+				end
+			end
+		end
+	end
+	sim_mkv_heartbeat = 501
+	if (jas_io_vu22_rhm == 1 and sand_off == 0) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (rhm_off == 1) then
+				rhm_off = 0
+				if (mkv_off == 1) then
+					mkv_off = 0
+				end
+			else
+				rhm_off = 1
+				if (mkv_off == 0) then
+					mkv_off = 1
+				end
+			end
+		end
+	end
+	sim_mkv_heartbeat = 502
+	if (jas_io_vu22_mkv == 1 and rhm_off == 0) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (mkv_off == 1) then
+				mkv_off = 0
+			else
+				mkv_off = 1
+			end
+		end
+	end
+	sim_mkv_heartbeat = 503
+	if (jas_io_vu22_tb == 1) then
+		kn2 = 1
+		if (kn1 == 0) then
+			kn1 = 1
+			if (tb_off == 0) then
+				tb_off = 1
+			else
+				tb_off = 0
+			end
+		end
+	end
+	sim_mkv_heartbeat = 504
+	if (kn2 == 0) then
+		kn1 = 0
+	end
+
+	sim_mkv_heartbeat = 505
+	jas_io_vu22_lamp_sand = sand_off
+	sim_mkv_heartbeat = 506
+	jas_io_vu22_lamp_rhm = rhm_off
+	sim_mkv_heartbeat = 507
+	jas_io_vu22_lamp_mkv = mkv_off
+	sim_mkv_heartbeat = 508
+	jas_io_vu22_lamp_tb = tb_off
+	sim_mkv_heartbeat = 509
+end
 
 function mkv()
 
@@ -385,6 +485,7 @@ function before_physics()
 	blink1sFunc()
 	mkv()
 	systest()
+	vu22()
 	sim_mkv_heartbeat = heartbeat
     heartbeat = heartbeat + 1
 end

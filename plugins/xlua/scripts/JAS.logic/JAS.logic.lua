@@ -563,83 +563,17 @@ function sysDAP()
 end
 
 
-
-
-sand = 0
-rhm = 0
-mkv = 0
-tb = 0
-kn1 = 0
 function vu22()
+
 	sim_heartbeat = 500
-	-- Tänd oanvända knappar när man trycker på dom. För skoj skull
-	kn2 = 0
-	if (sim_jas_vu22_sand == 1) then
-		kn2 = 1
-		if (kn1 == 0) then
-			kn1 = 1
-			if (sand == 0) then
-				sand = 1
-			else
-				sand = 0
-			end
-		end
-	end
-	sim_heartbeat = 501
-	if (sim_jas_vu22_rhm == 1) then
-		kn2 = 1
-		if (kn1 == 0) then
-			kn1 = 1
-			if (rhm == 0) then
-				rhm = 1
-			else
-				rhm = 0
-			end
-		end
-	end
-	sim_heartbeat = 502
-	if (sim_jas_vu22_mkv == 1) then
-		kn2 = 1
-		if (kn1 == 0) then
-			kn1 = 1
-			if (mkv == 0) then
-				mkv = 1
-			else
-				mkv = 0
-			end
-		end
-	end
-	sim_heartbeat = 503
-	if (sim_jas_vu22_tb == 1) then
-		kn2 = 1
-		if (kn1 == 0) then
-			kn1 = 1
-			if (tb == 0) then
-				tb = 1
-			else
-				tb = 0
-			end
-		end
-	end
-	sim_heartbeat = 504
-	if (kn2 == 0) then
-		kn1 = 0
-	end
-		sim_heartbeat = 505
-	sim_jas_vu22_lamp_sand = sand
-	sim_heartbeat = 506
-	sim_jas_vu22_lamp_rhm = rhm
-	sim_heartbeat = 507
-	sim_jas_vu22_lamp_mkv = mkv
-	sim_heartbeat = 508
-	sim_jas_vu22_lamp_tb = tb
-	sim_heartbeat = 509
+
 	if jas_io_vu22_knapp_lampprov == 1 then
 		jas_lampprov_p1 = 1
 	else
 		jas_lampprov_p1 = 0
 	end
-	
+
+	sim_heartbeat = 501
 	
 end
 
