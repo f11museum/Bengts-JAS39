@@ -219,6 +219,54 @@ afk			knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/vat/power	D35
 
 start		knapp	frontpanel	JAS/frontpanel/override/knappar	JAS/vat/power	ej klar
 
+# ST Systemtablån
+## Lampor inuti knapp
+J		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+A		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+S		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+STR     lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+DL		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+RR		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+M		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+B		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+L		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+GS		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+IP		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+D		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+HVP     lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+IRB     lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+AK		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+
+## Knappar
+J		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+A		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+S       knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+STR     knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+DL		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+RR		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+M		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+B		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+L		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+GS		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+IP		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+D		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+HVP     knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+IRB     knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+AK		knapp	st	JAS/st/override/knappar	JAS/vat/power	D30
+
+## Lampor indikator
+STR		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+DL		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+RR		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+RJL		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+tom		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+BI		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+TLS		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+FRM		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+SKT		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+HVP		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+IRB		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
+AK		lampa	st	JAS/lampprov/p1	JAS/vat/power	D22
 
 # VAT Larmtablån
 normsty		lampa	vat	JAS/lampprov/p1	JAS/vat/power	M32 2:PA0
