@@ -163,7 +163,7 @@ function mkv()
 	d_ground_diff = ground_diff
 	sim_mkv_heartbeat = 401	
 	local i = 1
-	while profil1[i] do
+	while (profil1[i] and i<9 )do
 		if (profil1[i] > ground) then
 			break
 		end
