@@ -308,4 +308,28 @@ JAS/io/fi/knapp/knappram	int[10]		sys	unit	unit2	Description
 JAS/io/ti/knapp/knappram	int[10]		sys	unit	unit2	Description
 JAS/io/mi/knapp/knappram	int[10]		sys	unit	unit2	Description
 
+
+JAS/ti/zoom		int		sys	unit	unit2	Zoom på kartan
+
+JAS/ti/menu/menu	int	ti	unit	unit2	Vilken meny som är vald
+JAS/ti/menu/menu2	int	ti	unit	unit2	Vilken meny som är vald
+JAS/ti/menu/submenu	int	ti	unit	unit2	Vilken submeny som är vald
+
+JAS/ti/land/rikt	int	ti	unit	unit2	vald riktning på banan
+JAS/ti/land/rikt2	int	ti	unit	unit2	vald riktning på banan
+JAS/ti/land/bana	int	ti	unit	unit2	vald banan
+JAS/ti/land/bana2	int	ti	unit	unit2	vald banan
+JAS/ti/land/bibana	int	ti	unit	unit2	bibana option
+JAS/ti/land/bibana2	int	ti	unit	unit2	bibana option
+JAS/ti/land/index	int	ti	unit	unit2	vald index i flygplatslistan
+JAS/ti/land/index2	int	ti	unit	unit2	vald index i flygplatslistan
+
+JAS/ti/map/zoom		int	ti	unit	unit2	vald zoom
+JAS/ti/map/zoom2	int	ti	unit	unit2	vald zoom
+JAS/ti/map/type		int	ti	unit	unit2	Vald option
+JAS/ti/map/type2		int	ti	unit	unit2	Vald option
+JAS/ti/map/color	int	ti	unit	unit2	Vald option
+JAS/ti/map/color2	int	ti	unit	unit2	Vald option
+
+
 #Last line, keep this
