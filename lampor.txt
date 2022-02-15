@@ -304,9 +304,9 @@ huvstol		lampa	vat	JAS/lampprov/p1	JAS/vat/power	M59 3:PB3
 
 
 #Knappar runt skärmar
-JAS/io/fi/knapp/knappram	int[10]		sys	unit	unit2	Description
-JAS/io/ti/knapp/knappram	int[10]		sys	unit	unit2	Description
-JAS/io/mi/knapp/knappram	int[10]		sys	unit	unit2	Description
+JAS/io/fi/knapp/knappram	int[12]		sys	unit	unit2	Description
+JAS/io/ti/knapp/knappram	int[12]		sys	unit	unit2	Description
+JAS/io/mi/knapp/knappram	int[12]		sys	unit	unit2	Description
 
 
 JAS/ti/zoom		int		sys	unit	unit2	Zoom på kartan
