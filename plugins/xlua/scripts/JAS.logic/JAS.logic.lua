@@ -105,11 +105,16 @@ sim_jas_lamps_master2 = find_dataref("JAS/io/frontpanel/lamp/master2")
 sim_jas_lamps_apu_gar = find_dataref("JAS/io/vu22/lamp/apugar")
 sim_jas_lamps_apu_red = find_dataref("JAS/io/vu22/lamp/apured")
 
-dr_jas_ti_land_lat = find_dataref("JAS/ti/land/lat")
-dr_jas_ti_land_lon = find_dataref("JAS/ti/land/lon")
-dr_jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
-dr_jas_ti_land_head = find_dataref("JAS/ti/land/head")
-dr_jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
+jas_ti_land_lat = find_dataref("JAS/ti/land/lat")
+jas_ti_land_lon = find_dataref("JAS/ti/land/lon")
+jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
+jas_ti_land_head = find_dataref("JAS/ti/land/head")
+jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
+
+jas_si_nav_prickx = find_dataref("JAS/si/nav/prick_x")
+jas_si_nav_pricky = find_dataref("JAS/si/nav/prick_y")
+jas_si_nav_prickactive = find_dataref("JAS/si/nav/prick_active")
+jas_si_nav_heading = find_dataref("JAS/si/nav/heading")
 
 -- Oanvända i vu22
 
