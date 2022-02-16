@@ -105,6 +105,11 @@ sim_jas_lamps_master2 = find_dataref("JAS/io/frontpanel/lamp/master2")
 sim_jas_lamps_apu_gar = find_dataref("JAS/io/vu22/lamp/apugar")
 sim_jas_lamps_apu_red = find_dataref("JAS/io/vu22/lamp/apured")
 
+dr_jas_ti_land_lat = find_dataref("JAS/ti/land/lat")
+dr_jas_ti_land_lon = find_dataref("JAS/ti/land/lon")
+dr_jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
+dr_jas_ti_land_head = find_dataref("JAS/ti/land/head")
+dr_jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
 
 -- Oanvända i vu22
 

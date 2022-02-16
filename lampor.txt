@@ -312,6 +312,7 @@ JAS/io/mi/knapp/knappram	int[12]		sys	unit	unit2	Description
 JAS/fi/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 är ström av. Detta för att default ska va igång
 JAS/ti/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 är ström av. Detta för att default ska va igång
 JAS/mi/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 är ström av. Detta för att default ska va igång
+JAS/si/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 är ström av. Detta för att default ska va igång
 
 JAS/ti/menu/menu	int	ti	unit	unit2	Vilken meny som är vald
 JAS/ti/menu/menu2	int	ti	unit	unit2	Vilken meny som är vald
@@ -335,6 +336,7 @@ JAS/ti/map/color	int	ti	unit	unit2	Vald option
 JAS/ti/map/color2	int	ti	unit	unit2	Vald option
 
 # Pricken i HUD
+JAS/si/nav/prick_active  int   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/prick_x  float   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/prick_y  float   si  unit    unit2   från fartvektorn
 JAS/si/nav/heading  float   si  unit    unit2   riktning som ska indikeras i kompassen
