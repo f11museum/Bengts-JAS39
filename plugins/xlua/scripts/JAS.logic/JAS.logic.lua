@@ -29,6 +29,7 @@ XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 103)
 dr_acf_pitch = XLuaFindDataRef("sim/flightmodel/position/theta") 
 dr_acf_roll = XLuaFindDataRef("sim/flightmodel/position/phi") 
 dr_acf_hdg = XLuaFindDataRef("sim/flightmodel/position/psi") 
+dr_acf_truehdg = find_dataref("sim/flightmodel/position/true_psi") 
 dr_acf_rollrate = XLuaFindDataRef("sim/flightmodel/position/P") 
 dr_acf_pitchrate = XLuaFindDataRef("sim/flightmodel/position/Q") 
 dr_acf_yawrate = XLuaFindDataRef("sim/flightmodel/position/R") 
@@ -38,6 +39,9 @@ dr_acf_yawrate_acc = XLuaFindDataRef("sim/flightmodel/position/R_dot")
 dr_acf_vx = XLuaFindDataRef("sim/flightmodel/position/local_vx") 
 dr_acf_vy = XLuaFindDataRef("sim/flightmodel/position/local_vy") 
 dr_acf_vz = XLuaFindDataRef("sim/flightmodel/position/local_vz") 
+dr_lat = find_dataref("sim/flightmodel/position/latitude") 
+dr_lon = find_dataref("sim/flightmodel/position/longitude") 
+dr_alt = find_dataref("sim/flightmodel/position/elevation") 
 
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 104)
 dr_alpha = XLuaFindDataRef("sim/flightmodel/position/alpha") 
@@ -110,6 +114,9 @@ jas_ti_land_lon = find_dataref("JAS/ti/land/lon")
 jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
 jas_ti_land_head = find_dataref("JAS/ti/land/head")
 jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
+jas_ti_land_bear = find_dataref("JAS/ti/land/bearing")
+
+d_land = create_dataref("JAS/ti/land/debug", "number")
 
 jas_si_nav_prickx = find_dataref("JAS/si/nav/prick_x")
 jas_si_nav_pricky = find_dataref("JAS/si/nav/prick_y")
@@ -661,6 +668,58 @@ function systest()
 	end
 end
 
+function distance(lat, long, lat22, long22)
+	sim_heartbeat = 800
+    lat1 = math.rad(lat)
+    long1 = math.rad(long)
+		
+    lat2 = math.rad(lat22)
+    long2 = math.rad(long22)
+    dlong = long2 - long1
+    dlat = lat2 - lat1
+    ans = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlong / 2), 2)
+    ans = 2 * math.asin(math.sqrt(ans))
+    R = 6371000
+    ans = ans * R
+    return ans
+end
+
+function prick()
+		sim_heartbeat = 700
+		-- jas_ti_land_lat = find_dataref("JAS/ti/land/lat")
+		-- jas_ti_land_lon = find_dataref("JAS/ti/land/lon")
+		-- jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
+		-- jas_ti_land_head = find_dataref("JAS/ti/land/head")
+		-- jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
+		
+		b = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+		sim_heartbeat = 701
+		c = b/math.cos(math.rad(2.89))
+		a = math.sqrt(c*c-b*b)
+		-- a blir höjden den tycker att vi ska ha med det avståndet vi har.
+		
+		pricky = (a+jas_ti_land_alt+2) - dr_alt -- här lägger vi på någon meter på banans höjd för att inte landa precis på bankanten
+		sim_heartbeat = 702
+		ang = jas_ti_land_head - jas_ti_land_bear
+		
+		-- banan = math.sin(math.rad(ang))
+		-- d_land = banan
+		sim_heartbeat = 703
+		prickx = b * -math.sin(math.rad(ang))
+		sim_heartbeat = 704
+		if (jas_ti_land_lmod == 0) then
+			sim_heartbeat = 705
+			jas_si_nav_prickx = prickx
+			jas_si_nav_pricky = pricky
+			jas_si_nav_prickactive = 1
+		else
+			jas_si_nav_prickactive = 0
+		end
+		sim_heartbeat = 706
+		jas_si_nav_heading = jas_ti_land_bear
+		sim_heartbeat = 799
+end
+
 heartbeat = 0
 function before_physics() 
 	sim_heartbeat = 300
@@ -678,6 +737,8 @@ function before_physics()
 	lampAPUGar()
 	sysDAP()
 	sysESS()
+		sim_heartbeat = 307
+	prick()
 	sim_heartbeat = 308
 	vu22()
 	sim_heartbeat = 309
