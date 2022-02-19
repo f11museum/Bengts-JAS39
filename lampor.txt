@@ -344,11 +344,9 @@ JAS/ti/land/head	float	ti	unit	unit2	riktningen PÅ banan
 JAS/ti/land/bearing	float	ti	unit	unit2	riktningen till banan
 
 JAS/ti/map/zoom		int	ti	unit	unit2	vald zoom
-JAS/ti/map/zoom2	int	ti	unit	unit2	vald zoom
 JAS/ti/map/type		int	ti	unit	unit2	Vald option
-JAS/ti/map/type2		int	ti	unit	unit2	Vald option
 JAS/ti/map/color	int	ti	unit	unit2	Vald option
-JAS/ti/map/color2	int	ti	unit	unit2	Vald option
+JAS/ti/map/egla	int	ti	unit	unit2	Vald option
 
 # Pricken i HUD
 JAS/si/nav/prick_active  int   si  unit    unit2   x koordinat den ska ritas på
