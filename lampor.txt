@@ -311,15 +311,15 @@ JAS/io/mi/knapp/knappram	int[12]		sys	unit	unit2	Description
 
 #Muspekare
 JAS/io/fi/pekare/x	    float	ti	unit	unit2	Muspekare
-JAS/io/fi/pekare/x	    float	ti	unit	unit2	Muspekare
+JAS/io/fi/pekare/y	    float	ti	unit	unit2	Muspekare
 JAS/io/fi/pekare/active	    int	ti	unit	unit2	Muspekare
 JAS/io/fi/pekare/click	    int	ti	unit	unit2	Muspekare
 JAS/io/ti/pekare/x	    float	ti	unit	unit2	Muspekare
-JAS/io/ti/pekare/x	    float	ti	unit	unit2	Muspekare
+JAS/io/ti/pekare/y	    float	ti	unit	unit2	Muspekare
 JAS/io/ti/pekare/active	    int	ti	unit	unit2	Muspekare
 JAS/io/ti/pekare/click	    int	ti	unit	unit2	Muspekare
 JAS/io/mi/pekare/x	    float	ti	unit	unit2	Muspekare
-JAS/io/mi/pekare/x	    float	ti	unit	unit2	Muspekare
+JAS/io/mi/pekare/y	    float	ti	unit	unit2	Muspekare
 JAS/io/mi/pekare/active	    int	ti	unit	unit2	Muspekare
 JAS/io/mi/pekare/click	    int	ti	unit	unit2	Muspekare
 
