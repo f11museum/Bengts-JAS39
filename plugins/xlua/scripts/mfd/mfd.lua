@@ -4,34 +4,49 @@ jas_io_fi_knapp_knappram = find_dataref("JAS/io/fi/knapp/knappram")
 jas_io_ti_knapp_knappram = find_dataref("JAS/io/ti/knapp/knappram")
 jas_io_mi_knapp_knappram = find_dataref("JAS/io/mi/knapp/knappram")
 
-jas_io_ti_knapp_knapp1 = find_dataref("JAS/io/ti/knapp/knapp1")
-jas_io_ti_knapp_knapp2 = find_dataref("JAS/io/ti/knapp/knapp2")
-jas_io_ti_knapp_knapp3 = find_dataref("JAS/io/ti/knapp/knapp3")
-jas_io_ti_knapp_knapp4 = find_dataref("JAS/io/ti/knapp/knapp4")
-jas_io_ti_knapp_knapp5 = find_dataref("JAS/io/ti/knapp/knapp5")
-jas_io_ti_knapp_knapp6 = find_dataref("JAS/io/ti/knapp/knapp6")
-jas_io_ti_knapp_knapp7 = find_dataref("JAS/io/ti/knapp/knapp7")
-jas_io_ti_knapp_knapp8 = find_dataref("JAS/io/ti/knapp/knapp8")
-jas_io_ti_knapp_knapp9 = find_dataref("JAS/io/ti/knapp/knapp9")
-jas_io_ti_knapp_knapp10 = find_dataref("JAS/io/ti/knapp/knapp10")
+
+jas_io_ti_pekare_x = find_dataref("JAS/io/ti/pekare/x")
+jas_io_ti_pekare_y = find_dataref("JAS/io/ti/pekare/y")
+
+jas_ti_menu_currentmenu = find_dataref("JAS/ti/menu/menu")
+jas_ti_menu_currentmenu2 = find_dataref("JAS/ti/menu/menu2")
+jas_ti_menu_currentmenu3 = find_dataref("JAS/ti/menu/menu3")
+jas_ti_menu_submenu = find_dataref("JAS/ti/menu/submenu")
+
+jas_ti_land_rikt = find_dataref("JAS/ti/land/rikt")
+jas_ti_land_bana = find_dataref("JAS/ti/land/bana")
+jas_ti_land_bibana = find_dataref("JAS/ti/land/bibana")
+jas_ti_land_flygplats = find_dataref("JAS/ti/land/index")
 
 jas_ti_map_zoom = find_dataref("JAS/ti/map/zoom")
+jas_ti_map_type = find_dataref("JAS/ti/map/type")
+jas_ti_map_color = find_dataref("JAS/ti/map/color")
+
+jas_ti_land_rikt2 = find_dataref("JAS/ti/land/rikt2")
+jas_ti_land_bana2 = find_dataref("JAS/ti/land/bana2")
+jas_ti_land_bibana2 = find_dataref("JAS/ti/land/bibana2")
+jas_ti_land_flygplats2 = find_dataref("JAS/ti/land/index2")
+
+jas_ti_map_zoom2 = find_dataref("JAS/ti/map/zoom2")
+jas_ti_map_type2 = find_dataref("JAS/ti/map/type2")
+jas_ti_map_color2 = find_dataref("JAS/ti/map/color2")
+
+function knappar_ti()
+	
+
+end
 
 function before_physics() 
-    if (jas_ti_map_zoom == 0) then
-        jas_ti_map_zoom = 10
-    end
-    jas_io_ti_knapp_knapp1 = jas_io_ti_knapp_knappram[0]
-    jas_io_ti_knapp_knapp2 = jas_io_ti_knapp_knappram[1]
-    jas_io_ti_knapp_knapp3 = jas_io_ti_knapp_knappram[2]
-    jas_io_ti_knapp_knapp4 = jas_io_ti_knapp_knappram[3]
-    jas_io_ti_knapp_knapp5 = jas_io_ti_knapp_knappram[4]
-    jas_io_ti_knapp_knapp6 = jas_io_ti_knapp_knappram[5]
-    jas_io_ti_knapp_knapp7 = jas_io_ti_knapp_knappram[6]
-    jas_io_ti_knapp_knapp8 = jas_io_ti_knapp_knappram[7]
-    jas_io_ti_knapp_knapp9 = jas_io_ti_knapp_knappram[8]
-    jas_io_ti_knapp_knapp10 = jas_io_ti_knapp_knappram[9]
-	
+	knappar_ti()
+	--jas_ti_menu_currentmenu = jas_ti_menu_currentmenu2 
+	--jas_ti_land_rikt = jas_ti_land_rikt2 
+	--jas_ti_land_bana = jas_ti_land_bana2 
+	--jas_ti_land_bibana = jas_ti_land_bibana2 
+	--jas_ti_land_flygplats = jas_ti_land_flygplats2
+
+	--jas_ti_map_zoom = jas_ti_map_zoom2
+	--jas_ti_map_type = jas_ti_map_type2
+	--jas_ti_map_color = jas_ti_map_color2
 end
 
 function flight_start() 

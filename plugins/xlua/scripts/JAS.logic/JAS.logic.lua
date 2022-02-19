@@ -683,11 +683,16 @@ function distance(lat, long, lat22, long22)
 	ans = ans * R
 	return ans
 end
-function bearing(lat, lon, lat2, lon2)
-	y = sin(toRad(lon2-lon)) * cos(toRad(lat2))
-	x = cos(toRad(lat))* sin(toRad(lat2)) - sin(toRad(lat)) * cos(toRad(lat2)) * cos(toRad(lon2-lon))
-	brng = atan2(y,x)
-	brng = toDeg(brng)
+
+function bearing(dlat, dlon, dlat2, dlon2)
+	lat = math.rad(dlat)
+	lon = math.rad(dlon)
+	lat2 = math.rad(dlat2)
+	lon2 = math.rad(dlon2)
+	y =  math.sin( lon2-lon) *  math.cos( lat2)
+	x =  math.cos( lat)*  math.sin( lat2) -  math.sin( lat) *  math.cos( lat2) *  math.cos( lon2-lon)
+	brng = math.atan2(y,x)
+	brng = math.deg(brng)
 	if (brng < 0) then
 		brng = brng + 360
 	end
@@ -702,7 +707,9 @@ function prick()
 		-- För att kunna jämföra utan att ta hänsyn till om man är nära överlappet mellan 359-0 grader lägger jag på 360 på alla 
 		test = jas_ti_land_head +360
 		test2 = dr_acf_truehdg +360
-		test3 = jas_ti_land_bear+360
+		--test3 = jas_ti_land_bear+360
+		
+		test3 =  bearing(dr_lat, dr_lon, jas_ti_land_lat, jas_ti_land_lon)+360
 		sim_heartbeat = 7011
 		-- Kolla om vi flyger mot  landningsbanan isåfall visar vi pricken
 		if (test3 < test+90 and test3 > test-90 and jas_ti_land_lmod == 0) then
