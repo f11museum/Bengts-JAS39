@@ -122,7 +122,7 @@ function before_physics()
 	if (jas_sys_larm_transsonik >= 1) then
 		if (transsonik_once == 0) then
 			jas_pratorn_tal_transsonik = 1
-			jas_pratorn_larm_transsonik = 1
+			--jas_pratorn_larm_transsonik = 1
 			transsonik_once = 1
 		end
 	else

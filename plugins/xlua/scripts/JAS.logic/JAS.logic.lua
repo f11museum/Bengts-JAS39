@@ -670,19 +670,31 @@ end
 
 function distance(lat, long, lat22, long22)
 	sim_heartbeat = 800
-    lat1 = math.rad(lat)
-    long1 = math.rad(long)
+	lat1 = math.rad(lat)
+	long1 = math.rad(long)
 		
-    lat2 = math.rad(lat22)
-    long2 = math.rad(long22)
-    dlong = long2 - long1
-    dlat = lat2 - lat1
-    ans = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlong / 2), 2)
-    ans = 2 * math.asin(math.sqrt(ans))
-    R = 6371000
-    ans = ans * R
-    return ans
+	lat2 = math.rad(lat22)
+	long2 = math.rad(long22)
+	dlong = long2 - long1
+	dlat = lat2 - lat1
+	ans = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlong / 2), 2)
+	ans = 2 * math.asin(math.sqrt(ans))
+	R = 6371000
+	ans = ans * R
+	return ans
 end
+function bearing(lat, lon, lat2, lon2)
+	y = sin(toRad(lon2-lon)) * cos(toRad(lat2))
+	x = cos(toRad(lat))* sin(toRad(lat2)) - sin(toRad(lat)) * cos(toRad(lat2)) * cos(toRad(lon2-lon))
+	brng = atan2(y,x)
+	brng = toDeg(brng)
+	if (brng < 0) then
+		brng = brng + 360
+	end
+	return brng
+
+end
+
 
 function prick()
 		sim_heartbeat = 700
