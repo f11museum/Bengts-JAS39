@@ -686,35 +686,48 @@ end
 
 function prick()
 		sim_heartbeat = 700
+		
+		-- För att kunna jämföra utan att ta hänsyn till om man är nära överlappet mellan 359-0 grader lägger jag på 360 på alla 
+		test = jas_ti_land_head +360
+		test2 = dr_acf_truehdg +360
+		test3 = jas_ti_land_bear+360
+		sim_heartbeat = 7011
+		-- Kolla om vi flyger mot  landningsbanan isåfall visar vi pricken
+		if (test3 < test+90 and test3 > test-90 and jas_ti_land_lmod == 0) then
+			jas_si_nav_prickactive = 1
+			b = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+			sim_heartbeat = 701
+			c = b/math.cos(math.rad(2.86))
+			a = math.sqrt(c*c-b*b)
+			-- a blir höjden den tycker att vi ska ha med det avståndet vi har.
+			
+			pricky = (a+jas_ti_land_alt+2) - dr_alt -- här lägger vi på någon meter på banans höjd för att inte landa precis på bankanten
+			sim_heartbeat = 702
+			ang = jas_ti_land_head - jas_ti_land_bear
+			
+			-- banan = math.sin(math.rad(ang))
+			-- d_land = banan
+			sim_heartbeat = 703
+			prickx = b * -math.sin(math.rad(ang))
+			sim_heartbeat = 704
+			if (jas_ti_land_lmod == 0) then
+				sim_heartbeat = 705
+				jas_si_nav_prickx = prickx
+				jas_si_nav_pricky = pricky
+				
+			else
+				jas_si_nav_prickactive = 0
+			end
+		else
+			jas_si_nav_prickactive = 0
+		end
 		-- jas_ti_land_lat = find_dataref("JAS/ti/land/lat")
 		-- jas_ti_land_lon = find_dataref("JAS/ti/land/lon")
 		-- jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
 		-- jas_ti_land_head = find_dataref("JAS/ti/land/head")
 		-- jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
 		
-		b = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
-		sim_heartbeat = 701
-		c = b/math.cos(math.rad(2.89))
-		a = math.sqrt(c*c-b*b)
-		-- a blir höjden den tycker att vi ska ha med det avståndet vi har.
 		
-		pricky = (a+jas_ti_land_alt+2) - dr_alt -- här lägger vi på någon meter på banans höjd för att inte landa precis på bankanten
-		sim_heartbeat = 702
-		ang = jas_ti_land_head - jas_ti_land_bear
-		
-		-- banan = math.sin(math.rad(ang))
-		-- d_land = banan
-		sim_heartbeat = 703
-		prickx = b * -math.sin(math.rad(ang))
-		sim_heartbeat = 704
-		if (jas_ti_land_lmod == 0) then
-			sim_heartbeat = 705
-			jas_si_nav_prickx = prickx
-			jas_si_nav_pricky = pricky
-			jas_si_nav_prickactive = 1
-		else
-			jas_si_nav_prickactive = 0
-		end
 		sim_heartbeat = 706
 		jas_si_nav_heading = jas_ti_land_bear
 		sim_heartbeat = 799
