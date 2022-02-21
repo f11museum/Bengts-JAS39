@@ -6,6 +6,7 @@ JAS/arraytest	int[4]		sys	unit	unit2	Description
 JAS/arraybanan	int[10]		sys	unit	unit2	Description
 
 # Variabler
+JAS/huvudmod			int		sys	unit	unit2	Description
 
 ## MKV
 JAS/system/mkv/larm			int		sys	unit	unit2	Description
@@ -309,6 +310,14 @@ JAS/io/fi/knapp/knappram	int[12]		sys	unit	unit2	Description
 JAS/io/ti/knapp/knappram	int[12]		sys	unit	unit2	Description
 JAS/io/mi/knapp/knappram	int[12]		sys	unit	unit2	Description
 
+#Knappar styrspak
+fire		knapp	spak	JAS/frontpanel/override/knappar	JAS/vat/power	ej klar
+hat1_up		knapp	spak	JAS/frontpanel/override/knappar	JAS/vat/power	ej klar
+hat1_down		knapp	spak	JAS/frontpanel/override/knappar	JAS/vat/power	ej klar
+hat1_left		knapp	spak	JAS/frontpanel/override/knappar	JAS/vat/power	ej klar
+hat1_right		knapp	spak	JAS/frontpanel/override/knappar	JAS/vat/power	ej klar
+
+
 #Muspekare
 JAS/io/fi/pekare/x	    float	ti	unit	unit2	Muspekare
 JAS/io/fi/pekare/y	    float	ti	unit	unit2	Muspekare
@@ -353,6 +362,18 @@ JAS/si/nav/prick_active  int   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/prick_x  float   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/prick_y  float   si  unit    unit2   från fartvektorn
 JAS/si/nav/heading  float   si  unit    unit2   riktning som ska indikeras i kompassen
+
+# Radar
+
+JAS/radar/aktiv     int     radar unit unit2 Om radarn är igång
+JAS/radar/range     float   radar unit unit2 Räckvidd i meter
+JAS/radar/bore      float   radar unit unit2 vinkel den scannar inom
+JAS/radar/bore_off  float   radar unit unit2 sido offset på vinkeln
+JAS/radar/ping      int[20] radar unit unit2 Räknare när mål är upptäckt
+JAS/radar/target    int     radar unit unit2 Låst mål
+
+
+
 
 
 #Last line, keep this
