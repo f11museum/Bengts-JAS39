@@ -337,7 +337,9 @@ JAS/ti/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 
 JAS/mi/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 är ström av. Detta för att default ska va igång
 JAS/si/poweroff		int		sys	unit	unit2	Om enhetern har ström 0 är ström på, 1 är ström av. Detta för att default ska va igång
 
+JAS/fi/menu/menu	int	fi	unit	unit2	Vilken meny som är vald
 JAS/ti/menu/menu	int	ti	unit	unit2	Vilken meny som är vald
+JAS/mi/menu/menu	int	mi	unit	unit2	Vilken meny som är vald
 JAS/ti/menu/menu2	int	ti	unit	unit2	Vilken meny som är vald
 JAS/ti/menu/submenu	int	ti	unit	unit2	Vilken submeny som är vald
 
@@ -372,7 +374,18 @@ JAS/radar/bore_off  float   radar unit unit2 sido offset på vinkeln
 JAS/radar/ping      int[20] radar unit unit2 Räknare när mål är upptäckt
 JAS/radar/target    int     radar unit unit2 Låst mål
 
+# Vapen
+JAS/vapen/mode     int     radar unit unit2 Vapenväljarens läge 0 okänt, 1 redo, 2 operativ, 3 sim, 4 fikt
 
+# Uppdrags menyn
+JAS/udat/steg int udat unit unit2 Index för vald 
+JAS/udat/list int udat unit unit2 Index för vald lista
+JAS/udat/heading  float   si  unit    unit2   riktning till aktuell brytpunkt
+JAS/udat/distance  float   si  unit    unit2   avstånd till aktuell brytpunkt
+JAS/udat/speed  float   si  unit    unit2   avstånd till aktuell brytpunkt
+JAS/udat/alt  float   si  unit    unit2   avstånd till aktuell brytpunkt
+JAS/udat/lat  double   si  unit    unit2   gps till aktuell brytpunkt
+JAS/udat/lon  double   si  unit    unit2   gps till aktuell brytpunkt
 
 
 

@@ -776,13 +776,14 @@ function calculateAutopilot(wanted_rate)
 	elapsedTime = constrain(sim_FRP, 0,0.025)
 
 	--error = lock_pitch - sim_pitch -- determine error
+	error = constrain(error, -100,100)
 	
 	cumError = constrain(cumError + error * (elapsedTime)*10, -5,5) --compute integral
 	rateError = constrain((error - lastError)/elapsedTime, -20,20) --compute derivative
 	rateError = myfilter(rateError_prev, rateError, 8)
 	rateError_prev = constrain(rateError, -20,20)
 	
-	error = myfilter(error_prev, error, 0)
+	--error = myfilter(error_prev, error, 0)
 	error_prev = constrain(error, -200,200)
 
 	kp = constrain(interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot ), 0.0001,5)

@@ -9,8 +9,8 @@ jas_io_ti_pekare_x = find_dataref("JAS/io/ti/pekare/x")
 jas_io_ti_pekare_y = find_dataref("JAS/io/ti/pekare/y")
 
 jas_ti_menu_currentmenu = find_dataref("JAS/ti/menu/menu")
-jas_ti_menu_currentmenu2 = find_dataref("JAS/ti/menu/menu2")
-jas_ti_menu_currentmenu3 = find_dataref("JAS/ti/menu/menu3")
+jas_fi_menu_currentmenu = find_dataref("JAS/fi/menu/menu")
+jas_mi_menu_currentmenu = find_dataref("JAS/mi/menu/menu")
 jas_ti_menu_submenu = find_dataref("JAS/ti/menu/submenu")
 
 jas_ti_land_rikt = find_dataref("JAS/ti/land/rikt")
@@ -30,6 +30,8 @@ jas_ti_land_flygplats2 = find_dataref("JAS/ti/land/index2")
 jas_ti_map_zoom2 = find_dataref("JAS/ti/map/zoom2")
 jas_ti_map_type2 = find_dataref("JAS/ti/map/type2")
 jas_ti_map_color2 = find_dataref("JAS/ti/map/color2")
+
+jas_udat_lon = find_dataref("JAS/udat/lon")
 
 function knappar_ti()
 	

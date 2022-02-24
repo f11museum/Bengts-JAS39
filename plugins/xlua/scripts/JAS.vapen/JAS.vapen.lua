@@ -31,8 +31,14 @@ jas_io_st_lamp_j = find_dataref("JAS/io/st/lamp/J")
 jas_io_st_lamp_a = find_dataref("JAS/io/st/lamp/A")
 jas_io_st_lamp_s = find_dataref("JAS/io/st/lamp/S")
 
+jas_vu22_vapenred = find_dataref("JAS/io/vu22/knapp/vapenred")
+jas_vu22_vapenop = find_dataref("JAS/io/vu22/knapp/vapenop")
+jas_vu22_vapensim = find_dataref("JAS/io/vu22/knapp/vapensim")
+jas_vu22_vapenfikt = find_dataref("JAS/io/vu22/knapp/vapenfikt")
+
 
 jas_huvudmod = find_dataref("JAS/huvudmod")
+jas_vapen_mode = find_dataref("JAS/vapen/mode")
 
 sim_heartbeat = 101
 dr_fire = find_command("sim/weapons/fire_any_armed")
@@ -168,6 +174,28 @@ function huvudmod()
 	end
 end
 
+function vapenmod()
+    sim_heartbeat = 300
+    -- Vapenväljarens mod
+    if (jas_vu22_vapenop == 1) then
+        sim_heartbeat = 301
+        jas_vapen_mode = 2
+    elseif (jas_vu22_vapenred == 1) then
+        sim_heartbeat = 302
+        jas_vapen_mode = 1
+    elseif (jas_vu22_vapensim == 1) then
+        sim_heartbeat = 303
+        jas_vapen_mode = 3
+    elseif (jas_vu22_vapenfikt == 1) then
+        sim_heartbeat = 304
+        jas_vapen_mode = 4
+    else
+        sim_heartbeat = 305
+        jas_vapen_mode = 0
+        sim_heartbeat = 306
+    end
+    sim_heartbeat = 399
+end
 
 heartbeat = 0
 function before_physics()
@@ -180,6 +208,9 @@ function before_physics()
 	
 	sim_heartbeat = 202
 	huvudmod()
+    
+    sim_heartbeat = 203
+    vapenmod()
 	
 	dr_payload =  0-- ta bort den dumma extra vikten som x-plane alltid lägger på planet
 	
