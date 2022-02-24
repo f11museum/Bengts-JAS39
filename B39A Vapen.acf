@@ -98,7 +98,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118796647
+P _gear/0/_stat_def 0.118796624
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -132,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.711948216
+P _gear/1/_stat_def 0.711948037
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -166,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.711948216
+P _gear/2/_stat_def 0.711948037
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -250,9 +250,9 @@ P _lite/3/_v10_att_part -1
 P _lite/3/_v10_att_phi_ref 0.0
 P _lite/3/_v10_att_psi_ref 0.0
 P _lite/3/_v10_att_the_ref 0.0
-P _lite/3/_v10_att_x_acf_prt_ref -16.010498047
-P _lite/3/_v10_att_y_acf_prt_ref 1.049868703
-P _lite/3/_v10_att_z_acf_prt_ref 45.111549377
+P _lite/3/_v10_att_x_acf_prt_ref -13.713910103
+P _lite/3/_v10_att_y_acf_prt_ref 0.393700778
+P _lite/3/_v10_att_z_acf_prt_ref 33.956695557
 P _lite/3/_v10_is_internal -1837186895
 P _lite/3/_v10_steers_with_gear 0
 P _lite/3/_width 0.0
@@ -268,9 +268,9 @@ P _lite/4/_v10_att_part -1
 P _lite/4/_v10_att_phi_ref 0.0
 P _lite/4/_v10_att_psi_ref 0.0
 P _lite/4/_v10_att_the_ref 0.0
-P _lite/4/_v10_att_x_acf_prt_ref 16.010498047
-P _lite/4/_v10_att_y_acf_prt_ref 1.049868703
-P _lite/4/_v10_att_z_acf_prt_ref 45.111549377
+P _lite/4/_v10_att_x_acf_prt_ref 13.713910103
+P _lite/4/_v10_att_y_acf_prt_ref 0.393700778
+P _lite/4/_v10_att_z_acf_prt_ref 33.956695557
 P _lite/4/_v10_is_internal -1837186895
 P _lite/4/_v10_steers_with_gear 0
 P _lite/4/_width 0.0
@@ -15012,7 +15012,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.521806240
-P _part/86/_part_y -3.407325983
+P _part/86/_part_y -3.407326221
 P _part/86/_part_z 27.800683975
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -16482,7 +16482,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.521806240
-P _part/87/_part_y -3.407325983
+P _part/87/_part_y -3.407326221
 P _part/87/_part_z 27.800683975
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -21178,7 +21178,7 @@ P _wing/9/_yawbr/8 0
 P _wing/9/_yawbr/9 0
 P _wing/9/_yawbr/count 10
 P _wing/count 56
-P _wpna/0/_v10_att_file_stl MK-83.wpn
+P _wpna/0/_v10_att_file_stl DropTank1100.wpn
 P _wpna/0/_v10_att_part -1
 P _wpna/0/_v10_att_phi_ref 0.0
 P _wpna/0/_v10_att_psi_ref 0.0
@@ -23830,7 +23830,7 @@ P acf/_mixt_x_ctr 0.0
 P acf/_n1_power_curve1 2.0
 P acf/_n1_power_curve2 3.0
 P acf/_n2_power_curve 3.500000000
-P acf/_name Bengts JAS Vapen
+P acf/_name Bengts JAS 39A Vapen
 P acf/_new_plot_XP3D_cock/0 1
 P acf/_new_plot_XP3D_cock/1 1
 P acf/_new_plot_XP3D_cock/2 0

@@ -98,7 +98,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118796654
+P _gear/0/_stat_def 0.118796624
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -132,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.711948097
+P _gear/1/_stat_def 0.711947978
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -166,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.711948097
+P _gear/2/_stat_def 0.711947978
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -250,9 +250,9 @@ P _lite/3/_v10_att_part -1
 P _lite/3/_v10_att_phi_ref 0.0
 P _lite/3/_v10_att_psi_ref 0.0
 P _lite/3/_v10_att_the_ref 0.0
-P _lite/3/_v10_att_x_acf_prt_ref -16.010498047
-P _lite/3/_v10_att_y_acf_prt_ref 1.049868703
-P _lite/3/_v10_att_z_acf_prt_ref 45.111549377
+P _lite/3/_v10_att_x_acf_prt_ref -13.713910103
+P _lite/3/_v10_att_y_acf_prt_ref 0.393700778
+P _lite/3/_v10_att_z_acf_prt_ref 33.956695557
 P _lite/3/_v10_is_internal -1837186895
 P _lite/3/_v10_steers_with_gear 0
 P _lite/3/_width 0.0
@@ -268,9 +268,9 @@ P _lite/4/_v10_att_part -1
 P _lite/4/_v10_att_phi_ref 0.0
 P _lite/4/_v10_att_psi_ref 0.0
 P _lite/4/_v10_att_the_ref 0.0
-P _lite/4/_v10_att_x_acf_prt_ref 16.010498047
-P _lite/4/_v10_att_y_acf_prt_ref 1.049868703
-P _lite/4/_v10_att_z_acf_prt_ref 45.111549377
+P _lite/4/_v10_att_x_acf_prt_ref 13.713910103
+P _lite/4/_v10_att_y_acf_prt_ref 0.393700778
+P _lite/4/_v10_att_z_acf_prt_ref 33.956695557
 P _lite/4/_v10_is_internal -1837186895
 P _lite/4/_v10_steers_with_gear 0
 P _lite/4/_width 0.0
@@ -15012,7 +15012,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.521806240
-P _part/86/_part_y -3.407325983
+P _part/86/_part_y -3.407326221
 P _part/86/_part_z 27.800683975
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -16482,7 +16482,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.521806240
-P _part/87/_part_y -3.407325983
+P _part/87/_part_y -3.407326221
 P _part/87/_part_z 27.800683975
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -21178,13 +21178,13 @@ P _wing/9/_yawbr/8 0
 P _wing/9/_yawbr/9 0
 P _wing/9/_yawbr/count 10
 P _wing/count 56
-P _wpna/0/_v10_att_file_stl placeholder.wpn
+P _wpna/0/_v10_att_file_stl DropTank1100.wpn
 P _wpna/0/_v10_att_part -1
 P _wpna/0/_v10_att_phi_ref 0.0
 P _wpna/0/_v10_att_psi_ref 0.0
 P _wpna/0/_v10_att_the_ref 0.0
 P _wpna/0/_v10_att_x_acf_prt_ref 0.0
-P _wpna/0/_v10_att_y_acf_prt_ref -1.640419960
+P _wpna/0/_v10_att_y_acf_prt_ref -1.968503952
 P _wpna/0/_v10_att_z_acf_prt_ref 26.246719360
 P _wpna/0/_v10_is_internal 0
 P _wpna/0/_v10_steers_with_gear 0
@@ -21192,12 +21192,22 @@ P _wpna/1/_v10_att_file_stl gun-M39-20mm-F5.wpn
 P _wpna/1/_v10_att_part -1
 P _wpna/1/_v10_att_phi_ref 0.0
 P _wpna/1/_v10_att_psi_ref 0.0
-P _wpna/1/_v10_att_the_ref -5.0
-P _wpna/1/_v10_att_x_acf_prt_ref 0.0
-P _wpna/1/_v10_att_y_acf_prt_ref -0.918635190
-P _wpna/1/_v10_att_z_acf_prt_ref 26.738843918
+P _wpna/1/_v10_att_the_ref 0.0
+P _wpna/1/_v10_att_x_acf_prt_ref -1.345144272
+P _wpna/1/_v10_att_y_acf_prt_ref -1.968503952
+P _wpna/1/_v10_att_z_acf_prt_ref 16.404199600
 P _wpna/1/_v10_is_internal 1284781781
 P _wpna/1/_v10_steers_with_gear 0
+P _wpna/10/_v10_att_file_stl placeholder.wpn
+P _wpna/10/_v10_att_part -1
+P _wpna/10/_v10_att_phi_ref 0.0
+P _wpna/10/_v10_att_psi_ref 0.0
+P _wpna/10/_v10_att_the_ref 0.0
+P _wpna/10/_v10_att_x_acf_prt_ref 2.296587944
+P _wpna/10/_v10_att_y_acf_prt_ref -1.968503952
+P _wpna/10/_v10_att_z_acf_prt_ref 16.404199600
+P _wpna/10/_v10_is_internal 0
+P _wpna/10/_v10_steers_with_gear 0
 P _wpna/2/_v10_att_file_stl placeholder.wpn
 P _wpna/2/_v10_att_part -1
 P _wpna/2/_v10_att_phi_ref 0.0
@@ -21223,7 +21233,7 @@ P _wpna/4/_v10_att_part -1
 P _wpna/4/_v10_att_phi_ref 0.0
 P _wpna/4/_v10_att_psi_ref 0.0
 P _wpna/4/_v10_att_the_ref 0.0
-P _wpna/4/_v10_att_x_acf_prt_ref -9.350393295
+P _wpna/4/_v10_att_x_acf_prt_ref -9.678477287
 P _wpna/4/_v10_att_y_acf_prt_ref -0.787401557
 P _wpna/4/_v10_att_z_acf_prt_ref 29.035434723
 P _wpna/4/_v10_is_internal 0
@@ -21238,7 +21248,7 @@ P _wpna/5/_v10_att_y_acf_prt_ref -0.787401557
 P _wpna/5/_v10_att_z_acf_prt_ref 29.035434723
 P _wpna/5/_v10_is_internal 0
 P _wpna/5/_v10_steers_with_gear 0
-P _wpna/6/_v10_att_file_stl placeholder.wpn
+P _wpna/6/_v10_att_file_stl AIM9-Sidewinder.wpn
 P _wpna/6/_v10_att_part -1
 P _wpna/6/_v10_att_phi_ref 90.0
 P _wpna/6/_v10_att_psi_ref 0.0
@@ -21248,7 +21258,7 @@ P _wpna/6/_v10_att_y_acf_prt_ref 0.131233588
 P _wpna/6/_v10_att_z_acf_prt_ref 32.480312347
 P _wpna/6/_v10_is_internal 0
 P _wpna/6/_v10_steers_with_gear 0
-P _wpna/7/_v10_att_file_stl placeholder.wpn
+P _wpna/7/_v10_att_file_stl AIM9-Sidewinder.wpn
 P _wpna/7/_v10_att_part -1
 P _wpna/7/_v10_att_phi_ref -90.0
 P _wpna/7/_v10_att_psi_ref 0.0
@@ -21278,7 +21288,7 @@ P _wpna/9/_v10_att_y_acf_prt_ref 0.0
 P _wpna/9/_v10_att_z_acf_prt_ref 0.0
 P _wpna/9/_v10_is_internal -839863605
 P _wpna/9/_v10_steers_with_gear 0
-P _wpna/count 10
+P _wpna/count 11
 P acf/_APU_cooldown_time 0.001000000
 P acf/_APU_door_time 0.001000000
 P acf/_APU_spooldn_time 9.0
@@ -23602,7 +23612,7 @@ P acf/_give_tow/1 0.0
 P acf/_give_tow/2 0.0
 P acf/_give_tow/count 3
 P acf/_go_to_beta_below_thro 0.0
-P acf/_go_to_burner_50_above_thro 0.0
+P acf/_go_to_burner_50_above_thro 0.899999976
 P acf/_go_to_pitch_mode_on_alt_arm 0
 P acf/_go_to_revr_below_thro 0.0
 P acf/_govnr_EQ 0
@@ -23820,7 +23830,7 @@ P acf/_mixt_x_ctr 0.0
 P acf/_n1_power_curve1 2.0
 P acf/_n1_power_curve2 3.0
 P acf/_n2_power_curve 3.500000000
-P acf/_name Bengts JAS 0.8
+P acf/_name Bengts JAS 39A
 P acf/_new_plot_XP3D_cock/0 1
 P acf/_new_plot_XP3D_cock/1 1
 P acf/_new_plot_XP3D_cock/2 0
