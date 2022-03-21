@@ -51,7 +51,7 @@ g_correction = 0.025
 motor_speed = 200 
 motor_speed = 560 -- riktiga planet 56 grader per sekund
 motor_speed_canard = 560 -- riktiga planet 56 grader per sekund
-motor_speed_rudder = 56
+motor_speed_rudder = 560
 
 fade_out = 0.6
 
@@ -786,9 +786,9 @@ function calculateAutopilot(wanted_rate)
 	--error = myfilter(error_prev, error, 0)
 	error_prev = constrain(error, -200,200)
 
-	kp = constrain(interpolate(0, 15, 1000, 0.1, sim_airspeed_kts_pilot ), 0.0001,5)
-	ki = 5
-	kd = 1
+	kp = constrain(interpolate(0, 5, 1000, 0.01, sim_airspeed_kts_pilot ), 0.0001,5)
+	ki = 0.1
+	kd = 0.1
 	out = kp*error + ki*cumError + kd*rateError --PID output       
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/p"), kp*error) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/i"), ki*cumError) 
@@ -984,8 +984,8 @@ function calculateElevator()
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/error_correction"), error_correction) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/error_correction_g"), error_correction_g) 
 	
-	wanted_rate = myfilter(wanted_prev, wanted_rate, 5)
-	wanted_prev = wanted_rate
+	--wanted_rate = myfilter(wanted_prev, wanted_rate, 5)
+	--wanted_prev = wanted_rate
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/wanted_rate"), wanted_rate) 
 	angle = (auto_trim+delta+wanted_rate+error_correction+error_correction_g+trim) / elevator_rate_to_angle
 	canard_angle = (delta+(wanted_rate*0.9 * current_fade_out)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
@@ -1188,9 +1188,10 @@ function before_physics()
 	else
 		m_canard = constrain(m_canard, -55, 25)
 		s_canard = motor(s_canard, m_canard, motor_speed_canard)
+		
 	end
 	
-	--s_canard = m_canard
+	s_canard = m_canard
 	-- Höjdrodret på bakvingen ska ha höjdroder och lite hjälp vid roll så ska den även slå till
 	m_elevator_l = constrain(m_elevator, -30, 30)
 	m_elevator_r = constrain(m_elevator, -30, 30)
