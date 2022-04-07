@@ -731,8 +731,8 @@ function prick()
 			sim_heartbeat = 704
 			if (jas_ti_land_lmod == 0) then
 				sim_heartbeat = 705
-				jas_si_nav_prickx = prickx
-				jas_si_nav_pricky = pricky
+				jas_si_nav_prickx = prickx/2
+				jas_si_nav_pricky = pricky/2
 				
 			else
 				jas_si_nav_prickactive = 0
