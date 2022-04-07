@@ -169,7 +169,8 @@ function brasys()
 end
 
 function bramgd()
-	if (jas_fuel_total <690) then
+	-- 23% larmgräns
+	if (jas_fuel_total <552) then 
 		jas_vat_larm_bramgd = 1
 		jas_vat_larmkod[30] = 1 -- generarar larm 030
 	else

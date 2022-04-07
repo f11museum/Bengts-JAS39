@@ -132,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.711948037
+P _gear/1/_stat_def 0.711948216
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -166,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.711948037
+P _gear/2/_stat_def 0.711948216
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -15012,7 +15012,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.521806240
-P _part/86/_part_y -3.407326221
+P _part/86/_part_y -3.407325983
 P _part/86/_part_z 27.800683975
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -16482,7 +16482,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.521806240
-P _part/87/_part_y -3.407326221
+P _part/87/_part_y -3.407325983
 P _part/87/_part_z 27.800683975
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -23791,7 +23791,7 @@ P acf/_lock_with_elev_EQ 0
 P acf/_m_displaced 0.0
 P acf/_m_displaced_Y 0.0
 P acf/_m_empty 14815.059570312
-P acf/_m_fuel_max_tot 6703.836914062
+P acf/_m_fuel_max_tot 5350.198730469
 P acf/_m_jett 0.0
 P acf/_m_max 30930.669921875
 P acf/_m_shift 0.0

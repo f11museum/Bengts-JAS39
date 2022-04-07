@@ -206,8 +206,8 @@ function flight_start()
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 		
 	
-	XLuaSetNumber(dr_fuel1, 2970) 
-	XLuaSetNumber(dr_fuel2, 2970) 
+	XLuaSetNumber(dr_fuel1, 2400) 
+	XLuaSetNumber(dr_fuel2, 2400) 
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 

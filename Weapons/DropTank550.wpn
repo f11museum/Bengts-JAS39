@@ -3,18 +3,11 @@ I
 WPN
 
 P lnch/_added_mass 0.0
-P lnch/_aero_x_os 0.0
-P lnch/_aero_y_os 0.0
-P lnch/_aero_z_os 0.0
-P lnch/_area_frnt 0.0
-P lnch/_area_side 0.0
-P lnch/_area_vert 0.0
 P lnch/_bot_s1 0.0
 P lnch/_bot_s2 0.0
 P lnch/_bot_t1 0.0
 P lnch/_bot_t2 0.0
 P lnch/_conv_range 0.0
-P lnch/_damp 0.0
 P lnch/_del_psi_deg_max 0.0
 P lnch/_del_the_deg_max 0.0
 P lnch/_geo_xyz/0,0,0 0.0
@@ -1464,6 +1457,7 @@ P lnch/_locked/9,9 0
 P lnch/_locked/i_count 20
 P lnch/_locked/j_count 18
 P lnch/_muzzle_speed 0.0
+P lnch/_part_area_rule 0.0
 P lnch/_part_cd 0.0
 P lnch/_part_phi 0.0
 P lnch/_part_psi 0.0
@@ -1482,7 +1476,6 @@ P lnch/_r_dim 0
 P lnch/_rounds_max 0.0
 P lnch/_rounds_per_sec 0.0
 P lnch/_s_dim 0
-P lnch/_scon 0.0
 P lnch/_top_s1 0.0
 P lnch/_top_s2 0.0
 P lnch/_top_t1 0.0
@@ -1490,22 +1483,15 @@ P lnch/_top_t2 0.0
 P shell/_Jxx_unitmass 0.0
 P shell/_Jyy_unitmass 0.0
 P shell/_Jzz_unitmass 0.0
-P shell/_aero_x_os 0.0
-P shell/_aero_y_os 0.0
-P shell/_aero_z_os 0.0
-P shell/_area_frnt 0.0
-P shell/_area_side 0.0
-P shell/_area_vert 0.0
 P shell/_bot_s1 0.0
 P shell/_bot_s2 0.490000010
 P shell/_bot_t1 0.0
 P shell/_bot_t2 0.490000010
 P shell/_bul_area 0.0
 P shell/_cgY 0.0
-P shell/_cgZ 8.0
+P shell/_cgZ 8.005249023
 P shell/_class_type wpn_class_fuel
-P shell/_damp 0.0
-P shell/_fuel_warhead_mass_max 1212.0
+P shell/_fuel_warhead_mass_max 970.033691406
 P shell/_geo_xyz/0,0,0 0.0
 P shell/_geo_xyz/0,0,1 0.028571429
 P shell/_geo_xyz/0,0,2 -2.0
@@ -3010,7 +2996,7 @@ P shell/_mis_fin_sweep/1 0.0
 P shell/_mis_fin_sweep/2 0.0
 P shell/_mis_fin_sweep/3 0.0
 P shell/_mis_fin_sweep/count 4
-P shell/_mis_fin_z/0 6.0
+P shell/_mis_fin_z/0 6.003937244
 P shell/_mis_fin_z/1 0.0
 P shell/_mis_fin_z/2 0.0
 P shell/_mis_fin_z/3 0.0
@@ -3019,6 +3005,7 @@ P shell/_mis_thrust/0 0.0
 P shell/_mis_thrust/1 0.0
 P shell/_mis_thrust/2 0.0
 P shell/_mis_thrust/count 3
+P shell/_part_area_rule 0.0
 P shell/_part_cd 0.050000001
 P shell/_part_phi 0.0
 P shell/_part_psi 0.0
@@ -3028,18 +3015,17 @@ P shell/_part_specs_invis 0
 P shell/_part_tex 0
 P shell/_part_the 0.0
 P shell/_part_x 0.0
-P shell/_part_y 1.399999976
-P shell/_part_z 8.0
+P shell/_part_y 1.410761118
+P shell/_part_z 8.005249023
 P shell/_patt_con 0
 P shell/_patt_prt 0
 P shell/_patt_rat 1.0
 P shell/_r_dim 18
 P shell/_s_dim 8
-P shell/_scon 0.0
 P shell/_top_s1 0.0
 P shell/_top_s2 0.490000010
 P shell/_top_t1 0.509999990
 P shell/_top_t2 1.0
-P shell/_total_shell_mass_max 1520.0
+P shell/_total_shell_mass_max 1036.172363281
 P shell/_warhead_type wpn_warhead_conventional
 END

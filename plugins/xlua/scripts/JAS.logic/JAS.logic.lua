@@ -188,6 +188,9 @@ dr_cloud_shadow = XLuaFindDataRef("sim/private/controls/clouds/cloud_shadow_ligh
 dr_baro_set = XLuaFindDataRef("sim/cockpit/misc/barometer_setting")
 dr_baro_current = XLuaFindDataRef("sim/weather/barometer_sealevel_inhg")
 
+dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
+dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel[0]")
+dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 
 sim_apu_n1 = find_dataref("sim/cockpit2/electrical/APU_N1_percent")
 sim_engine_n1 = find_dataref("sim/flightmodel2/engines/N1_percent")
@@ -229,13 +232,11 @@ g_groundContact = 0
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 104)
 function flight_start() 
 	XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 201)
-	dr_fuel1 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel1")
-	dr_fuel2 =  XLuaFindDataRef("sim/flightmodel/weight/m_fuel[0]")
-	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
+	
 		
 	
-	XLuaSetNumber(dr_fuel1, 2970) 
-	XLuaSetNumber(dr_fuel2, 2970) 
+	XLuaSetNumber(dr_fuel1, 2400) 
+	XLuaSetNumber(dr_fuel2, 2400) 
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
