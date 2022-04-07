@@ -2,12 +2,11 @@
 # Use tab character and not space to seperate after each type
 # name TAB type TAB writable TAB unit TAB description
 
-JAS/arraytest	int[4]		sys	unit	unit2	Description
-JAS/arraybanan	int[10]		sys	unit	unit2	Description
-
 # Variabler
 JAS/huvudmod			int		sys	unit	unit2	Description
-JAS/fuel	float	sys	unit	unit2	Beräknad total bränsle
+JAS/fuel/total				float	sys	unit	unit2	Beräknad total bränsle
+JAS/fuel/eta				float	sys	unit	unit2	Beräknad total bränsle
+JAS/fuel/range				float	sys	unit	unit2	Beräknad total bränsle
 
 ## MKV
 JAS/system/mkv/larm			int		sys	unit	unit2	Description
@@ -30,6 +29,7 @@ JAS/heartbeat/pratorn		int	sys	unit	unit2	Description
 JAS/heartbeat/pratornlua	int	sys	unit	unit2	Description
 JAS/heartbeat/vat			int	sys	unit	unit2	heartbeat
 JAS/heartbeat/el            int sys	unit	unit2	Description
+JAS/heartbeat/vapen            int sys	unit	unit2	Description
 
 JAS/debug/p		float	sys	unit	unit2	Description
 JAS/debug/i		float	sys	unit	unit2	Description

@@ -13,7 +13,7 @@
 
 
 --sim_mkv_heartbeat = find_dataref("JAS/system/mkv/heartbeat") 
-sim_heartbeat = create_dataref("JAS/system/vapen/heartbeat", "number")
+sim_heartbeat = find_dataref("JAS/heartbeat/vapen", "number")
 sim_heartbeat = 100
 jas_io_spak_knapp_fire = find_dataref("JAS/io/spak/knapp/fire")
 jas_io_spak_knapp_hat1_up = find_dataref("JAS/io/spak/knapp/hat1_up")
@@ -36,7 +36,9 @@ jas_vu22_vapenop = find_dataref("JAS/io/vu22/knapp/vapenop")
 jas_vu22_vapensim = find_dataref("JAS/io/vu22/knapp/vapensim")
 jas_vu22_vapenfikt = find_dataref("JAS/io/vu22/knapp/vapenfikt")
 
-jas_fuel = find_dataref("JAS/fuel")
+jas_fuel_total = find_dataref("JAS/fuel/total")
+jas_fuel_eta = find_dataref("JAS/fuel/eta")
+jas_fuel_range = find_dataref("JAS/fuel/range")
 
 jas_huvudmod = find_dataref("JAS/huvudmod")
 jas_vapen_mode = find_dataref("JAS/vapen/mode")
@@ -48,6 +50,8 @@ dr_wpn_type = find_dataref("sim/weapons/type")
 dr_wpn_firing = find_dataref("sim/weapons/firing") 
 dr_wpn_fuel_warhead_mass_now = find_dataref("sim/weapons/fuel_warhead_mass_now") 
 dr_m_fuel_total = find_dataref("sim/flightmodel/weight/m_fuel_total") 
+dr_fuel_flow = find_dataref("sim/flightmodel/engine/ENGN_FF_") 
+dr_groundspeed = find_dataref("sim/flightmodel/position/groundspeed") 
 
 dr_balk1_l_type = find_dataref("sim/weapons/type[1]") -- Balknumrering enligt handbok, 1 Vingspetsar
 balk1_l_index = 7
@@ -73,6 +77,14 @@ dr_payload =  find_dataref("sim/flightmodel/weight/m_fixed") -- den dumma extra 
 
 d_selected = create_dataref("JAS/debug/vapen/selected", "number")
 d_klick = create_dataref("JAS/debug/vapen/klick", "number")
+-- d_fuel = create_dataref("JAS/debug/vapen/fuel", "number")
+
+
+function myfilter(currentValue, newValue, amp)
+
+	return ((currentValue*amp) + (newValue))/(amp+1)
+	
+end
 
 sim_heartbeat = 102
 avtryckare_prev = 0
@@ -178,56 +190,75 @@ function huvudmod()
 end
 
 function vapenmod()
-    sim_heartbeat = 300
+    -- sim_heartbeat = 300
     -- Vapenväljarens mod
     if (jas_vu22_vapenop == 1) then
-        sim_heartbeat = 301
+        -- sim_heartbeat = 301
         jas_vapen_mode = 2
     elseif (jas_vu22_vapenred == 1) then
-        sim_heartbeat = 302
+        -- sim_heartbeat = 302
         jas_vapen_mode = 1
     elseif (jas_vu22_vapensim == 1) then
-        sim_heartbeat = 303
+        -- sim_heartbeat = 303
         jas_vapen_mode = 3
     elseif (jas_vu22_vapenfikt == 1) then
-        sim_heartbeat = 304
+        -- sim_heartbeat = 304
         jas_vapen_mode = 4
     else
-        sim_heartbeat = 305
+        -- sim_heartbeat = 305
         jas_vapen_mode = 0
-        sim_heartbeat = 306
+        -- sim_heartbeat = 306
     end
-    sim_heartbeat = 399
+    -- sim_heartbeat = 399
 end
 
 function isFuelTank(index) 
-	if (dr_wpn_type[index] == 23 and drWeaponFired[index]) == 0) then
+	-- sim_heartbeat = 40020
+	if (dr_wpn_type[index] == 23 and dr_wpn_firing[index] == 0) then
+		-- sim_heartbeat = 40021
 		return 1
 	end
+	-- sim_heartbeat = 40022
 	return 0
 end
 
 function getFuelInTank(index) 
+	-- sim_heartbeat = 40010
 	if (isFuelTank(index) == 1) then
 		return dr_wpn_fuel_warhead_mass_now[index]
 	end
 	return 0.0
 end
 
+eta_prev = 0
 function totalFuel()
-	total = 0.0;
+	-- sim_heartbeat = 4000
+	total = 0.0
 	total = total + dr_m_fuel_total
-	
+	-- sim_heartbeat = 400
 	total = total + getFuelInTank(0)
+	-- sim_heartbeat = 401
 	total = total + getFuelInTank(2)
+	-- sim_heartbeat = 402
 	total = total + getFuelInTank(3)
 	total = total + getFuelInTank(4)
 	total = total + getFuelInTank(5)
-
-	jas_fuel = total
-}	
-	
+	sim_heartbeat = 406
+	jas_fuel_total = total
+	sim_heartbeat = 4061
+	-- d_fuel = jas_fuel
+	if (dr_fuel_flow[0]>0) then
+		eta = total / dr_fuel_flow[0]
+		jas_fuel_eta = myfilter(eta_prev,eta , 10)
+		eta_prev = eta
+	end
+	sim_heartbeat = 407
+	jas_fuel_range = dr_groundspeed * jas_fuel_eta
+	sim_heartbeat = 408
 end
+
+run_at_interval(totalFuel, 1.0)
+
 heartbeat = 0
 function before_physics()
 	
@@ -244,7 +275,7 @@ function before_physics()
 	vapenmod()
 	
 	sim_heartbeat = 204
-	totalFuel()
+	--totalFuel()
 	
 	dr_payload =  0-- ta bort den dumma extra vikten som x-plane alltid lägger på planet
 	

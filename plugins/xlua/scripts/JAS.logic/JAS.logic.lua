@@ -783,7 +783,7 @@ function before_physics()
     heartbeat = heartbeat + 1
 end
 
-function after_physics() 	
-	XLuaSetNumber(dr_override_surfaces, 0) 
-end
+-- function after_physics() 	
+-- 	XLuaSetNumber(dr_override_surfaces, 0) 
+-- end
 XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 199)
