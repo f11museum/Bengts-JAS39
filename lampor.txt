@@ -7,6 +7,7 @@ JAS/arraybanan	int[10]		sys	unit	unit2	Description
 
 # Variabler
 JAS/huvudmod			int		sys	unit	unit2	Description
+JAS/fuel	float	sys	unit	unit2	Beräknad total bränsle
 
 ## MKV
 JAS/system/mkv/larm			int		sys	unit	unit2	Description

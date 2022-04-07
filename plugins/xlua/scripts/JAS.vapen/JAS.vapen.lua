@@ -1,6 +1,6 @@
 -- RB 74 irsökande -> AIM9 i spelet, Räckvidd ?, type 8 i spelet
 -- RB 99 radar -> AIM120 i spelet, Räckvidd >50 km, type 9 i spelet
-
+	
 -- ARAK Raketkapsel M/70 6st raketer, totalvikt laddad 365kg
 
 
@@ -36,6 +36,7 @@ jas_vu22_vapenop = find_dataref("JAS/io/vu22/knapp/vapenop")
 jas_vu22_vapensim = find_dataref("JAS/io/vu22/knapp/vapensim")
 jas_vu22_vapenfikt = find_dataref("JAS/io/vu22/knapp/vapenfikt")
 
+jas_fuel = find_dataref("JAS/fuel")
 
 jas_huvudmod = find_dataref("JAS/huvudmod")
 jas_vapen_mode = find_dataref("JAS/vapen/mode")
@@ -45,6 +46,8 @@ dr_fire = find_command("sim/weapons/fire_any_armed")
 dr_wpn_sel_console = find_dataref("sim/cockpit/weapons/wpn_sel_console")
 dr_wpn_type = find_dataref("sim/weapons/type") 
 dr_wpn_firing = find_dataref("sim/weapons/firing") 
+dr_wpn_fuel_warhead_mass_now = find_dataref("sim/weapons/fuel_warhead_mass_now") 
+dr_m_fuel_total = find_dataref("sim/flightmodel/weight/m_fuel_total") 
 
 dr_balk1_l_type = find_dataref("sim/weapons/type[1]") -- Balknumrering enligt handbok, 1 Vingspetsar
 balk1_l_index = 7
@@ -197,6 +200,34 @@ function vapenmod()
     sim_heartbeat = 399
 end
 
+function isFuelTank(index) 
+	if (dr_wpn_type[index] == 23 and drWeaponFired[index]) == 0) then
+		return 1
+	end
+	return 0
+end
+
+function getFuelInTank(index) 
+	if (isFuelTank(index) == 1) then
+		return dr_wpn_fuel_warhead_mass_now[index]
+	end
+	return 0.0
+end
+
+function totalFuel()
+	total = 0.0;
+	total = total + dr_m_fuel_total
+	
+	total = total + getFuelInTank(0)
+	total = total + getFuelInTank(2)
+	total = total + getFuelInTank(3)
+	total = total + getFuelInTank(4)
+	total = total + getFuelInTank(5)
+
+	jas_fuel = total
+}	
+	
+end
 heartbeat = 0
 function before_physics()
 	
@@ -208,9 +239,12 @@ function before_physics()
 	
 	sim_heartbeat = 202
 	huvudmod()
-    
-    sim_heartbeat = 203
-    vapenmod()
+
+	sim_heartbeat = 203
+	vapenmod()
+	
+	sim_heartbeat = 204
+	totalFuel()
 	
 	dr_payload =  0-- ta bort den dumma extra vikten som x-plane alltid lägger på planet
 	
