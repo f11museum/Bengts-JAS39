@@ -49,9 +49,10 @@ max_g_fade_rate = 2
 g_correction = 0.025
 
 motor_speed = 200 
-motor_speed = 560 -- riktiga planet 56 grader per sekund
+motor_speed = 56*5 -- riktiga planet 56 grader per sekund
 motor_speed_canard = 560 -- riktiga planet 56 grader per sekund
 motor_speed_rudder = 56
+motor_speed_roll = 56
 
 fade_out = 0.6
 
@@ -72,6 +73,7 @@ sim_throttle_burner = find_dataref("sim/flightmodel/engine/ENGN_burnrat")
 
 dr_override_flightcontrol = XLuaFindDataRef("sim/operation/override/override_flightcontrol") 
 dr_override_surfaces = XLuaFindDataRef("sim/operation/override/override_control_surfaces") 
+dr_override_wheel = find_dataref("sim/operation/override/override_wheel_steer") 
 dr_FRP = XLuaFindDataRef("sim/operation/misc/frame_rate_period")
 sim_heartbeat = 101
 -- input från användaren
@@ -79,6 +81,11 @@ dr_yoke_roll_ratio = XLuaFindDataRef("sim/joystick/yoke_roll_ratio")
 dr_yoke_heading_ratio = XLuaFindDataRef("sim/joystick/yoke_heading_ratio") 
 dr_yoke_pitch_ratio = XLuaFindDataRef("sim/joystick/yoke_pitch_ratio") 
 dr_elv_trim = XLuaFindDataRef("sim/flightmodel/controls/elv_trim") 
+
+
+-- Noshjulet
+-- sim/flightmodel2/gear/tire_steer_command_deg[0]
+dr_tire_steer = find_dataref("sim/flightmodel2/gear/tire_steer_command_deg[0]") 
 
 -- Vingar
 dr_left_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail1def")
@@ -657,11 +664,13 @@ function calculateRudder()
 	current_rate = sim_acf_yawrate
 	
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
-	if (g_groundContact == 1) then
-		delta = 0
-	else
-		delta = -current_rate*0.1
-	end
+	delta = -current_rate*0.1
+	--if (g_groundContact == 1) then
+	--	delta = 0
+	--else
+	--	delta = -current_rate*0.1
+	--end
+	
 	
 	rudder_delta_prev = delta
 	
@@ -680,6 +689,10 @@ function calculateRudder()
 		delta = wanted_rate
 	end
 	m_rudder = delta*rate_to_deg * current_fade_out
+	
+	-- Noshjulet
+	nos_multi = constrain(interpolate(0, 45, 20, 1, sim_airspeed_kts_pilot ), -45,45)
+	dr_tire_steer = sim_yoke_heading_ratio * nos_multi
 end
 
 lock_avg = 0.0
@@ -1170,6 +1183,7 @@ function before_physics()
 	m_aileron = 0
 	m_rudder = 0
 	XLuaSetNumber(dr_override_surfaces, 1) 
+	dr_override_wheel = 1
 	--XLuaSetNumber(dr_right_elevator, sim_yoke_pitch_ratio*90) -- för felkoll
 	
 	sim_heartbeat = 304
@@ -1202,7 +1216,7 @@ function before_physics()
 	-- Skevrodret på bakvingen ska ha bara ha input från roll
 	m_aileron_l = constrain(m_aileron, -40, 40)
 	--m_aileron_r = constrain(-m_aileron, -40, 40)
-	s_aileron_l = motor(s_aileron_l, m_aileron_l, motor_speed)
+	s_aileron_l = motor(s_aileron_l, m_aileron_l, motor_speed_roll)
 	--s_aileron_r = motor(s_aileron_r, m_aileron_r, motor_speed)
 
 	-- sidoroder
