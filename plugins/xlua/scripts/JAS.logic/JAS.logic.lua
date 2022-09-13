@@ -235,8 +235,8 @@ function flight_start()
 	
 		
 	
-	XLuaSetNumber(dr_fuel1, 2350)
-	XLuaSetNumber(dr_fuel2, 2350)
+	XLuaSetNumber(dr_fuel1, 2200)
+	XLuaSetNumber(dr_fuel2, 2200)
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
@@ -605,7 +605,7 @@ function fusk()
 			kn2 = 1
 			if (kn11 == 0) then
 				kn11 = 1
-				sim_fuel = 3000
+				sim_fuel = 2200
 			end
 		end
 		if (sim_jas_vu22_rhm == 1) then

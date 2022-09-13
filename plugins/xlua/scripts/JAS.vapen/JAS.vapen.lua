@@ -39,6 +39,9 @@ jas_vu22_vapenfikt = find_dataref("JAS/io/vu22/knapp/vapenfikt")
 jas_fuel_total = find_dataref("JAS/fuel/total")
 jas_fuel_eta = find_dataref("JAS/fuel/eta")
 jas_fuel_range = find_dataref("JAS/fuel/range")
+jas_fuel_pct = find_dataref("JAS/fuel/pct")
+
+jas_fuel = find_dataref("JAS/fuel")
 
 jas_huvudmod = find_dataref("JAS/huvudmod")
 jas_vapen_mode = find_dataref("JAS/vapen/mode")
@@ -245,7 +248,10 @@ function totalFuel()
 	total = total + getFuelInTank(5)
 	sim_heartbeat = 406
 	jas_fuel_total = total
+	
 	sim_heartbeat = 4061
+	jas_fuel_pct = jas_fuel_total /(2750*0.8)*100
+	sim_heartbeat = 4062
 	-- d_fuel = jas_fuel
 	if (dr_fuel_flow[0]>0) then
 		eta = total / dr_fuel_flow[0]

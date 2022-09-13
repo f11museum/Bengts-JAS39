@@ -30,7 +30,7 @@ jas_vat_larmkod = find_dataref("JAS/vat/larmkod")
 jas_pratorn_larm_gransvarde = find_dataref("JAS/pratorn/larm/gransvarde")
 
 jas_fuel_total = find_dataref("JAS/fuel/total")
-
+jas_fuel_pct = find_dataref("JAS/fuel/pct")
 -- Dataref från x-plane
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 dr_mach = find_dataref("sim/flightmodel/misc/machno")
@@ -169,8 +169,8 @@ function brasys()
 end
 
 function bramgd()
-	-- 23% larmgräns
-	if (jas_fuel_total <552) then 
+	-- 24% larmgräns
+	if (jas_fuel_pct <24) then 
 		jas_vat_larm_bramgd = 1
 		jas_vat_larmkod[30] = 1 -- generarar larm 030
 	else
