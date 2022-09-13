@@ -61,6 +61,7 @@ fade_out = 0.6
 -- Debug
 d_true_alpha = create_dataref("JAS/debug/fbw/true_alpha", "number")
 d_soft_stop = create_dataref("JAS/debug/fbw/soft_stop", "number")
+d_nos = create_dataref("JAS/debug/fbw/nos", "number")
 
 -- 
 dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat2") 
@@ -109,6 +110,7 @@ dr_acf_yawrate_acc = XLuaFindDataRef("sim/flightmodel/position/R_dot")
 dr_acf_vx = XLuaFindDataRef("sim/flightmodel/position/local_vx") 
 dr_acf_vy = XLuaFindDataRef("sim/flightmodel/position/local_vy") 
 dr_acf_vz = XLuaFindDataRef("sim/flightmodel/position/local_vz") 
+dr_groundspeed = find_dataref("sim/flightmodel2/position/groundspeed") 
 
 dr_alpha = XLuaFindDataRef("sim/flightmodel/position/alpha") 
 dr_g_nrml = XLuaFindDataRef("sim/flightmodel/forces/g_nrml") 
@@ -213,8 +215,8 @@ function flight_start()
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 		
 	
-	XLuaSetNumber(dr_fuel1, 2400) 
-	XLuaSetNumber(dr_fuel2, 2400) 
+	XLuaSetNumber(dr_fuel1, 2350) 
+	XLuaSetNumber(dr_fuel2, 2350) 
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
@@ -338,12 +340,13 @@ function update_dataref()
 	sim_yoke_pitch_ratio = getnumber(dr_yoke_pitch_ratio) 
 	
 	
-	if (sim_yoke_pitch_ratio>soft_stop) then
-		sim_yoke_pitch_ratio = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
-	elseif (sim_yoke_pitch_ratio>0) then
-		sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
-	end
-	
+	--if (sim_yoke_pitch_ratio>soft_stop) then
+	--	sim_yoke_pitch_ratio = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
+	--elseif (sim_yoke_pitch_ratio>0) then
+	--	sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
+	--end
+	sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, 1.0 ,sim_yoke_pitch_ratio )
+
 	if (sim_yoke_pitch_ratio<0) then
 		sim_yoke_pitch_ratio = interpolate(-1.0, -hard_stop_fram, 0.0, 0.0,  sim_yoke_pitch_ratio )
 	end
@@ -685,13 +688,14 @@ function calculateRudder()
 	current_rate = sim_acf_yawrate
 	-- räknar ut en skillnad mellan nuvarande rotation och den piloten begär
 	delta = wanted_rate-current_rate
-	if (g_groundContact == 1) then
-		delta = wanted_rate
-	end
+	--if (g_groundContact == 1) then
+	--	delta = wanted_rate
+	--end
 	m_rudder = delta*rate_to_deg * current_fade_out
 	
 	-- Noshjulet
-	nos_multi = constrain(interpolate(0, 45, 20, 1, sim_airspeed_kts_pilot ), -45,45)
+	nos_multi = math.abs(constrain(interpolate(0, 45, 20, 1, dr_groundspeed ), 5,45))
+	d_nos = nos_multi
 	dr_tire_steer = sim_yoke_heading_ratio * nos_multi
 end
 
@@ -1220,7 +1224,7 @@ function before_physics()
 	--s_aileron_r = motor(s_aileron_r, m_aileron_r, motor_speed)
 
 	-- sidoroder
-	m_rudder = constrain(m_rudder, -40, 40)
+	m_rudder = constrain(m_rudder, -50, 50)
 	--m_aileron_r = constrain(-m_aileron, -40, 40)
 	s_rudder = motor(s_rudder, m_rudder, motor_speed_rudder)
 

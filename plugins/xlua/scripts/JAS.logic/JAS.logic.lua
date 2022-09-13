@@ -235,8 +235,8 @@ function flight_start()
 	
 		
 	
-	XLuaSetNumber(dr_fuel1, 2400) 
-	XLuaSetNumber(dr_fuel2, 2400) 
+	XLuaSetNumber(dr_fuel1, 2350)
+	XLuaSetNumber(dr_fuel2, 2350)
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 

@@ -317,7 +317,7 @@ function larm()
 	
 	
 	if (sim_apu_amps<1) then
-		sim_resgen = 1
+		sim_resgen = 0 --tillfälligt avstängd
 	else 
 		sim_resgen = 0
 	end
