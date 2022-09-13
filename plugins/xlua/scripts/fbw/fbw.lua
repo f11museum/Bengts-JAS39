@@ -21,8 +21,8 @@ max_pitch_rate_0 = 10
 max_pitch_rate_300 = 15
 max_pitch_rate_500 = 25 -- vid 500 måste vi börja plocka upp en godtycklig max alpha istället för max g
 max_pitch_rate_600 = 35
-max_pitch_rate_1000 = 19
-max_pitch_rate_1300 = 14
+max_pitch_rate_1000 = 29
+max_pitch_rate_1300 = 29
 max_roll_rate_val = 320+100 -- den här bestämmer max roll rate-- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
 max_roll_rate = 320 -- uppdateras i beräkning tiull nuvarande max
 min_roll_rate = 70+30 -- orginal 60
@@ -36,20 +36,22 @@ autopilot_disable_roll = 0.192307692308 -- 1.5 grader
 autopilot_disable_pitch = 0.166666666667 -- detta stämmer för spak mot magen 2.5 grader av totalt 15 grader
 autopilot_disable_pitch_up = 0.357142857143 -- detta stämmer för spak FRÅN magen 2.5 grader av totalt 7 grader
 
+max_alpha_softstop = 28
 max_alpha_up = 28 -- 26 är max tillåten alfa
 max_alpha_up_normal = 28 -- 26 är max tillåten alfa
 max_alpha_down = -15
 max_alpha_fade = 2
 alpha_correction = 100
 
+max_g_softstop = 9.0
 max_g_pos = 10.5
 max_g_neg = -4
 max_g_fade = 2
 max_g_fade_rate = 2
-g_correction = 0.025
+g_correction = 0.25
 
 motor_speed = 200 
-motor_speed = 56*5 -- riktiga planet 56 grader per sekund
+motor_speed = 56 -- riktiga planet 56 grader per sekund
 motor_speed_canard = 560 -- riktiga planet 56 grader per sekund
 motor_speed_rudder = 56
 motor_speed_roll = 56
@@ -62,6 +64,12 @@ fade_out = 0.6
 d_true_alpha = create_dataref("JAS/debug/fbw/true_alpha", "number")
 d_soft_stop = create_dataref("JAS/debug/fbw/soft_stop", "number")
 d_nos = create_dataref("JAS/debug/fbw/nos", "number")
+d_frametime = create_dataref("JAS/debug/fbw/frametime", "number")
+d_machfade = create_dataref("JAS/debug/fbw/machfade", "number")
+d_max_g_softstop = create_dataref("JAS/debug/fbw/max_g_softstop", "number")
+
+d_fbw_ele_wanted_rate = create_dataref("JAS/debug/fbw/ele_wanted_rate", "number")
+d_fbw_ele_wanted_filter = create_dataref("JAS/debug/fbw/ele_wanted_filter", "number")
 
 -- 
 dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat2") 
@@ -71,6 +79,7 @@ sim_override_throttles = find_dataref("sim/operation/override/override_throttles
 sim_throttle_use = find_dataref("sim/flightmodel/engine/ENGN_thro_use") 
 sim_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
 sim_throttle_burner = find_dataref("sim/flightmodel/engine/ENGN_burnrat") 
+sim_m_total = find_dataref("sim/flightmodel/weight/m_total") 
 
 dr_override_flightcontrol = XLuaFindDataRef("sim/operation/override/override_flightcontrol") 
 dr_override_surfaces = XLuaFindDataRef("sim/operation/override/override_control_surfaces") 
@@ -87,6 +96,7 @@ dr_elv_trim = XLuaFindDataRef("sim/flightmodel/controls/elv_trim")
 -- Noshjulet
 -- sim/flightmodel2/gear/tire_steer_command_deg[0]
 dr_tire_steer = find_dataref("sim/flightmodel2/gear/tire_steer_command_deg[0]") 
+dr_tire_steer2 = find_dataref("sim/flightmodel2/gear/tire_steer_command_deg[3]") 
 
 -- Vingar
 dr_left_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail1def")
@@ -137,6 +147,7 @@ dr_left_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[1
 dr_right_gear_depress = XLuaFindDataRef("sim/flightmodel/parts/tire_vrt_def_veh[2]") 
 
 dr_airspeed_kts_pilot = XLuaFindDataRef("sim/flightmodel/position/indicated_airspeed") 
+dr_mach = find_dataref("sim/flightmodel/misc/machno")
 dr_gear = XLuaFindDataRef("sim/cockpit/switches/gear_handle_status") 
 
 dr_altitude = XLuaFindDataRef("sim/flightmodel/misc/h_ind") 
@@ -194,6 +205,7 @@ g_groundContact = 0
 
 current_fade_out = 1.0
 canard_fade_out = 1.0
+machfade = 1.0
 
 error_correction = 0
 
@@ -215,8 +227,8 @@ function flight_start()
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 		
 	
-	XLuaSetNumber(dr_fuel1, 2350) 
-	XLuaSetNumber(dr_fuel2, 2350) 
+	XLuaSetNumber(dr_fuel1, 2200) 
+	XLuaSetNumber(dr_fuel2, 2200) 
 	XLuaSetNumber(dr_payload, 0) 
 	--XLuaSetNumber(dr_fuel2, 1600) 
 	--XLuaSetNumber(dr_override_surfaces, 1) 
@@ -339,12 +351,15 @@ function update_dataref()
 
 	sim_yoke_pitch_ratio = getnumber(dr_yoke_pitch_ratio) 
 	
+	max_g_softstop = constrain(  interpolate(8000, 9.0, 12000, 2.0,  sim_m_total )   , 6.0,9.0)
+	max_g_softstop =  interpolate(8000, 9.0, 12000, 2.0,  sim_m_total )  
+	if (sim_yoke_pitch_ratio>soft_stop) then
+		--sim_yoke_pitch_ratio = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
+		max_g_softstop = interpolate(soft_stop, max_g_softstop,1.0, max_g_pos,  sim_yoke_pitch_ratio )
+	elseif (sim_yoke_pitch_ratio>0) then
+		--sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
+	end
 	
-	--if (sim_yoke_pitch_ratio>soft_stop) then
-	--	sim_yoke_pitch_ratio = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
-	--elseif (sim_yoke_pitch_ratio>0) then
-	--	sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
-	--end
 	sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, 1.0 ,sim_yoke_pitch_ratio )
 
 	if (sim_yoke_pitch_ratio<0) then
@@ -657,11 +672,29 @@ end
 
 rudder_delta_prev = 0
 sim_acf_yawrate_filtered = 1
+
 function calculateRudder()
-	rate_to_deg = 120/320
+	fadelagg = 1/sim_FRP
+	machfade = constrain(1.5-dr_mach, 0.1,1)
 	
+	
+	rate_to_deg = (fadelagg*18)/320
+	input = 0
+	if (sim_yoke_heading_ratio<deadzone and sim_yoke_heading_ratio > -deadzone) then
+		input = 0
+		
+	else
+		-- piloten rör pedaler
+		if (sim_yoke_heading_ratio<0) then
+			input = sim_yoke_heading_ratio + deadzone
+		else
+			input = sim_yoke_heading_ratio - deadzone
+		end
+		machfade = constrain(1.5-dr_mach, 0.5,1)
+	end
+	d_machfade = machfade
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
-	wanted_rate = sim_yoke_heading_ratio * max_yaw_rate
+	wanted_rate = input * max_yaw_rate
 	sim_acf_yawrate_filtered = myfilter (sim_acf_yawrate_filtered, sim_acf_yawrate, 2)
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_yawrate
@@ -682,7 +715,7 @@ function calculateRudder()
 	
 	-- ## GAMLA roderuträkningen
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
-	wanted_rate = sim_yoke_heading_ratio * max_yaw_rate
+	wanted_rate = input * max_yaw_rate
 	
 	-- Kollar vad planet har för nuvarande rotationshastighet 
 	current_rate = sim_acf_yawrate
@@ -691,12 +724,15 @@ function calculateRudder()
 	--if (g_groundContact == 1) then
 	--	delta = wanted_rate
 	--end
-	m_rudder = delta*rate_to_deg * current_fade_out
-	
+	m_rudder = delta*rate_to_deg * current_fade_out * machfade
+	--m_rudder = input *25
 	-- Noshjulet
-	nos_multi = math.abs(constrain(interpolate(0, 45, 20, 1, dr_groundspeed ), 5,45))
+	nos = interpolate(0, 45, 20, 1, dr_groundspeed )
+	nos_multi = math.abs(constrain(nos, 5,45))
+	nos_auto = constrain(m_rudder*0.9, -10,10)
 	d_nos = nos_multi
-	dr_tire_steer = sim_yoke_heading_ratio * nos_multi
+	dr_tire_steer = constrain(input * nos_multi + nos_auto, -45,45)
+	dr_tire_steer2 = input * nos_multi + nos_auto
 end
 
 lock_avg = 0.0
@@ -836,6 +872,7 @@ auto1 = 0
 delta_prev = 0
 angle_prev = 0
 wanted_prev = 0
+
 function calculateElevator()
 	lock = 0
 	delta = 0
@@ -844,7 +881,7 @@ function calculateElevator()
 	else
 		rate_to_deg = 30/10
 	end
-	
+	machfade = constrain(1.5-dr_mach, 0.5,1)
 	-- Först kollar vi vad piloten vill ha för ändring på höjden, multiplicerat med en faktor för maximal roitationshastighet
 	-- Eftersom du kan dra -3 g åt ena hållet bara så förösker vi minska utslaget här, men vill ha kvar samma rate i början och dala av mot halva
 	if (sim_yoke_pitch_ratio<deadzone and sim_yoke_pitch_ratio > -deadzone) then
@@ -893,13 +930,14 @@ function calculateElevator()
 		wanted_rate = constrain(wanted_rate - (sim_alpha-(max_alpha_down+max_alpha_fade))*max_pitch_rate/max_alpha_fade, -max_pitch_rate, max_pitch_rate )
 	end
 	-- G fade
-	if (sim_g_nrml > max_g_pos-max_g_fade) then
+	d_max_g_softstop = max_g_softstop
+	if (sim_g_nrml > max_g_softstop-max_g_fade) then
 		if (prev_rate == 0.0) then
 			prev_rate = sim_acf_pitchrate
 			g_rest = g_rest + 0.3
 		end
 		
-		diff = sim_g_nrml-(max_g_pos-max_g_fade)
+		diff = sim_g_nrml-(max_g_softstop-max_g_fade)
 		wanted_rate = interpolate(0,wanted_rate, max_g_fade*2, 0, diff/5)
 
 		--wanted_rate = constrain(wanted_rate - prev_rate *(sim_g_nrml-(max_g_pos-max_g_fade))*max_pitch_rate/max_g_fade, -max_pitch_rate, max_pitch_rate)
@@ -949,13 +987,13 @@ function calculateElevator()
 	end
 	-- 
 	-- G-force limit
-	if (sim_g_nrml > max_g_pos) then
-		diff = (sim_g_nrml - max_g_pos)/2
+	if (sim_g_nrml > max_g_softstop) then
+		diff = (sim_g_nrml - max_g_softstop)/2
 		error_correction_g = error_correction_g -  (diff*diff)*g_correction/1
 		prev_rate = prev_rate * 0.95
 	end
-	if (sim_g_nrml > max_g_pos+1) then
-		diff = (sim_g_nrml - max_g_pos)/2
+	if (sim_g_nrml > max_g_softstop+1) then
+		diff = (sim_g_nrml - max_g_softstop)/2
 		error_correction_g_c = error_correction_g_c -  (diff*diff)*g_correction/1
 	end
 	if (sim_g_nrml < max_g_neg) then
@@ -963,7 +1001,7 @@ function calculateElevator()
 		error_correction_g = error_correction_g + (diff*diff) * (g_correction/3)
 		prev_rate = prev_rate * 0.95
 	end
-	if (sim_g_nrml > max_g_pos-1) then
+	if (sim_g_nrml < max_g_neg-1) then
 		diff = (sim_g_nrml + max_g_neg)/2
 		error_correction_g_c = error_correction_g_c + (diff*diff) * (g_correction/3)
 	end
@@ -1000,22 +1038,27 @@ function calculateElevator()
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/trim"), trim) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/error_correction"), error_correction) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/error_correction_g"), error_correction_g) 
-	
+	d_fbw_ele_wanted_rate = wanted_rate
 	wanted_rate = myfilter(wanted_prev, wanted_rate, 2)
 	wanted_prev = wanted_rate
+	d_fbw_ele_wanted_filter = wanted_rate
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/wanted_rate"), wanted_rate) 
+	d_frametime = sim_FRP
 	angle = (auto_trim+delta+wanted_rate+error_correction+error_correction_g+trim) / elevator_rate_to_angle
 	canard_angle = (delta+(wanted_rate*0.9 * current_fade_out)+error_correction+error_correction_g_c*0.1) / elevator_rate_to_angle
 	--angle = angle * current_fade_out
-	
+	angle = angle * machfade
+	canard_angle = canard_angle * machfade
 	
 	canard = -sim_alpha + constrain(canard_angle, -optimal_angle, optimal_angle)
 
 
 	-- Här kollar vi om vi ska aktivera luftbroms med framvingarna vid landning
 	-- Är motorn på låg fart och någon broms aktiverad samtidigt som hjulen är i marken så aktiverar vi bromsen
+	brake = 0
 	if sim_N1 < 50 and g_groundContact == 1 and ((sim_braking_ratio_right > 0.01 and sim_braking_ratio_left > 0.1) or sim_braking_ratio > 0.1 or sim_speedbrake_ratio > 0.1) then 
 		canard = canard -55 -- har tagit bort dragkraften från canarden vid detta läget för det blir ostabilt vid landning, men vi vinklar den för syns skull
+		brake = -40
 		-- kör med vingbromsar istället
 		-- XLuaSetNumber(dr_speedbrake_wing_right, 45)
 		-- XLuaSetNumber(dr_speedbrake_wing_left, 45)
@@ -1039,7 +1082,7 @@ function calculateElevator()
 	-- XLuaSetNumber(dr_left_canard, constrain(canard, -80, 90) )
 	-- XLuaSetNumber(dr_right_canard, constrain(canard, -80, 90) )
 	m_canard = canard
-	m_elevator = -(angle)
+	m_elevator = -(angle) + brake
 	--fc_roll = 0
 
 	
@@ -1221,11 +1264,13 @@ function before_physics()
 	m_aileron_l = constrain(m_aileron, -40, 40)
 	--m_aileron_r = constrain(-m_aileron, -40, 40)
 	s_aileron_l = motor(s_aileron_l, m_aileron_l, motor_speed_roll)
+	machfade2 = constrain(1.0-dr_mach, 0,1)
+	s_aileron_e = constrain(s_aileron_l, -20, 20)*machfade2
 	--s_aileron_r = motor(s_aileron_r, m_aileron_r, motor_speed)
 
 	-- sidoroder
-	m_rudder = constrain(m_rudder, -50, 50)
-	--m_aileron_r = constrain(-m_aileron, -40, 40)
+	m_rudder = constrain(m_rudder, -30, 30)
+	
 	s_rudder = motor(s_rudder, m_rudder, motor_speed_rudder)
 
 	
@@ -1233,8 +1278,8 @@ function before_physics()
 	XLuaSetNumber(dr_left_canard, s_canard )
 	XLuaSetNumber(dr_right_canard, s_canard )
 	
-	XLuaSetNumber(dr_left_elevator , s_elevator_l+s_aileron_l/2)
-	XLuaSetNumber(dr_right_elevator, s_elevator_r-s_aileron_l/2)
+	XLuaSetNumber(dr_left_elevator , s_elevator_l+s_aileron_e)
+	XLuaSetNumber(dr_right_elevator, s_elevator_r-s_aileron_e)
 	
 	XLuaSetNumber(dr_left_aileron, s_aileron_l)
 	XLuaSetNumber(dr_right_aileron, -s_aileron_l)
