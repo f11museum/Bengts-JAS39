@@ -28,6 +28,7 @@ jas_vat_larm_brasys = find_dataref("JAS/vat/larm/brasys")
 jas_vat_larmkod = find_dataref("JAS/vat/larmkod")
 
 jas_pratorn_larm_gransvarde = find_dataref("JAS/pratorn/larm/gransvarde")
+jas_pratorn_larm_gransvarde_g = find_dataref("JAS/pratorn/larm/gransvarde_g")
 
 jas_fuel_total = find_dataref("JAS/fuel/total")
 jas_fuel_pct = find_dataref("JAS/fuel/pct")
@@ -187,8 +188,8 @@ end
 
 function maxg()
 	
-	if (dr_g_nrml > 9.1 or dr_g_nrml < -3.1) then
-		jas_pratorn_larm_gransvarde = 1
+	if (dr_g_nrml > 8.1 or dr_g_nrml < -3.1) then
+		jas_pratorn_larm_gransvarde_g = 1
 	end
 end
 

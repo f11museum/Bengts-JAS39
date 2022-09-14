@@ -86,6 +86,7 @@ JAS/pratorn/tal/systemtest		int		sys	unit	unit2	Description
 JAS/pratorn/larm/mkv			int		sys	unit	unit2	Description
 JAS/pratorn/larm/transsonik		int		sys	unit	unit2	Description
 JAS/pratorn/larm/gransvarde		int		sys	unit	unit2	Description
+JAS/pratorn/larm/gransvarde_g		int		sys	unit	unit2	Description
 JAS/pratorn/larm/master			int		sys	unit	unit2	Description
 
 # Övriga larm

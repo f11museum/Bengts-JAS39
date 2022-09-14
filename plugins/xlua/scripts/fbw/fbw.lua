@@ -21,9 +21,9 @@ max_pitch_rate_0 = 10
 max_pitch_rate_300 = 15
 max_pitch_rate_500 = 25 -- vid 500 måste vi börja plocka upp en godtycklig max alpha istället för max g
 max_pitch_rate_600 = 35
-max_pitch_rate_1000 = 29
-max_pitch_rate_1300 = 29
-max_roll_rate_val = 320+100 -- den här bestämmer max roll rate-- påstås va 270 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
+max_pitch_rate_1000 = 19
+max_pitch_rate_1300 = 14
+max_roll_rate_val = 320 -- den här bestämmer max roll rate-- påstås va 270-320 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
 max_roll_rate = 320 -- uppdateras i beräkning tiull nuvarande max
 min_roll_rate = 70+30 -- orginal 60
 max_yaw_rate = 50
@@ -51,8 +51,8 @@ max_g_fade_rate = 2
 g_correction = 0.25
 
 motor_speed = 200 
-motor_speed = 56 -- riktiga planet 56 grader per sekund
-motor_speed_canard = 560 -- riktiga planet 56 grader per sekund
+motor_speed = 56*2 -- riktiga planet 56 grader per sekund
+motor_speed_canard = 56*10 -- riktiga planet 56 grader per sekund
 motor_speed_rudder = 56
 motor_speed_roll = 56
 
@@ -67,10 +67,13 @@ d_nos = create_dataref("JAS/debug/fbw/nos", "number")
 d_frametime = create_dataref("JAS/debug/fbw/frametime", "number")
 d_machfade = create_dataref("JAS/debug/fbw/machfade", "number")
 d_max_g_softstop = create_dataref("JAS/debug/fbw/max_g_softstop", "number")
+d_max_roll_softstop = create_dataref("JAS/debug/fbw/max_roll_softstop", "number")
 
 d_fbw_ele_wanted_rate = create_dataref("JAS/debug/fbw/ele_wanted_rate", "number")
 d_fbw_ele_wanted_filter = create_dataref("JAS/debug/fbw/ele_wanted_filter", "number")
 
+d_elv_yoke = create_dataref("JAS/debug/fbw/elv_yoke", "number")
+d_elv_calc = create_dataref("JAS/debug/fbw/elv_calc", "number")
 -- 
 dr_status = XLuaFindDataRef("JAS/system/ess/heartbeat2") 
 dr_status2 = XLuaFindDataRef("HUDplug/stabilisatorStatus") 
@@ -350,22 +353,23 @@ function update_dataref()
 
 
 	sim_yoke_pitch_ratio = getnumber(dr_yoke_pitch_ratio) 
-	
+	sim_yoke_pitch_ratio2 = getnumber(dr_yoke_pitch_ratio) 
 	max_g_softstop = constrain(  interpolate(8000, 9.0, 12000, 2.0,  sim_m_total )   , 6.0,9.0)
 	max_g_softstop =  interpolate(8000, 9.0, 12000, 2.0,  sim_m_total )  
 	if (sim_yoke_pitch_ratio>soft_stop) then
-		--sim_yoke_pitch_ratio = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
+		sim_yoke_pitch_ratio2 = interpolate(soft_stop, soft_stop_prc,1.0, 1.0,  sim_yoke_pitch_ratio )
 		max_g_softstop = interpolate(soft_stop, max_g_softstop,1.0, max_g_pos,  sim_yoke_pitch_ratio )
 	elseif (sim_yoke_pitch_ratio>0) then
-		--sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
+		sim_yoke_pitch_ratio2 = interpolate(0.0, 0.0, soft_stop, soft_stop_prc, sim_yoke_pitch_ratio )
 	end
 	
-	sim_yoke_pitch_ratio = interpolate(0.0, 0.0, soft_stop, 1.0 ,sim_yoke_pitch_ratio )
+	--sim_yoke_pitch_ratio2 = interpolate(0.0, 0.0, soft_stop, 1.0 ,sim_yoke_pitch_ratio2 )
 
 	if (sim_yoke_pitch_ratio<0) then
-		sim_yoke_pitch_ratio = interpolate(-1.0, -hard_stop_fram, 0.0, 0.0,  sim_yoke_pitch_ratio )
+		sim_yoke_pitch_ratio2 = interpolate(-1.0, -hard_stop_fram, 0.0, 0.0,  sim_yoke_pitch_ratio2 )
 	end
-	d_soft_stop = sim_yoke_pitch_ratio
+	sim_yoke_pitch_ratio = sim_yoke_pitch_ratio2
+	d_soft_stop = sim_yoke_pitch_ratio2
 	
 	
 	sim_yoke_roll_ratio = getnumber(dr_yoke_roll_ratio) 
@@ -432,8 +436,11 @@ function update_dataref()
 	canard_fade_out = interpolate(0, 1.0, 500, 0, sim_airspeed_kts_pilot )
 	canard_fade_out = constrain(canard_fade_out, 0,1.0)
 	
-	max_roll_rate = interpolate(150, min_roll_rate,320, max_roll_rate_val, sim_airspeed_kts_pilot )
-	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val)
+	max_roll_rate_softstop = constrain(  interpolate(8000, 0, 12000, 120,  sim_m_total )   , 0,120)
+	
+	max_roll_rate = interpolate(150, min_roll_rate,320, max_roll_rate_val+20, sim_airspeed_kts_pilot )
+	max_roll_rate = constrain(max_roll_rate, min_roll_rate,max_roll_rate_val+20-max_roll_rate_softstop)
+	d_max_roll_softstop = max_roll_rate
 	dr_payload =  XLuaFindDataRef("sim/flightmodel/weight/m_fixed")
 	jas_fbw_max_roll_rate = max_roll_rate
 
@@ -531,12 +538,13 @@ autoback_timer = 0
 d_ail_req = create_dataref("JAS/debug/fbw/ail_req", "number")
 d_ail_fade = create_dataref("JAS/debug/fbw/ail_fade", "number")
 d_ail_wanted = create_dataref("JAS/debug/fbw/ail_wanted", "number")
+d_ail_yoke = create_dataref("JAS/debug/fbw/ail_yoke", "number")
 
 sim_acf_rollrate_filtered = 0
 
 function calculateAileron()
-	rate_to_deg = 120/320
-	fadeout = interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )
+	rate_to_deg = 220/320
+	fadeout = constrain(interpolate(100, 1, 1000, 0.2, sim_airspeed_kts_pilot ), 0.2, 1.0)
 	sim_acf_rollrate_filtered = myfilter (sim_acf_rollrate_filtered, sim_acf_rollrate, 2)
 	--fadeout = 1
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), interpolate(0, 1, 1000, 0.01, sim_airspeed_kts_pilot )) 
@@ -613,8 +621,9 @@ function calculateAileron()
 			sim_yoke_roll_ratio = sim_yoke_roll_ratio -deadzone
 			wanted_rate = sim_yoke_roll_ratio * max_roll_rate
 		end
-		wanted_rate = sim_yoke_roll_ratio * max_roll_rate
-		
+		scale_deadzone = 1/(1.0-deadzone)
+		wanted_rate = sim_yoke_roll_ratio * max_roll_rate*scale_deadzone
+		d_ail_yoke = sim_yoke_roll_ratio * scale_deadzone
 		-- Kollar vad planet har för nuvarande rotationshastighet 
 		
 		current_rate = sim_acf_rollrate_filtered
@@ -630,8 +639,12 @@ function calculateAileron()
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), sim_acf_roll) 
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), delta2) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d"), delta) 
-	m_aileron = delta
+	m_aileron = delta + fadeout*sim_yoke_roll_ratio*10
 	d_ail_req = m_aileron
+	
+	
+	
+	
 	-- PID försök till att få en bättre trim
 	a_kp = 0.3
 	a_kp = interpolate(0, a_kp, 1000, 0.01, sim_airspeed_kts_pilot )
@@ -916,7 +929,7 @@ function calculateElevator()
 		delta = -current_rate*2
 		wanted_rate = wanted_rate
 	end
-	
+	d_elv_yoke = sim_yoke_pitch_ratio
 	if (sim_jas_auto_mode == 0) then
 		--lock = delta
 		wanted_rate = wanted_rate*5

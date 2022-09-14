@@ -297,11 +297,21 @@ function read_stick()
 			if (autostick_timer<blinktimer) then
 				if (jas_auto_mode == 20) then
 					jas_auto_mode = 2
+					jas_auto_att = myGetFlightAngle()
 				end
 				if (jas_auto_mode == 30) then
 					autopilot_hold_alti = dr_altitude
 					jas_auto_alt = autopilot_hold_alti
+					auto_hold_pickup = blinktimer + 2.0
 					jas_auto_mode = 3
+				end
+				if (auto_hold_pickup>blinktimer) then
+					autopilot_hold_alti = dr_altitude
+					jas_auto_alt = autopilot_hold_alti
+					test = myGetFlightAngle() 
+					if (test>1 or test<-1) then
+						auto_hold_pickup = blinktimer + 2.0
+					end
 				end
 				
 			end
