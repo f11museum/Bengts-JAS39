@@ -70,7 +70,7 @@ function before_physics()
 end
 
 function flight_start() 
-	jas_ti_land_flygplats = 1897 -- self.xp.sendDataref("JAS/ti/land/index", self.airportDict["ESKN"]["index"])
+	jas_ti_land_flygplats = 24179 -- self.xp.sendDataref("JAS/ti/land/index", self.airportDict["ESKN"]["index"])
 	jas_ti_land_bana = 0 -- self.xp.sendDataref("JAS/ti/land/bana", 0)
 	jas_ti_land_bibana = 0-- self.xp.sendDataref("JAS/ti/land/bibana", 0)
 	jas_ti_land_rikt = 1-- self.xp.sendDataref("JAS/ti/land/rikt", 1)
