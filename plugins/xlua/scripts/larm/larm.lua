@@ -171,7 +171,7 @@ end
 
 function bramgd()
 	-- 24% larmgräns
-	if (jas_fuel_pct <24) then 
+	if (jas_fuel_pct <25) then 
 		jas_vat_larm_bramgd = 1
 		jas_vat_larmkod[30] = 1 -- generarar larm 030
 	else

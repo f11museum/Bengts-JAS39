@@ -31,6 +31,7 @@ JAS/heartbeat/pratornlua	int	sys	unit	unit2	Description
 JAS/heartbeat/vat			int	sys	unit	unit2	heartbeat
 JAS/heartbeat/el            int sys	unit	unit2	Description
 JAS/heartbeat/vapen            int sys	unit	unit2	Description
+JAS/heartbeat/mfdlua            int sys	unit	unit2	Description
 
 JAS/debug/p		float	sys	unit	unit2	Description
 JAS/debug/i		float	sys	unit	unit2	Description

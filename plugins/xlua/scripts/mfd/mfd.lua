@@ -1,4 +1,5 @@
 -- Multi Function Display
+sim_heartbeat = find_dataref("JAS/heartbeat/mfdlua") 
 
 jas_io_fi_knapp_knappram = find_dataref("JAS/io/fi/knapp/knappram")
 jas_io_ti_knapp_knappram = find_dataref("JAS/io/ti/knapp/knappram")
@@ -33,26 +34,47 @@ jas_ti_map_color2 = find_dataref("JAS/ti/map/color2")
 
 jas_udat_lon = find_dataref("JAS/udat/lon")
 
+jas_vu22_vapenop = find_dataref("JAS/io/vu22/knapp/vapenop")
+
 function knappar_ti()
 	
 
 end
 
+vapenop_prev = 0
+function vapenlast()
+	
+	if (jas_vu22_vapenop == 1) then
+		if (vapenop_prev == 0) then
+			vapenop_prev = 1
+			jas_fi_menu_currentmenu = 3
+		end
+		
+	end
+	if (jas_vu22_vapenop == 0) then
+		if (vapenop_prev == 1) then
+			vapenop_prev = 0
+			jas_fi_menu_currentmenu = 1
+		end
+		
+	end
+end
+
+heartbeat = 0
 function before_physics() 
 	knappar_ti()
-	--jas_ti_menu_currentmenu = jas_ti_menu_currentmenu2 
-	--jas_ti_land_rikt = jas_ti_land_rikt2 
-	--jas_ti_land_bana = jas_ti_land_bana2 
-	--jas_ti_land_bibana = jas_ti_land_bibana2 
-	--jas_ti_land_flygplats = jas_ti_land_flygplats2
+	vapenlast()
 
-	--jas_ti_map_zoom = jas_ti_map_zoom2
-	--jas_ti_map_type = jas_ti_map_type2
-	--jas_ti_map_color = jas_ti_map_color2
+	sim_heartbeat = heartbeat
+	heartbeat = heartbeat + 1
 end
 
 function flight_start() 
-
+	jas_ti_land_flygplats = 1897 -- self.xp.sendDataref("JAS/ti/land/index", self.airportDict["ESKN"]["index"])
+	jas_ti_land_bana = 0 -- self.xp.sendDataref("JAS/ti/land/bana", 0)
+	jas_ti_land_bibana = 0-- self.xp.sendDataref("JAS/ti/land/bibana", 0)
+	jas_ti_land_rikt = 1-- self.xp.sendDataref("JAS/ti/land/rikt", 1)
+	
 end
 
 function aircraft_unload()

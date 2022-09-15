@@ -51,10 +51,11 @@ max_g_fade_rate = 2
 g_correction = 0.25
 
 motor_speed = 200 
-motor_speed = 56*2 -- riktiga planet 56 grader per sekund
+motor_speed = 56*10 -- riktiga planet 56 grader per sekund
 motor_speed_canard = 56*10 -- riktiga planet 56 grader per sekund
 motor_speed_rudder = 56
 motor_speed_roll = 56
+
 
 fade_out = 0.6
 
@@ -487,7 +488,10 @@ function update_dataref()
 end
 
 function myfilter(currentValue, newValue, amp)
-
+	if (currentValue ~= currentValue) then
+		print("is nan!!")
+		currentValue = 0
+	end
 	return ((currentValue*amp) + (newValue))/(amp+1)
 	
 end
@@ -889,6 +893,7 @@ wanted_prev = 0
 function calculateElevator()
 	lock = 0
 	delta = 0
+	wanted_rate = 0
 	if (sim_airspeed_kts_pilot >10) then
 		rate_to_deg = 30/sim_airspeed_kts_pilot
 	else
@@ -1257,8 +1262,8 @@ function before_physics()
 	motor_speed_error = motor_speed
 	if (error_correction>0) then
 		m_canard = constrain(m_canard, -55-10, 25+20) -- ge den lite extra spelrumm när den ska göra nödvändiga stabiliseringar
-		s_canard = motor(s_canard, m_canard, motor_speed_canard*8)
-		motor_speed_error = motor_speed*8
+		s_canard = motor(s_canard, m_canard, 56*10*8)
+		motor_speed_error = 56*80
 	else
 		m_canard = constrain(m_canard, -55, 25)
 		s_canard = motor(s_canard, m_canard, motor_speed_canard)
