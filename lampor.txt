@@ -357,6 +357,7 @@ JAS/ti/land/lon 	double	ti	unit	unit2	landningsmod
 JAS/ti/land/alt	    float	ti	unit	unit2	landningsmod
 JAS/ti/land/head	float	ti	unit	unit2	riktningen PÅ banan
 JAS/ti/land/bearing	float	ti	unit	unit2	riktningen till banan
+JAS/ti/land/dist	float	ti	unit	unit2	avstånd till banan
 
 JAS/ti/map/zoom		int	ti	unit	unit2	vald zoom
 JAS/ti/map/type		int	ti	unit	unit2	Vald option
@@ -368,7 +369,8 @@ JAS/si/nav/prick_active  int   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/prick_x  float   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/prick_y  float   si  unit    unit2   från fartvektorn
 JAS/si/nav/heading  float   si  unit    unit2   riktning som ska indikeras i kompassen
-
+JAS/si/nav/bana_x  float   si  unit    unit2   x koordinat den ska ritas på
+JAS/si/nav/bana_y  float   si  unit    unit2   från fartvektorn
 # Radar
 
 JAS/radar/aktiv     int     radar unit unit2 Om radarn är igång

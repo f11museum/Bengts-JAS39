@@ -115,6 +115,7 @@ jas_ti_land_alt = find_dataref("JAS/ti/land/alt")
 jas_ti_land_head = find_dataref("JAS/ti/land/head")
 jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
 jas_ti_land_bear = find_dataref("JAS/ti/land/bearing")
+jas_ti_land_dist = find_dataref("JAS/ti/land/dist")
 
 d_land = create_dataref("JAS/ti/land/debug", "number")
 
@@ -122,7 +123,8 @@ jas_si_nav_prickx = find_dataref("JAS/si/nav/prick_x")
 jas_si_nav_pricky = find_dataref("JAS/si/nav/prick_y")
 jas_si_nav_prickactive = find_dataref("JAS/si/nav/prick_active")
 jas_si_nav_heading = find_dataref("JAS/si/nav/heading")
-
+jas_si_nav_banax = find_dataref("JAS/si/nav/bana_x")
+jas_si_nav_banay = find_dataref("JAS/si/nav/bana_y")
 -- Oanvända i vu22
 
 sim_jas_vu22_sand = find_dataref("JAS/io/vu22/knapp/sand")
@@ -701,7 +703,9 @@ function bearing(dlat, dlon, dlat2, dlon2)
 
 end
 
-
+d_debug2 = create_dataref("JAS/ti/land/debug2", "number")
+d_debug3 = create_dataref("JAS/ti/land/debug3", "number")
+d_debug4 = create_dataref("JAS/ti/land/debug4", "number")
 function prick()
 		sim_heartbeat = 700
 		
@@ -711,29 +715,103 @@ function prick()
 		--test3 = jas_ti_land_bear+360
 		
 		test3 =  bearing(dr_lat, dr_lon, jas_ti_land_lat, jas_ti_land_lon)+360
+		b = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+		jas_ti_land_dist = b
 		sim_heartbeat = 7011
 		-- Kolla om vi flyger mot  landningsbanan isåfall visar vi pricken
 		if (test3 < test+90 and test3 > test-90 and jas_ti_land_lmod == 0) then
 			jas_si_nav_prickactive = 1
-			b = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+			
 			sim_heartbeat = 701
 			c = b/math.cos(math.rad(2.86))
 			a = math.sqrt(c*c-b*b)
+			ang_alt = math.deg(math.atan((dr_alt-jas_ti_land_alt)/b))
 			-- a blir höjden den tycker att vi ska ha med det avståndet vi har.
-			
-			pricky = (a+jas_ti_land_alt+2) - dr_alt -- här lägger vi på någon meter på banans höjd för att inte landa precis på bankanten
+			a = constrain(a, 0,500)
+			alt_diff = (a+jas_ti_land_alt+6) - dr_alt -- här lägger vi på någon meter på banans höjd för att inte landa precis på bankanten
+			pricky = -3.0 + alt_diff/20
 			sim_heartbeat = 702
-			ang = jas_ti_land_head - jas_ti_land_bear
+			ang = jas_ti_land_head - test3
 			
 			-- banan = math.sin(math.rad(ang))
 			-- d_land = banan
 			sim_heartbeat = 703
-			prickx = b * -math.sin(math.rad(ang))
+			prickx = b * -math.sin(math.rad(ang)) -- gamla ILS liknande uträkningen
+			
+			-- Nya pricken, räkna ut ett gradtal man ska navigera mot istället...
+			b2 = b * math.cos(math.rad(ang))
+			radie = 4000
+			ax = b2 * math.tan(math.rad(ang))
+			d_land = ax
+			
+			
+			
+			
+			-- funkar men slår
+			land_bearing = -(test2 -test3)
+			d_debug4 = land_bearing
+			beta = 0
+			if (ax <0) then
+				if (ax >-600) then
+					radie = interpolate(-600, 4000, -0, 16000,  ax )
+					radie = constrain(radie, 3000,26000)
+				end
+				ang2 = constrain((ax/radie)+1, -0.95, 1.0)
+				beta = math.deg(math.acos(ang2))
+				prickx = (jas_ti_land_head) -(dr_acf_truehdg) + beta
+				if (ax<13.5 and ax>-13.5) then
+					prickx = constrain(interpolate(-13.5, prickx, 0, land_bearing, ax), -10, 15)
+					
+				end
+			else
+				if (ax <600) then
+					radie = interpolate(0, 16000, 600, 4000,  ax )
+					radie = constrain(radie, 3000,16000)
+				end
+				
+				ang2 =  constrain((ax/radie)-1, -1.0, 0.95)
+				
+				beta = -(180-math.deg(math.acos(ang2)))
+				prickx = (jas_ti_land_head) -(dr_acf_truehdg) + beta
+				if (ax<13.5 and ax>-13.5) then
+					res = -(jas_ti_land_head) +(dr_acf_truehdg) -land_bearing
+					prickx = constrain(interpolate(0, land_bearing, 13.5, prickx, ax), -10, 15)
+				end
+			end
+			--d_debug2 = (jas_ti_land_head) -(dr_acf_truehdg) 
+			
+			--prickx = (jas_ti_land_head) -(dr_acf_truehdg) + beta
+			--prickx = land_bearing
+			d_land =  beta
+			
+			if (prickx >=360) then
+				prickx = prickx - 360
+			end
+			
+			
+			
+			beta = 0
+
+			
+			d_debug2 = ax
+			d_debug3 = radie
+			
+			-- bro sin formel
+			-- ang2 = constrain(ax/150, -0.9, 0.9)
+			-- beta =  math.deg(math.asin(ang2))
+			-- prickx = jas_ti_land_head - dr_acf_truehdg - beta
+			--d_land =  beta
+			
 			sim_heartbeat = 704
 			if (jas_ti_land_lmod == 0) then
 				sim_heartbeat = 705
-				jas_si_nav_prickx = prickx/2
-				jas_si_nav_pricky = pricky/2
+				--prickx = constrain(prickx, -8,8)
+				--pricky = constrain(pricky, -9,9)
+				jas_si_nav_prickx = prickx
+				jas_si_nav_pricky = pricky
+				jas_si_nav_banax = land_bearing
+				
+				jas_si_nav_banay = -ang_alt
 				
 			else
 				jas_si_nav_prickactive = 0
