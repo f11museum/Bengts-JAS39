@@ -116,6 +116,7 @@ jas_ti_land_head = find_dataref("JAS/ti/land/head")
 jas_ti_land_lmod = find_dataref("JAS/ti/land/lmod")
 jas_ti_land_bear = find_dataref("JAS/ti/land/bearing")
 jas_ti_land_dist = find_dataref("JAS/ti/land/dist")
+jas_ti_menu_currentmenu = find_dataref("JAS/ti/menu/menu")
 
 d_land = create_dataref("JAS/ti/land/debug", "number")
 
@@ -732,7 +733,7 @@ function prick()
 		sim_heartbeat = 7011
 		-- Kolla om vi flyger mot  landningsbanan isåfall visar vi pricken
 		--if (test3 < test+90 and test3 > test-90 and jas_ti_land_lmod == 0) then
-		if (jas_ti_land_lmod == 0) then
+		if (jas_ti_menu_currentmenu == 3) then
 			jas_si_nav_prickactive = 1
 			
 			sim_heartbeat = 701
