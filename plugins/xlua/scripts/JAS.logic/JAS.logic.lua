@@ -391,6 +391,9 @@ function update_dataref()
 	glasdarkness =  XLuaFindDataRef("HUDplug/glass_darkness")
 	light_attenuation = getnumber(XLuaFindDataRef("sim/graphics/misc/light_attenuation"))
 	darkness = interpolate(0.3, 0.5, 0.8, 0.0, light_attenuation )
+	if (light_attenuation>= 1.0) then
+		darkness = 0.5 -- x-plane 12
+	end
 	XLuaSetNumber(glasdarkness, darkness) 
 	-- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 499)
 end
@@ -672,16 +675,24 @@ function systest()
 end
 
 function distance(lat, long, lat22, long22)
-	sim_heartbeat = 800
+	sim_heartbeat = 810
 	lat1 = math.rad(lat)
+	--sim_heartbeat = 8001
 	long1 = math.rad(long)
+	--sim_heartbeat = 8002
 		
 	lat2 = math.rad(lat22)
+	--sim_heartbeat = 8003
 	long2 = math.rad(long22)
+	--sim_heartbeat = 8004
 	dlong = long2 - long1
+	--sim_heartbeat = 8005
 	dlat = lat2 - lat1
+	--sim_heartbeat = 8006
 	ans = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlong / 2), 2)
+	--sim_heartbeat = 8007
 	ans = 2 * math.asin(math.sqrt(ans))
+	--sim_heartbeat = 8008
 	R = 6371000
 	ans = ans * R
 	return ans
@@ -716,10 +727,12 @@ function prick()
 		
 		test3 =  bearing(dr_lat, dr_lon, jas_ti_land_lat, jas_ti_land_lon)+360
 		b = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+		sim_heartbeat = 7001
 		jas_ti_land_dist = b
 		sim_heartbeat = 7011
 		-- Kolla om vi flyger mot  landningsbanan isåfall visar vi pricken
-		if (test3 < test+90 and test3 > test-90 and jas_ti_land_lmod == 0) then
+		--if (test3 < test+90 and test3 > test-90 and jas_ti_land_lmod == 0) then
+		if (jas_ti_land_lmod == 0) then
 			jas_si_nav_prickactive = 1
 			
 			sim_heartbeat = 701
@@ -749,11 +762,17 @@ function prick()
 			
 			-- funkar men slår
 			land_bearing = -(test2 -test3)
+			if (land_bearing > 180) then
+				land_bearing = land_bearing - 360
+			end
+			if (land_bearing < -180) then
+				land_bearing = land_bearing+360
+			end
 			d_debug4 = land_bearing
 			beta = 0
 			if (ax <0) then
-				if (ax >-600) then
-					radie = interpolate(-600, 4000, -0, 16000,  ax )
+				if (ax >-30) then
+					radie = interpolate(-30, 4000, -0, 8000,  ax )
 					radie = constrain(radie, 3000,26000)
 				end
 				ang2 = constrain((ax/radie)+1, -0.95, 1.0)
@@ -764,8 +783,8 @@ function prick()
 					
 				end
 			else
-				if (ax <600) then
-					radie = interpolate(0, 16000, 600, 4000,  ax )
+				if (ax <30) then
+					radie = interpolate(0, 8000, 30, 4000,  ax )
 					radie = constrain(radie, 3000,16000)
 				end
 				
@@ -789,7 +808,6 @@ function prick()
 			end
 			
 			
-			
 			beta = 0
 
 			
@@ -801,6 +819,14 @@ function prick()
 			-- beta =  math.deg(math.asin(ang2))
 			-- prickx = jas_ti_land_head - dr_acf_truehdg - beta
 			--d_land =  beta
+			
+			if (prickx > 180) then
+				prickx = prickx-360
+			end
+			if (prickx < -180) then
+				prickx = prickx+360
+			end
+			
 			
 			sim_heartbeat = 704
 			if (jas_ti_land_lmod == 0) then

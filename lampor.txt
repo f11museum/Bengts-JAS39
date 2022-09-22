@@ -8,6 +8,7 @@ JAS/fuel/total				float	sys	unit	unit2	Beräknad total bränsle
 JAS/fuel/eta				float	sys	unit	unit2	Beräknad total bränsle
 JAS/fuel/range				float	sys	unit	unit2	Beräknad total bränsle
 JAS/fuel/pct				float	sys	unit	unit2	Beräknad total bränsle
+JAS/fuel/home				float	sys	unit	unit2	hur många % behövs för att komma hem
 
 ## MKV
 JAS/system/mkv/larm			int		sys	unit	unit2	Description

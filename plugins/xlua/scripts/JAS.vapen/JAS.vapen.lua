@@ -40,6 +40,9 @@ jas_fuel_total = find_dataref("JAS/fuel/total")
 jas_fuel_eta = find_dataref("JAS/fuel/eta")
 jas_fuel_range = find_dataref("JAS/fuel/range")
 jas_fuel_pct = find_dataref("JAS/fuel/pct")
+jas_fuel_home = find_dataref("JAS/fuel/home")
+
+jas_ti_land_dist = find_dataref("JAS/ti/land/dist")
 
 jas_fuel = find_dataref("JAS/fuel")
 
@@ -260,6 +263,7 @@ function totalFuel()
 	end
 	sim_heartbeat = 407
 	jas_fuel_range = dr_groundspeed * jas_fuel_eta
+	jas_fuel_home = jas_ti_land_dist /4500
 	sim_heartbeat = 408
 end
 
