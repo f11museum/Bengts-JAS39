@@ -98,7 +98,7 @@ P _gear/0/_lonE 0.0
 P _gear/0/_lonN 0.0
 P _gear/0/_lonR 105.0
 P _gear/0/_scon 15332.158203125
-P _gear/0/_stat_def 0.118346170
+P _gear/0/_stat_def 0.118346147
 P _gear/0/_steerdeg_hispeed 2.0
 P _gear/0/_steerdeg_lospeed 45.0
 P _gear/0/_strut_comp 0.0
@@ -132,7 +132,7 @@ P _gear/1/_lonE -10.0
 P _gear/1/_lonN -10.0
 P _gear/1/_lonR -10.0
 P _gear/1/_scon 20442.876953125
-P _gear/1/_stat_def 0.712116838
+P _gear/1/_stat_def 0.712117076
 P _gear/1/_steerdeg_hispeed 0.0
 P _gear/1/_steerdeg_lospeed 0.0
 P _gear/1/_strut_comp 1.200000048
@@ -166,7 +166,7 @@ P _gear/2/_lonE -10.0
 P _gear/2/_lonN -10.0
 P _gear/2/_lonR -10.0
 P _gear/2/_scon 20442.876953125
-P _gear/2/_stat_def 0.712116838
+P _gear/2/_stat_def 0.712117076
 P _gear/2/_steerdeg_hispeed 0.0
 P _gear/2/_steerdeg_lospeed 0.0
 P _gear/2/_strut_comp 1.200000048
@@ -322,7 +322,7 @@ P _obja/3/_v10_att_z_acf_prt_ref 19.356954575
 P _obja/3/_v10_is_internal 6
 P _obja/3/_v10_steers_with_gear 0
 P _obja/count 4
-P _panel_inst_3d 23
+P _panel_inst_3d 22
 P _part/0/_bot_s1 0.0
 P _part/0/_bot_s2 0.015625000
 P _part/0/_bot_t1 0.255859375
@@ -15012,7 +15012,7 @@ P _part/86/_part_specs_invis 1
 P _part/86/_part_tex 0
 P _part/86/_part_the 0.0
 P _part/86/_part_x -4.521806240
-P _part/86/_part_y -3.407157421
+P _part/86/_part_y -3.407156944
 P _part/86/_part_z 27.800683975
 P _part/86/_patt_con 0
 P _part/86/_patt_prt 0
@@ -16482,7 +16482,7 @@ P _part/87/_part_specs_invis 1
 P _part/87/_part_tex 0
 P _part/87/_part_the 0.0
 P _part/87/_part_x 4.521806240
-P _part/87/_part_y -3.407157421
+P _part/87/_part_y -3.407156944
 P _part/87/_part_z 27.800683975
 P _part/87/_patt_con 0
 P _part/87/_patt_prt 0
@@ -22305,7 +22305,7 @@ P acf/_chute_z/count 3
 P acf/_click_step_otto_alt 10.0
 P acf/_click_step_otto_vvi 100.0
 P acf/_click_step_radio_alt 10.0
-P acf/_cockpit_planned_vanish_y/0 650.0
+P acf/_cockpit_planned_vanish_y/0 480.0
 P acf/_cockpit_planned_vanish_y/1 595.0
 P acf/_cockpit_planned_vanish_y/2 595.0
 P acf/_cockpit_planned_vanish_y/3 595.0
@@ -23832,16 +23832,16 @@ P acf/_n1_power_curve1 2.0
 P acf/_n1_power_curve2 3.0
 P acf/_n2_power_curve 3.500000000
 P acf/_name Bengts JAS 39A
-P acf/_new_plot_XP3D_cock/0 1
+P acf/_new_plot_XP3D_cock/0 0
 P acf/_new_plot_XP3D_cock/1 1
 P acf/_new_plot_XP3D_cock/2 0
-P acf/_new_plot_XP3D_cock/3 1
+P acf/_new_plot_XP3D_cock/3 0
 P acf/_new_plot_XP3D_cock/4 1
 P acf/_new_plot_XP3D_cock/count 5
-P acf/_new_plot_outer_acf/0 1
+P acf/_new_plot_outer_acf/0 0
 P acf/_new_plot_outer_acf/1 1
 P acf/_new_plot_outer_acf/2 0
-P acf/_new_plot_outer_acf/3 1
+P acf/_new_plot_outer_acf/3 0
 P acf/_new_plot_outer_acf/4 1
 P acf/_new_plot_outer_acf/count 5
 P acf/_no_default_engine_fx 0
@@ -24536,20 +24536,8 @@ P acf/_yel_lo_xmsn_P 0
 P acf/_yel_lo_xmsn_T 0
 PROPERTIES_END
 PANEL_2D_BEGIN
-HUD_hsi_semiround HUD_hsi_round.png
-  POS 153.000000 614.000000
-  DATAREF sim/flightmodel/position/true_airspeed[0]
-  SHOW_LESS 0.000000 [0]
-  SHOW_EQUAL 0.000000 [0]
-  SHOW_GREATER 0.000000 [0]
-  LIGHT_MODE MECHANICAL
-  LIGHT_RHEOSTAT 0
-  BUS_SRC 1
-  KEY_FRAME 0.000000 0.000000 1.000000
-  KEY_FRAME 1.000000 0.019500
-
 rad_navcom1_GA rad_navcom1_GA.png
-  POS 595.000000 338.000000
+  POS 535.000000 39.500000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24557,7 +24545,7 @@ rad_navcom1_GA rad_navcom1_GA.png
   KEY_FRAME 1.000000 1.000000
 
 but_apu but_apu.png
-  POS 276.000000 274.000000
+  POS 310.000000 101.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24565,7 +24553,7 @@ but_apu but_apu.png
   KEY_FRAME 1.000000 1.000000
 
 but_battery but_battery.png
-  POS 203.000000 211.000000
+  POS 807.000000 -27.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24573,7 +24561,7 @@ but_battery but_battery.png
   KEY_FRAME 1.000000 1.000000
 
 but_drop_tank but_drop_tank.png
-  POS 370.000000 331.000000
+  POS 803.000000 84.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24581,7 +24569,7 @@ but_drop_tank but_drop_tank.png
   KEY_FRAME 1.000000 1.000000
 
 but_HUD_power but_HUD_power.png
-  POS 716.000000 337.000000
+  POS 351.000000 -3.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24589,7 +24577,7 @@ but_HUD_power but_HUD_power.png
   KEY_FRAME 1.000000 1.000000
 
 but_jettison but_jettison.png
-  POS 796.000000 259.000000
+  POS 799.500000 122.500000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24605,7 +24593,7 @@ but_burner_enable but_afterburner_ena
   KEY_FRAME 1.000000 1.000000
 
 but_generator but_generator.png
-  POS 249.000000 213.000000
+  POS 807.000000 25.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24613,7 +24601,7 @@ but_generator but_generator.png
   KEY_FRAME 1.000000 1.000000
 
 but_generator_apu but_generator_apu.p
-  POS 301.000000 211.000000
+  POS 755.000000 25.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24621,7 +24609,7 @@ but_generator_apu but_generator_apu.p
   KEY_FRAME 1.000000 1.000000
 
 but_igniter but_igniter.png
-  POS 369.000000 211.000000
+  POS 261.000000 39.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24645,7 +24633,7 @@ press_bleed_air_full bleed_air_full.png
   KEY_FRAME 1.000000 1.000000
 
 eng_rnd_N1 engine_N1.png
-  POS 628.000000 244.000000
+  POS 628.000000 113.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24653,7 +24641,7 @@ eng_rnd_N1 engine_N1.png
   KEY_FRAME 1.000000 1.000000
 
 eng_rnd_ITT engine_ITT.png
-  POS 730.000000 244.000000
+  POS 718.000000 120.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24661,7 +24649,7 @@ eng_rnd_ITT engine_ITT.png
   KEY_FRAME 1.000000 1.000000
 
 but_brakes but_brakes.png
-  POS 459.000000 353.500000
+  POS 449.000000 -11.500000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24669,7 +24657,7 @@ but_brakes but_brakes.png
   KEY_FRAME 1.000000 1.000000
 
 but_starter_HM but_starter_HM.png
-  POS 418.000000 215.000000
+  POS 219.000000 43.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24677,7 +24665,7 @@ but_starter_HM but_starter_HM.png
   KEY_FRAME 1.000000 1.000000
 
 ann_generator_off ann_generator.png
-  POS 629.000000 154.000000
+  POS 609.500000 -45.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24685,7 +24673,7 @@ ann_generator_off ann_generator.png
   KEY_FRAME 1.000000 1.000000
 
 ann_master_accept ann_master_accept.p
-  POS 420.000000 314.000000
+  POS 396.500000 39.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24693,7 +24681,7 @@ ann_master_accept ann_master_accept.p
   KEY_FRAME 1.000000 1.000000
 
 ann_oil_press_lo ann_oil_press.png
-  POS 631.000000 115.000000
+  POS 609.500000 -3.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24701,7 +24689,7 @@ ann_oil_press_lo ann_oil_press.png
   KEY_FRAME 1.000000 1.000000
 
 ann_hyd_press ann_hydraulic_press
-  POS 694.000000 153.000000
+  POS 518.500000 -45.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24709,7 +24697,7 @@ ann_hyd_press ann_hydraulic_press
   KEY_FRAME 1.000000 1.000000
 
 ann_engine_fire ann_engine_fire.png
-  POS 694.000000 114.000000
+  POS 703.500000 -29.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
@@ -24717,7 +24705,7 @@ ann_engine_fire ann_engine_fire.png
   KEY_FRAME 1.000000 1.000000
 
 apu_running APU_running.png
-  POS 787.000000 162.000000
+  POS 776.000000 -23.000000
   DATAREF 
   LIGHT_MODE MECHANICAL
   LIGHT_RHEOSTAT 0
