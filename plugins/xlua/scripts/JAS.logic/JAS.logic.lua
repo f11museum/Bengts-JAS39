@@ -131,6 +131,10 @@ jas_si_nav_lon = find_dataref("JAS/si/nav/lon")
 jas_si_nav_bearing = find_dataref("JAS/si/nav/bearing")
 jas_si_nav_alt = find_dataref("JAS/si/nav/alt")
 jas_si_nav_course = find_dataref("JAS/si/nav/course")
+
+
+jas_auto_afk_mode = find_dataref("JAS/autopilot/afk_mode")
+jas_auto_afk = find_dataref("JAS/autopilot/afk")
 -- Oanvända i vu22
 
 sim_jas_vu22_sand = find_dataref("JAS/io/vu22/knapp/sand")
@@ -627,6 +631,8 @@ function fusk()
 			kn11 = 1
 			sim_jas_auto_mode = 5
 			jas_ti_menu_currentmenu = 3
+			jas_auto_afk_mode = 1
+			jas_auto_afk = 1
 		end
 	end
 	if (sim_jas_vu22_vapensim == 1) then
@@ -645,6 +651,8 @@ function fusk()
 				kn11 = 1
 				sim_jas_auto_mode = 5
 				jas_ti_menu_currentmenu = 3
+				jas_auto_afk_mode = 1
+				jas_auto_afk = 1
 			end
 		end
 		if (sim_jas_vu22_mkv == 1) then
@@ -755,78 +763,110 @@ function gpsAddDistance(latitude, longitude, dist, heading)
 	return new_latitude, new_longitude
 end
 
+function fix180(input)
+	if (input <-180) then
+		input = input +360
+	end
+	if (input >180) then
+		input = input -360
+	end	
+	return input
+end
+
 d_debug2 = create_dataref("JAS/ti/land/debug2", "number")
 d_debug3 = create_dataref("JAS/ti/land/debug3", "number")
 d_debug4 = create_dataref("JAS/ti/land/debug4", "number")
 prickx_filter = 0
 
-
 function landingprick()
 	sim_heartbeat = 1101
-	-- target_l* flyttar vi med if satser för att skapa inflygningsbanor
-	-- 23 graders kon för simpelt system
-	target_bearing =  bearing(dr_lat, dr_lon, jas_ti_land_lat, jas_ti_land_lon)
-	ang = jas_ti_land_head - target_bearing
-	if (ang <-180) then
-		ang = ang +360
-	end
-	if (ang >180) then
-		ang = ang -360
-	end
-	d_debug2 = ang
-	utanfor = 0
-	if (ang >23 or ang <-23) then
-		sidkurs = 23
-		if (ang<0) then
-			sidkurs = 23
-		else
-			sidkurs = -23
+	
+	jas_si_nav_prickactive = 0
+	if (jas_ti_menu_currentmenu == 3) then
+		-- target_l* flyttar vi med if satser för att skapa inflygningsbanor
+		-- 23 graders kon för simpelt system
+		target_bearing =  bearing(dr_lat, dr_lon, jas_ti_land_lat, jas_ti_land_lon)
+		ang = jas_ti_land_head - target_bearing
+		if (ang <-180) then
+			ang = ang +360
 		end
-		target_lat, target_lon = gpsAddDistance(jas_ti_land_lat ,jas_ti_land_lon, 20000, jas_ti_land_head+180+sidkurs)
-		jas_si_nav_course = jas_ti_land_head+180
-		utanfor = 1
-	else
-		target_lat, target_lon = gpsAddDistance(jas_ti_land_lat ,jas_ti_land_lon, 0, 0)
-		jas_si_nav_course = jas_ti_land_head
+		if (ang >180) then
+			ang = ang -360
+		end
+		d_debug2 = ang
+		
+		
+		utanfor = 0
+		if (jas_ti_land_lmod == 1) then
+			-- GS kort inflygning
+			ring_dist = 10000
+		else 
+			-- IP
+			ring_dist = 20000
+		end
+		if (ang >23 or ang <-23) then
+			sidkurs = 23
+			if (ang<0) then
+				sidkurs = 23
+			else
+				sidkurs = -23
+			end
+			target_lat, target_lon = gpsAddDistance(jas_ti_land_lat ,jas_ti_land_lon, ring_dist, jas_ti_land_head+180+sidkurs)
+			jas_si_nav_course = jas_ti_land_head+180
+			utanfor = 1
+		else
+			target_lat, target_lon = gpsAddDistance(jas_ti_land_lat ,jas_ti_land_lon, 0, 0)
+			jas_si_nav_course = jas_ti_land_head
+		end
+		
+		jas_si_nav_lat = target_lat
+		jas_si_nav_lon = target_lon
+		
+		d_land = 1
+		-- Vi behöver alltid räkna ut avståndet till vald flygplats för annan instrumentering också
+		jas_ti_land_dist = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+		--Prick Y
+		--triangel sett från sidan med 3.0 grader inflygningsvinkel
+		--		     /|
+		--		  c / | a
+		--		   /  |
+		--        /   |
+		--    <3.0-----
+		--          b
+		-- d_land = 2
+		-- d_debug2 = target_lat
+		-- d_debug3 = target_lon
+		b = distance(target_lat, target_lon, dr_lat, dr_lon)
+		c = b/math.cos(math.rad(3.0))
+		a = math.sqrt(c*c-b*b)
+		sim_heartbeat = 1102
+		ang_alt = math.deg(math.atan((dr_alt-jas_ti_land_alt)/b))
+		-- a blir höjden den tycker att vi ska ha med det avståndet vi har.
+		a = constrain(a, 0,500)
+		jas_si_nav_alt = jas_ti_land_alt+a+10 -- lägg på 10m för att landa en bit in på banan
+		
+		jas_si_nav_prickactive = 1
+		if (utanfor == 1) then
+			jas_si_nav_alt = jas_ti_land_alt+500
+			jas_si_nav_prickactive = 2
+		end
+		
+		sim_heartbeat = 1103
+		-- Ritar vart flygplatsen är i SI
+		jas_si_nav_banax = jas_ti_land_bear - dr_acf_truehdg
+		jas_si_nav_banay = -ang_alt
+		
+		if (jas_ti_land_dist>ring_dist+5000) then
+			jas_si_nav_prickactive = 2
+			hojd = interpolate(ring_dist+5000, 0, 35000, 2000,  jas_ti_land_dist )
+			hojd = constrain(hojd, 0,2000)
+			jas_si_nav_alt = jas_ti_land_alt+500 + hojd
+		end
 	end
-	
-	jas_si_nav_lat = target_lat
-	jas_si_nav_lon = target_lon
-	
-	d_land = 1
-	-- Vi behöver alltid räkna ut avståndet till vald flygplats för annan instrumentering också
-	jas_ti_land_dist = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
-	--Prick Y
-	--triangel sett från sidan med 3.0 grader inflygningsvinkel
-	--		     /|
-	--		  c / | a
-	--		   /  |
-	--        /   |
-	--    <3.0-----
-	--          b
-	-- d_land = 2
-	-- d_debug2 = target_lat
-	-- d_debug3 = target_lon
-	b = distance(target_lat, target_lon, dr_lat, dr_lon)
-	c = b/math.cos(math.rad(3.0))
-	a = math.sqrt(c*c-b*b)
-	sim_heartbeat = 1102
-	ang_alt = math.deg(math.atan((dr_alt-jas_ti_land_alt)/b))
-	-- a blir höjden den tycker att vi ska ha med det avståndet vi har.
-	a = constrain(a, 0,500)
-	jas_si_nav_alt = jas_ti_land_alt+a
-	if (utanfor == 1) then
-		jas_si_nav_alt = jas_ti_land_alt+600
-	end
-	
-	sim_heartbeat = 1103
-	-- Ritar vart flygplatsen är i SI
-	jas_si_nav_banax = jas_ti_land_bear - dr_acf_truehdg
-	jas_si_nav_banay = -ang_alt
-	
-	jas_si_nav_prickactive = 1
 	sim_heartbeat = 1199
 end
+
+filter_prickx = 0
 
 function prick()
 	-- Prick funktionen ska endast visa pricken mot longitud och latitud som är satt till si/nav/lat 
@@ -843,11 +883,11 @@ function prick()
 	--                    /   |
 	--   LANDINGSBANA <ang-----
 	--                      c
-	
+	sim_heartbeat = 700
 	
 	if (jas_si_nav_prickactive == 1) then
 		-- prickactive 1 så ska den navigera till en riktning i linje med bearing mot gps koordinaten och ta med höjden
-		sim_heartbeat = 700
+		
 		target_lat = jas_si_nav_lat
 		target_lon = jas_si_nav_lon
 		target_course = jas_si_nav_course
@@ -883,7 +923,6 @@ function prick()
 		a = math.sqrt(c*c-b*b)
 		ang_alt = math.deg(math.atan((dr_alt-jas_ti_land_alt)/b))
 
-		
 		sim_heartbeat = 706
 		ang = target_course - target_bearing
 		d_land = ang
@@ -911,30 +950,58 @@ function prick()
 		
 		inflygningvinkel = interpolate(20000, 0.95, 25000, -0.0,  target_dist )
 		inflygningvinkel = constrain(inflygningvinkel, -0.0,0.95)
+		glapp = 100
 		if (ax <0) then
-			if (ax >-30) then
-				radie = interpolate(-30, 4000, -0, 8000,  ax )
-				radie = constrain(radie, 3000,26000)
-			end
-			ang2 = constrain((ax/radie)+1, -inflygningvinkel, 1.0)
-			beta = math.deg(math.acos(ang2))
-			prickx = (target_course) -(dr_acf_truehdg) + beta
-			if (ax<13.5 and ax>-13.5) then
-				prickx = constrain(interpolate(-13.5, prickx, 0, -target_heading, ax), -10, 15)
+			--ax = ax + glapp
+			if (ax>0) then
+				--ax = 0
 				
+				-- prickx_g = -target_heading
+				-- ang2 = constrain((ax/radie)+1, -inflygningvinkel, 1.0)
+				-- beta = math.deg(math.acos(ang2))
+				-- prickx = (target_course) -(dr_acf_truehdg) + beta
+				-- prickx = (prickx+prickx_g)/2
+			else 
+				
+				ang2 = constrain((ax/radie)+1, -inflygningvinkel, 1.0)
+				beta = math.deg(math.acos(ang2))
+				prickx = (target_course) -(dr_acf_truehdg) + beta
+			end
+			d_debug4 = ax
+			-- if (ax >-30) then
+			-- 	radie = interpolate(-30, 4000, -0, 8000,  ax )
+			-- 	radie = constrain(radie, 3000,26000)
+			-- end
+			
+			if (ax<glapp and ax>-glapp) then
+				prickx = constrain(interpolate(-glapp, prickx, 0, -target_heading, ax), -50, 55)
 			end
 		else
-			if (ax <30) then
-				radie = interpolate(0, 8000, 30, 4000,  ax )
-				radie = constrain(radie, 3000,16000)
+			--ax = ax - glapp
+			if (ax<0) then
+				--ax = 0
+				ang2 =  constrain((ax/radie)-1, -1.0, inflygningvinkel)
+				
+				beta = -(180-math.deg(math.acos(ang2)))
+				prickx = (target_course) -(dr_acf_truehdg) + beta
+				prickx_g = -target_heading
+				
+				prickx = (prickx+prickx_g)/2
+			else
+				ang2 =  constrain((ax/radie)-1, -1.0, inflygningvinkel)
+				
+				beta = -(180-math.deg(math.acos(ang2)))
+				prickx = (target_course) -(dr_acf_truehdg) + beta
 			end
+			d_debug4 = ax
+			-- if (ax <30) then
+			-- 	radie = interpolate(0, 8000, 30, 4000,  ax )
+			-- 	radie = constrain(radie, 3000,16000)
+			-- end
 			
-			ang2 =  constrain((ax/radie)-1, -1.0, inflygningvinkel)
 			
-			beta = -(180-math.deg(math.acos(ang2)))
-			prickx = (target_course) -(dr_acf_truehdg) + beta
-			if (ax<13.5 and ax>-13.5) then
-				prickx = constrain(interpolate(0, -target_heading, 13.5, prickx, ax), -10, 15)
+			if (ax<glapp and ax>-glapp) then
+				prickx = constrain(interpolate(0, -target_heading, glapp, prickx, ax), -50, 55)
 			end
 		end
 
@@ -963,17 +1030,37 @@ function prick()
 		pricky = constrain(pricky, -10,10)
 		
 		sim_heartbeat = 708
-		
-		sim_heartbeat = 709
-		--prickx = constrain(prickx, -8,8)
-		--pricky = constrain(pricky, -9,9)
 		jas_si_nav_prickx = prickx
 		jas_si_nav_pricky = pricky
 
-		sim_heartbeat = 710
 		jas_si_nav_heading = jas_ti_land_bear
-		sim_heartbeat = 799
+	
 	end
+	
+	sim_heartbeat = 7000
+	if (jas_si_nav_prickactive == 2) then
+		sim_heartbeat = 720
+		-- Mode 2 styr bara rakt mot positionen baserat på gps
+		target_lat = jas_si_nav_lat
+		target_lon = jas_si_nav_lon
+
+		target_bearing =  bearing(dr_lat, dr_lon, target_lat, target_lon)
+
+		target_heading = dr_acf_truehdg - target_bearing 
+		prickx = fix180(-target_heading)
+		
+		-- Prick Y
+		alt_diff = jas_si_nav_alt - dr_alt
+		pricky = -3.0 + alt_diff/15
+		pricky = constrain(pricky, -10,10)
+		jas_si_nav_prickx = prickx
+		jas_si_nav_pricky = pricky
+
+		jas_si_nav_heading = jas_ti_land_bear
+	end
+
+
+	sim_heartbeat = 799
 end
 
 

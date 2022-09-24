@@ -55,6 +55,7 @@ dr_true_speed = find_dataref("sim/flightmodel/position/true_airspeed")
 
 dr_altitude = find_dataref("sim/flightmodel/misc/h_ind") 
 
+
 sim_heartbeat = 103
 -- Egna JAS dataref
 
@@ -82,6 +83,7 @@ jas_auto_afk = find_dataref("JAS/autopilot/afk")
 jas_auto_afk_mode = find_dataref("JAS/autopilot/afk_mode")
 jas_auto_ks_mode = find_dataref("JAS/autopilot/ks_mode")
 jas_auto_ks_roll = find_dataref("JAS/autopilot/ks_roll")
+jas_a14 = find_dataref("JAS/a14")
 
 jas_pratorn_tal_alfa12 = find_dataref("JAS/pratorn/tal/alfa12")
 jas_pratorn_tal_spak = find_dataref("JAS/pratorn/tal/spak")
@@ -335,6 +337,9 @@ function read_stick()
 			if (jas_auto_mode == 3) then
 				jas_auto_mode = 30
 			end
+			if (jas_auto_mode == 5) then
+				jas_auto_mode = 1
+			end
 			autostick_timer = blinktimer + 1.0
 		end
 	end
@@ -350,12 +355,29 @@ end
 knapp = 0
 knapp2 = 0
 current_th = 0
+longpress = 0.0
 
 function update_buttons()
 	sim_heartbeat = 600
 	
 	-- AFK
 	if (jas_button_afk == 1) then
+		longpress = longpress + sim_FRP
+	elseif (longpress>0.01 and longpress<1.0 and jas_button_afk == 0) then
+		-- kort knapptryck
+		if (jas_a14 == 0) then
+			jas_a14 = 1
+		else
+			jas_a14 = 0
+			jas_pratorn_tal_alfa12 = 1
+		end
+		longpress = 0.0
+	else
+		longpress = 0.0
+	end
+	
+	
+	if (jas_button_afk == 1 and longpress>1.0) then
 		sim_heartbeat = 601
 		if (knapp2 == 0) then
 			sim_heartbeat = 602
@@ -371,7 +393,7 @@ function update_buttons()
 				else
 					-- vi är i avstängt läge eller normalläge och ska gå till läge 12
 					jas_auto_afk_mode = 2
-					jas_pratorn_tal_alfa12 = 1
+					
 					current_th = dr_throttle[0]
 				end
 			else
@@ -454,14 +476,18 @@ function update_buttons()
 end
 
 function update_lamps()
+	
+	
+	
+	if (jas_a14 == 1) then
+		jas_lamps_a14 = 1
+	else
+		jas_lamps_a14 = 0
+	end
 	if (jas_auto_afk_mode >= 1) then
 		jas_lamps_afk = 1
-		if (jas_auto_afk_mode == 3) then
-			jas_lamps_a14 = 1
-		end
 	else
 		jas_lamps_afk = 0
-		jas_lamps_a14 = 0
 	end
 	jas_lamps_spak = 0
 	jas_lamps_att = 0
@@ -489,7 +515,7 @@ function update_lamps()
 	end
 	
 	if (jas_auto_mode == 5) then
-		jas_lamps_spak = 1
+		jas_lamps_spak = blink032s
 		jas_lamps_att = 0
 		jas_lamps_hojd = 1
 	end
@@ -498,8 +524,20 @@ end
 alpha_filtered = 0
 alpha_prev = 0
 speed_prev = 0
+afk_prev_state = 0
 
 function calculateThrottle()
+	
+	if (jas_auto_afk_mode >= 1 and afk_prev_state == 0 ) then
+		current_th = dr_throttle[0]
+		afk_prev_state = 1
+	end
+	if (jas_auto_afk_mode == 0) then
+		afk_prev_state = 0
+	end
+		
+	
+	
 	if (dr_gear == 1 and jas_auto_afk_mode == 1) then
 		-- Byt läge till alfa12 när landstället fälls ner om afk va aktiv innan
 		jas_auto_afk_mode = 2
@@ -521,7 +559,7 @@ function calculateThrottle()
 		
 		
 		
-	elseif (jas_auto_afk_mode == 2) then
+	elseif (jas_auto_afk_mode == 2 and jas_a14 == 0) then
 		--alfa 12
 		
 		alpha_delta = 11.8-alpha_prev
@@ -530,7 +568,7 @@ function calculateThrottle()
 		speed_prev = jas_auto_afk
 		
 
-	elseif (jas_auto_afk_mode == 3) then
+	elseif (jas_auto_afk_mode >= 2 and jas_a14 == 1) then
 		-- alfa 14
 		
 		alpha_delta = 13.8-alpha_prev
@@ -579,13 +617,15 @@ no_turning_back = 0
 function autoLand()
 	
 	if (jas_auto_mode == 5) then
-		jas_auto_afk_mode = 1
+		--jas_auto_afk_mode = 1
 		jas_auto_afk = 300 -- 550km/h
-		
+		if (jas_ti_land_dist > 25000) then
+			jas_auto_afk = 600
+		end
 		if (jas_ti_land_dist > 1000) then
 			no_turning_back = 0
 		end
-		if (jas_ti_land_dist < 7000) then
+		if (jas_ti_land_dist < 6000) then
 			dr_gearhandle = 1
 		else
 			dr_gearhandle = 0
@@ -607,11 +647,11 @@ function autoLand()
 		if (jas_ti_land_dist < 50) then
 			no_turning_back = 1
 			jas_auto_ks_roll = 0
-			jas_auto_att = -1
+			jas_auto_att = -2
 		end
 		if (no_turning_back == 1) then
 			jas_auto_ks_roll = 0
-			jas_auto_att = -1
+			jas_auto_att = -2
 		end
 		maxroll = interpolate(350, 30.0, 600, 60.0, dr_ias* 1.85200 )
 		maxroll = constrain(maxroll, 30.0,60.0)
@@ -639,6 +679,65 @@ function bromsar()
 	
 	dr_braking_ratio_left = left
 	dr_braking_ratio_right = right
+end
+
+
+deadzone_pedaler = 0.020
+function pedalstyrning()
+	
+	if (jas_auto_mode == 3) then
+			sim_heartbeat = 3081
+		jas_auto_ks_mode = 1
+		input = 0
+		if (dr_yoke_heading_ratio<deadzone_pedaler and dr_yoke_heading_ratio > -deadzone_pedaler) then
+			input = 0
+				sim_heartbeat = 3082
+		else
+			-- piloten rör pedaler
+			if (dr_yoke_heading_ratio<0) then
+				input = dr_yoke_heading_ratio + deadzone_pedaler
+			else
+				input = dr_yoke_heading_ratio - deadzone_pedaler
+			end
+				sim_heartbeat = 3083
+		end
+		
+		jas_auto_ks_roll = input*60
+		
+			sim_heartbeat = 3084
+		maxroll = interpolate(350, 30.0, 600, 60.0, dr_ias* 1.85200 )
+		maxroll = constrain(maxroll, 30.0,60.0)
+		if (jas_auto_ks_roll > maxroll) then
+			jas_auto_ks_roll = maxroll
+		end
+		if (jas_auto_ks_roll < -maxroll) then
+			jas_auto_ks_roll = -maxroll
+		end
+			sim_heartbeat = 3085
+	end
+end
+jas_sys_mkv_help = find_dataref("JAS/system/mkv/help")
+jas_vat_larm_larmmkv = find_dataref("JAS/vat/larm/larmmkv")
+
+jas_fbw_override = find_dataref("JAS/fbw/override")
+jas_fbw_override_roll = find_dataref("JAS/fbw/override_roll")
+jas_fbw_override_pitch = find_dataref("JAS/fbw/override_pitch")
+
+function autoMKV()
+	--jas_sys_mkv_help = 1
+	
+	if (jas_sys_mkv_help>0) then
+		if (jas_vat_larm_larmmkv >0) then
+			jas_auto_ks_mode = 1
+			jas_auto_ks_roll = 0
+			jas_fbw_override = 1
+			jas_fbw_override_roll = 0
+			
+			jas_fbw_override_pitch = 10
+		end
+		
+	end
+	
 end
 
 sys_test_counter = 0
@@ -692,6 +791,9 @@ function before_physics()
 	sim_heartbeat = 307
 	autoLand()
 	sim_heartbeat = 308
+	pedalstyrning()
+	sim_heartbeat = 309
+	autoMKV()
 	
 	systest()
 
