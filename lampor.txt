@@ -372,6 +372,12 @@ JAS/si/nav/prick_y  float   si  unit    unit2   från fartvektorn
 JAS/si/nav/heading  float   si  unit    unit2   riktning som ska indikeras i kompassen
 JAS/si/nav/bana_x  float   si  unit    unit2   x koordinat den ska ritas på
 JAS/si/nav/bana_y  float   si  unit    unit2   från fartvektorn
+JAS/si/nav/lat  float   si  unit    unit2   från fartvektorn
+JAS/si/nav/lon  float   si  unit    unit2   från fartvektorn
+JAS/si/nav/bearing  float   si  unit    unit2   bearing är vilken kurs som går rakt mot målet relativt flygplanet
+JAS/si/nav/course  float   si  unit    unit2   course är vinkeln på tex landingsbanan i världen
+JAS/si/nav/alt  float   si  unit    unit2   höjd över havet vi önskar flyga på
+
 # Radar
 
 JAS/radar/aktiv     int     radar unit unit2 Om radarn är igång

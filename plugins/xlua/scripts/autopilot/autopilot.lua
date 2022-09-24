@@ -48,6 +48,7 @@ dr_left_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[1]")
 dr_right_gear_depress = find_dataref("sim/flightmodel/parts/tire_vrt_def_veh[2]") 
 
 dr_airspeed_kts_pilot = find_dataref("sim/flightmodel/position/indicated_airspeed") 
+dr_ias = find_dataref("sim/flightmodel/position/indicated_airspeed")
 dr_gear = find_dataref("sim/cockpit/switches/gear_handle_status") 
 dr_groundspeed = find_dataref("sim/flightmodel/position/groundspeed") 
 dr_true_speed = find_dataref("sim/flightmodel/position/true_airspeed")
@@ -98,7 +99,7 @@ sim_heartbeat = 106
 -- publika variabler
 
 g_groundContact = 0
-
+g_markkontakt = 0
 
 -- Plugin funktioner
 
@@ -287,25 +288,34 @@ delta_prev = 0
 
 
 autostick_timer = 0
+auto_hold_pickup = 0
 function read_stick()
-	
+	sim_heartbeat = 3061
 	-- Roll rörelser
 	if (jas_auto_mode>=2) then
 		
 		if (dr_yoke_roll_ratio<autopilot_disable_roll and dr_yoke_roll_ratio > -autopilot_disable_roll and dr_yoke_pitch_ratio<autopilot_disable_pitch and dr_yoke_pitch_ratio > -autopilot_disable_pitch) then
 			-- ingen rör spaken
+			sim_heartbeat = 3062
 			if (autostick_timer<blinktimer) then
+				sim_heartbeat = 30631
 				if (jas_auto_mode == 20) then
+					sim_heartbeat = 3063
 					jas_auto_mode = 2
+					
 					jas_auto_att = myGetFlightAngle()
 				end
+				sim_heartbeat = 30632
 				if (jas_auto_mode == 30) then
+					sim_heartbeat = 3064
 					autopilot_hold_alti = dr_altitude
 					jas_auto_alt = autopilot_hold_alti
 					auto_hold_pickup = blinktimer + 2.0
 					jas_auto_mode = 3
 				end
+				sim_heartbeat = 30633
 				if (auto_hold_pickup>blinktimer) then
+					sim_heartbeat = 3065
 					autopilot_hold_alti = dr_altitude
 					jas_auto_alt = autopilot_hold_alti
 					test = myGetFlightAngle() 
@@ -313,10 +323,11 @@ function read_stick()
 						auto_hold_pickup = blinktimer + 2.0
 					end
 				end
-				
+				sim_heartbeat = 30634
 			end
 		else
 			-- någon rör i spaken
+			sim_heartbeat = 3066
 			
 			if (jas_auto_mode == 2) then
 				jas_auto_mode = 20
@@ -328,7 +339,7 @@ function read_stick()
 		end
 	end
 	
-
+sim_heartbeat = 3067
 	if (jas_auto_mode == 4 and dr_true_speed > 13) then
 		jas_auto_mode = 1
 	end
@@ -422,7 +433,7 @@ function update_buttons()
 			jas_auto_ks_roll = 0
 		else
 			jas_auto_ks_mode = 1
-			jas_auto_ks_roll = dr_acf_roll
+			jas_auto_ks_roll = 0 -- dr_acf_roll -- tagit bort tillfälligt, detta känns skumt beteende
 		end
 		
 		if (jas_auto_ks_roll>90 or jas_auto_ks_roll<-90) then
@@ -474,6 +485,12 @@ function update_lamps()
 	if (jas_auto_mode == 3) then
 		jas_lamps_spak = 1
 		jas_lamps_att = 1
+		jas_lamps_hojd = 1
+	end
+	
+	if (jas_auto_mode == 5) then
+		jas_lamps_spak = 1
+		jas_lamps_att = 0
 		jas_lamps_hojd = 1
 	end
 end
@@ -546,6 +563,67 @@ function calculateThrottle()
 	end
 end
 
+jas_si_nav_prickx = find_dataref("JAS/si/nav/prick_x")
+jas_si_nav_pricky = find_dataref("JAS/si/nav/prick_y")
+jas_si_nav_prickactive = find_dataref("JAS/si/nav/prick_active")
+jas_si_nav_heading = find_dataref("JAS/si/nav/heading")
+jas_si_nav_banax = find_dataref("JAS/si/nav/bana_x")
+jas_si_nav_banay = find_dataref("JAS/si/nav/bana_y")
+jas_ti_land_dist = find_dataref("JAS/ti/land/dist")
+dr_gearhandle = find_dataref("sim/cockpit2/controls/gear_handle_down")
+dr_parking_brake = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
+dr_throttle_ratio = find_dataref("sim/cockpit2/engine/actuators/throttle_ratio_all") 
+
+
+no_turning_back = 0
+function autoLand()
+	
+	if (jas_auto_mode == 5) then
+		jas_auto_afk_mode = 1
+		jas_auto_afk = 300 -- 550km/h
+		
+		if (jas_ti_land_dist > 1000) then
+			no_turning_back = 0
+		end
+		if (jas_ti_land_dist < 7000) then
+			dr_gearhandle = 1
+		else
+			dr_gearhandle = 0
+		end
+		if (g_markkontakt == 1) then
+			jas_auto_mode = 2
+			jas_auto_att = -1
+			dr_parking_brake = 1
+			jas_auto_afk_mode = 0
+			jas_auto_afk = 0
+			dr_throttle_ratio = 0
+		end
+			
+		
+		jas_auto_ks_mode = 1
+		jas_auto_ks_roll = jas_si_nav_prickx*10
+		
+		jas_auto_att = jas_si_nav_pricky
+		if (jas_ti_land_dist < 50) then
+			no_turning_back = 1
+			jas_auto_ks_roll = 0
+			jas_auto_att = -1
+		end
+		if (no_turning_back == 1) then
+			jas_auto_ks_roll = 0
+			jas_auto_att = -1
+		end
+		maxroll = interpolate(350, 30.0, 600, 60.0, dr_ias* 1.85200 )
+		maxroll = constrain(maxroll, 30.0,60.0)
+		if (jas_auto_ks_roll > maxroll) then
+			jas_auto_ks_roll = maxroll
+		end
+		if (jas_auto_ks_roll < -maxroll) then
+			jas_auto_ks_roll = -maxroll
+		end
+	end
+end
+
 function bromsar()
 	-- Gör så fotbromsarna bromsar lika mycket höger och vänster i högre hastigheter
 	left = 0
@@ -591,6 +669,11 @@ heartbeat = 0
 function before_physics() 
 	sim_heartbeat = 300
 	blink1sFunc()
+	if (dr_nose_gear_depress>0 or dr_left_gear_depress>0 or dr_right_gear_depress>0) then
+		g_markkontakt = 1
+	else
+		g_markkontakt = 0
+	end
 	
 	update_dataref()
 	sim_heartbeat = 301
@@ -607,6 +690,8 @@ function before_physics()
 	sim_heartbeat = 306
 	read_stick()
 	sim_heartbeat = 307
+	autoLand()
+	sim_heartbeat = 308
 	
 	systest()
 

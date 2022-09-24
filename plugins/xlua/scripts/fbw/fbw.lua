@@ -31,6 +31,7 @@ max_yaw_rate = 50
 elevator_rate_to_angle = 2
 
 deadzone = 0.050
+deadzone_pedaler = 0.020
 autopilot_disable = 0.192307692308 -- 1.5 grader
 autopilot_disable_roll = 0.192307692308 -- 1.5 grader
 autopilot_disable_pitch = 0.166666666667 -- detta stämmer för spak mot magen 2.5 grader av totalt 15 grader
@@ -556,7 +557,7 @@ function calculateAileron()
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
 	stick = 1
 	current_deadzone = deadzone
-	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 ) then
+	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5 ) then
 		current_deadzone = autopilot_disable_roll
 	end
 		
@@ -583,7 +584,7 @@ function calculateAileron()
 		else 
 			wanted_roll = sim_acf_roll
 		end
-		if (jas_auto_ks_mode == 1 and sim_jas_auto_mode == 3) then -- om höjd styrning och planet är i level så håller den kvar det
+		if (jas_auto_ks_mode == 1 and (sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5)) then -- om höjd styrning och planet är i level så håller den kvar det
 			delta2 = jas_auto_ks_roll - sim_acf_roll
 			wanted_roll = jas_auto_ks_roll
 			sim_jas_lamps_ks = 1
@@ -697,15 +698,15 @@ function calculateRudder()
 	
 	rate_to_deg = (fadelagg*18)/320
 	input = 0
-	if (sim_yoke_heading_ratio<deadzone and sim_yoke_heading_ratio > -deadzone) then
+	if (sim_yoke_heading_ratio<deadzone_pedaler and sim_yoke_heading_ratio > -deadzone_pedaler) then
 		input = 0
 		
 	else
 		-- piloten rör pedaler
 		if (sim_yoke_heading_ratio<0) then
-			input = sim_yoke_heading_ratio + deadzone
+			input = sim_yoke_heading_ratio + deadzone_pedaler
 		else
-			input = sim_yoke_heading_ratio - deadzone
+			input = sim_yoke_heading_ratio - deadzone_pedaler
 		end
 		machfade = constrain(1.5-dr_mach, 0.5,1)
 	end
@@ -727,7 +728,6 @@ function calculateRudder()
 	
 	rudder_delta_prev = delta
 	
-	m_rudder = wanted_rate -delta
 	
 	
 	-- ## GAMLA roderuträkningen
@@ -743,6 +743,12 @@ function calculateRudder()
 	--end
 	m_rudder = delta*rate_to_deg * current_fade_out * machfade
 	--m_rudder = input *25
+	
+	
+	if (sim_jas_auto_mode == 3) then
+		m_rudder = 0
+	end
+	
 	-- Noshjulet
 	nos = interpolate(0, 45, 20, 1, dr_groundspeed )
 	nos_multi = math.abs(constrain(nos, 5,45))
@@ -792,6 +798,15 @@ function calculateAutopilot(wanted_rate)
 	-- 	end
 	-- 
 	-- end
+	if (sim_jas_auto_mode == 5) then
+		if lock_pitch_movement == 1 then
+			lock_pitch_movement = 0
+			--autopilot_hold_alti = sim_altitude
+			--autopilot_hold_alti = autopilot_hold_alti + wanted_rate
+			--XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti) 
+		end
+		
+	end
 	if (sim_jas_auto_mode == 3) then
 		if lock_pitch_movement == 1 then
 			lock_pitch_movement = 0
@@ -806,7 +821,7 @@ function calculateAutopilot(wanted_rate)
 		
 		
 	end
-	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
+	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5) then
 		if (lock_pitch_movement == 1 and sim_jas_auto_mode == 2) then
 			lock_pitch_movement = 0
 			--autopilot_hold_att = autopilot_hold_att + wanted_rate/100
@@ -825,7 +840,7 @@ function calculateAutopilot(wanted_rate)
 	end
 	
 
-	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 20 or sim_jas_auto_mode == 30) then 
+	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5 or sim_jas_auto_mode == 20 or sim_jas_auto_mode == 30) then 
 		if lock_pitch_movement == 1 then
 			lock_pitch = sim_pitch
 			lock_pitch_movement = 0
