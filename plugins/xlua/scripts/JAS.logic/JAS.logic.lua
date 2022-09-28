@@ -131,7 +131,16 @@ jas_si_nav_lon = find_dataref("JAS/si/nav/lon")
 jas_si_nav_bearing = find_dataref("JAS/si/nav/bearing")
 jas_si_nav_alt = find_dataref("JAS/si/nav/alt")
 jas_si_nav_course = find_dataref("JAS/si/nav/course")
+jas_si_nav_dist = find_dataref("JAS/si/nav/dist")
+jas_si_nav_namn = find_dataref("JAS/si/nav/namn")
 
+jas_udat_lon = find_dataref("JAS/udat/lon")
+jas_udat_lat = find_dataref("JAS/udat/lat")
+jas_udat_alt = find_dataref("JAS/udat/alt")
+jas_udat_namn = find_dataref("JAS/udat/namn")
+jas_udat_distance = find_dataref("JAS/udat/distance")
+
+jas_udat_steg = find_dataref("JAS/udat/steg")
 
 jas_auto_afk_mode = find_dataref("JAS/autopilot/afk_mode")
 jas_auto_afk = find_dataref("JAS/autopilot/afk")
@@ -862,7 +871,41 @@ function landingprick()
 			hojd = constrain(hojd, 0,2000)
 			jas_si_nav_alt = jas_ti_land_alt+500 + hojd
 		end
+		jas_si_nav_namn[0] = 76
+		jas_si_nav_namn[1] = 49
+		jas_si_nav_namn[2] = 0
+		jas_si_nav_namn[3] = 0
+		jas_si_nav_dist = b
+	elseif (jas_ti_menu_currentmenu == 5) then
+		-- Uppdrags menyn vald
+		jas_si_nav_lat = jas_udat_lat
+		jas_si_nav_lon = jas_udat_lon
+		if (jas_udat_alt<1) then
+			jas_si_nav_alt = 1000
+		else
+			jas_si_nav_alt = jas_udat_alt
+		end
+		jas_si_nav_dist = distance(jas_udat_lat, jas_udat_lon, dr_lat, dr_lon)
+		
+		jas_si_nav_heading = bearing(dr_lat, dr_lon, jas_udat_lat, jas_udat_lon)
+		jas_si_nav_namn[0] = jas_udat_namn[0]
+		jas_si_nav_namn[1] = jas_udat_namn[1]
+		jas_si_nav_namn[2] = jas_udat_namn[2]
+		jas_si_nav_namn[3] = jas_udat_namn[3]
+		jas_si_nav_prickactive = 2
+	else
+		-- ingen meny öppen, visa hem till basen
+		jas_si_nav_lat = jas_ti_land_lat
+		jas_si_nav_lon = jas_ti_land_lon
+		jas_si_nav_alt = jas_ti_land_alt+500
+		jas_si_nav_dist = distance(jas_ti_land_lat, jas_ti_land_lon, dr_lat, dr_lon)
+		jas_si_nav_heading = bearing(dr_lat, dr_lon, jas_ti_land_lat, jas_ti_land_lon)
+		jas_si_nav_namn[0] = 0
+		jas_si_nav_namn[1] = 0
+		jas_si_nav_namn[2] = 0
+		jas_si_nav_namn[3] = 0
 	end
+	
 	sim_heartbeat = 1199
 end
 
@@ -1033,7 +1076,7 @@ function prick()
 		jas_si_nav_prickx = prickx
 		jas_si_nav_pricky = pricky
 
-		jas_si_nav_heading = jas_ti_land_bear
+		jas_si_nav_heading = target_bearing
 	
 	end
 	
@@ -1056,9 +1099,13 @@ function prick()
 		jas_si_nav_prickx = prickx
 		jas_si_nav_pricky = pricky
 
+		jas_si_nav_heading = target_bearing
+	end
+	if (jas_si_nav_prickactive == 0) then
+		
+
 		jas_si_nav_heading = jas_ti_land_bear
 	end
-
 
 	sim_heartbeat = 799
 end

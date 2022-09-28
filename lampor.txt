@@ -10,15 +10,23 @@ JAS/fuel/range				float	sys	unit	unit2	Beräknad total bränsle
 JAS/fuel/pct				float	sys	unit	unit2	Beräknad total bränsle
 JAS/fuel/home				float	sys	unit	unit2	hur många % behövs för att komma hem
 
+JAS/a14		int		sys	unit	unit2	Description
+
+
 ## MKV
 JAS/system/mkv/larm			int		sys	unit	unit2	Description
 JAS/system/mkv/eta			float	sys	unit	unit2	Tidkvar till markkontakt
 JAS/system/mkv/gneed		float	sys	unit	unit2	Lastfaktor som behövs för att klara sig ur
 JAS/system/mkv/needmore		int		sys	unit	unit2	Lastfaktorn måste ökas
 JAS/system/mkv/lastfaktor	float	sys	unit	unit2	Beräknad lastfaktor
+JAS/system/mkv/help			int		sys	unit	unit2	Description
 
 # Variabler från Fly-by-wire beräkningar
 JAS/fbw/max_roll_rate	float	sys	unit	unit2	Nuvarande max rollrate baserat på hastighet
+JAS/fbw/override	int	sys	unit	unit2	Description
+JAS/fbw/override_roll	float	sys	unit	unit2	värde som läggs på beräkningen
+JAS/fbw/override_pitch	float	sys	unit	unit2	värde som läggs på beräkningen
+JAS/fbw/override_yaw	float	sys	unit	unit2	värde som läggs på beräkningen
 
 #Heartbeats
 JAS/system/mkv/heartbeat	int	sys	unit	unit2	Description
@@ -53,6 +61,7 @@ JAS/debug/error_correction_g	float	sys	unit	unit2	Description
 
 JAS/vu22/override/knappar		int		sys	unit	unit2	Description
 JAS/frontpanel/override/knappar	int		sys	unit	unit2	Description
+JAS/st/override/knappar	int		sys	unit	unit2	Description
 
 JAS/knapparfunkar	int		sys	unit	unit2	Description
 
@@ -105,6 +114,7 @@ JAS/system/dap/power		int	sys	unit	unit2	Description
 JAS/system/dap/startup		int	sys	unit	unit2	Description
 JAS/system/dap/lamp/pluv	int	sys	unit	unit2	Description
 
+JAS/st/gs	int	sys	unit	unit2	Description
 
 JAS/system/mot/fack		int	sys	unit	unit2	Description
 JAS/system/mot/rems		int	sys	unit	unit2	Description
@@ -377,6 +387,9 @@ JAS/si/nav/lon  float   si  unit    unit2   från fartvektorn
 JAS/si/nav/bearing  float   si  unit    unit2   bearing är vilken kurs som går rakt mot målet relativt flygplanet
 JAS/si/nav/course  float   si  unit    unit2   course är vinkeln på tex landingsbanan i världen
 JAS/si/nav/alt  float   si  unit    unit2   höjd över havet vi önskar flyga på
+JAS/si/nav/dist  float   si  unit    unit2   avstånd
+JAS/si/nav/namn  int[4]   si  unit    unit2   Namn på waypoint
+JAS/si/nav/eta  float   si  unit    unit2   Namn på waypoint
 
 # Radar
 
@@ -391,14 +404,15 @@ JAS/radar/target    int     radar unit unit2 Låst mål
 JAS/vapen/mode     int     radar unit unit2 Vapenväljarens läge 0 okänt, 1 redo, 2 operativ, 3 sim, 4 fikt
 
 # Uppdrags menyn
-JAS/udat/steg int udat unit unit2 Index för vald 
-JAS/udat/list int udat unit unit2 Index för vald lista
-JAS/udat/heading  float   si  unit    unit2   riktning till aktuell brytpunkt
-JAS/udat/distance  float   si  unit    unit2   avstånd till aktuell brytpunkt
-JAS/udat/speed  float   si  unit    unit2   avstånd till aktuell brytpunkt
-JAS/udat/alt  float   si  unit    unit2   avstånd till aktuell brytpunkt
-JAS/udat/lat  double   si  unit    unit2   gps till aktuell brytpunkt
-JAS/udat/lon  double   si  unit    unit2   gps till aktuell brytpunkt
+JAS/udat/steg       int udat unit unit2 Index för vald 
+JAS/udat/list       int udat unit unit2 Index för vald lista
+JAS/udat/heading    float   si  unit    unit2   riktning till aktuell brytpunkt
+JAS/udat/distance   float   si  unit    unit2   avstånd till aktuell brytpunkt
+JAS/udat/speed      float   si  unit    unit2   avstånd till aktuell brytpunkt
+JAS/udat/alt        float   si  unit    unit2   avstånd till aktuell brytpunkt
+JAS/udat/lat        double   si  unit    unit2   gps till aktuell brytpunkt
+JAS/udat/lon        double   si  unit    unit2   gps till aktuell brytpunkt
+JAS/udat/namn       int[4] si unit unit2    Namn på brytpunkt 
 
 
 
