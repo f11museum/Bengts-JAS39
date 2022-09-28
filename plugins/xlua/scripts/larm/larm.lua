@@ -141,7 +141,7 @@ function bromsar()
 		jas_vat_larm_bromsar = 1
 		jas_vat_larmkod[177] = 1
 	end
-	if (dr_throttle[0]>0.75 and dr_speedbrake_ratio > 0) then -- Parkeringsbroms på och gas över 50%
+	if (dr_throttle[0]>0.85 and dr_speedbrake_ratio > 0) then -- Luftbroms på och gas över 85%
 		jas_vat_larm_bromsar = 1
 		jas_vat_larmkod[178] = 1
 	end
