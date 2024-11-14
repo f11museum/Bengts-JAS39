@@ -31,6 +31,7 @@ max_yaw_rate = 50
 elevator_rate_to_angle = 2
 
 deadzone = 0.050
+deadzone_pedaler = 0.020
 autopilot_disable = 0.192307692308 -- 1.5 grader
 autopilot_disable_roll = 0.192307692308 -- 1.5 grader
 autopilot_disable_pitch = 0.166666666667 -- detta stämmer för spak mot magen 2.5 grader av totalt 15 grader
@@ -209,6 +210,10 @@ dr_baro_current = XLuaFindDataRef("sim/weather/barometer_sealevel_inhg")
 
 
 jas_fbw_max_roll_rate = find_dataref("JAS/fbw/max_roll_rate")
+jas_fbw_override_roll = find_dataref("JAS/fbw/override_roll")
+jas_fbw_override_pitch = find_dataref("JAS/fbw/override_pitch")
+jas_fbw_override_yaw = find_dataref("JAS/fbw/override_yaw")
+jas_fbw_override = find_dataref("JAS/fbw/override")
 
 -- publika variabler
 s_canard = 0
@@ -559,6 +564,8 @@ d_ail_fade = create_dataref("JAS/debug/fbw/ail_fade", "number")
 d_ail_wanted = create_dataref("JAS/debug/fbw/ail_wanted", "number")
 d_ail_yoke = create_dataref("JAS/debug/fbw/ail_yoke", "number")
 
+d_override_roll = create_dataref("JAS/debug/fbw/override_roll", "number")
+
 sim_acf_rollrate_filtered = 0
 
 function calculateAileron()
@@ -571,7 +578,7 @@ function calculateAileron()
 	-- Först kollar vi vad piloten vill ha för ändring på rollen, multiplicerat med en faktor för maximal roitationshastighet
 	stick = 1
 	current_deadzone = deadzone
-	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 ) then
+	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5 ) then
 		current_deadzone = autopilot_disable_roll
 	end
 		
@@ -598,11 +605,12 @@ function calculateAileron()
 		else 
 			wanted_roll = sim_acf_roll
 		end
-		if (jas_auto_ks_mode == 1 and sim_jas_auto_mode == 3) then -- om höjd styrning och planet är i level så håller den kvar det
+		if (jas_auto_ks_mode == 1 and (sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5 or jas_fbw_override >=1)) then -- om höjd styrning och planet är i level så håller den kvar det
 			delta2 = jas_auto_ks_roll - sim_acf_roll
 			wanted_roll = jas_auto_ks_roll
 			sim_jas_lamps_ks = 1
 		end	
+
 		
 		XLuaSetNumber(XLuaFindDataRef("JAS/debug/d1"), delta2) 
 		if (delta2>180) then
@@ -657,50 +665,64 @@ function calculateAileron()
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[2]"), wanted_roll) 
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), sim_acf_roll) 
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), delta2) 
+	if (jas_fbw_override >=1) then --  override
+		d_override_roll = 1
+		delta2 = jas_fbw_override_roll - sim_acf_roll
+		wanted_roll = jas_fbw_override_roll
+		if (delta2>180) then
+			delta2 = wanted_roll - (sim_acf_roll+360)
+		end
+		if (delta2<-180) then
+			delta2 = wanted_roll - (sim_acf_roll-360)
+		end
+		delta = delta2*rate_to_deg * fadeout*0.5
+	else 
+		d_override_roll = 2
+	end	
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d"), delta) 
 	m_aileron = delta + fadeout*sim_yoke_roll_ratio*10
 	--m_aileron = sim_yoke_roll_ratio*10
 	d_ail_req = m_aileron
 	
-	
-	
-	
-	-- PID försök till att få en bättre trim
-	a_kp = 0.3
-	a_kp = interpolate(0, a_kp, 1000, 0.01, sim_airspeed_kts_pilot )
-	a_ki = 0.0001
-	a_kd = 0.0021
-
-	elapsedTime = sim_FRP
-
-	-- mho_BEGIN
-	error = wanted_roll-sim_acf_roll -- determine error
-	error = (wanted_rate-current_rate)
-	a_cumError = a_cumError + error * elapsedTime --compute integral
-	a_rateError = (error - a_lastError)/elapsedTime --compute derivative
-
-	out = a_kp*error + a_ki*a_cumError + a_kd*a_rateError --PID output               
-
-	-- Justerar integrationskonstanten så att man inte kan få någon windup (tror det kan ge konstiga problem)
-	if (out > 50) then
-		a_cumError = a_cumError - ( out - 50 ) / a_ki
-	end
-	if (out < -50) then
-		a_cumError = a_cumError - ( out + 50 ) / a_ki
-	end
-	--m_aileron = constrain(out, -50,50)
-	-- mho_END
-	
-	error = wanted_roll-sim_acf_roll -- determine error
-	a_cumError = constrain(a_cumError + error * elapsedTime, -10,10) --compute integral
-	a_rateError = constrain((error - a_lastError)/elapsedTime, -10,10) --compute derivative
-
-	out = a_kp*error + a_ki*a_cumError + a_kd*a_rateError --PID output               
-
-	a_lastError = error --remember current error
-	previousTime = currentTime --remember current time
-
-	--m_aileron = constrain(out, -50,50)
+	-- 
+	-- 
+	-- 
+	-- -- PID försök till att få en bättre trim
+	-- a_kp = 0.3
+	-- a_kp = interpolate(0, a_kp, 1000, 0.01, sim_airspeed_kts_pilot )
+	-- a_ki = 0.0001
+	-- a_kd = 0.0021
+	-- 
+	-- elapsedTime = sim_FRP
+	-- 
+	-- -- mho_BEGIN
+	-- error = wanted_roll-sim_acf_roll -- determine error
+	-- error = (wanted_rate-current_rate)
+	-- a_cumError = a_cumError + error * elapsedTime --compute integral
+	-- a_rateError = (error - a_lastError)/elapsedTime --compute derivative
+	-- 
+	-- out = a_kp*error + a_ki*a_cumError + a_kd*a_rateError --PID output               
+	-- 
+	-- -- Justerar integrationskonstanten så att man inte kan få någon windup (tror det kan ge konstiga problem)
+	-- if (out > 50) then
+	-- 	a_cumError = a_cumError - ( out - 50 ) / a_ki
+	-- end
+	-- if (out < -50) then
+	-- 	a_cumError = a_cumError - ( out + 50 ) / a_ki
+	-- end
+	-- --m_aileron = constrain(out, -50,50)
+	-- -- mho_END
+	-- 
+	-- error = wanted_roll-sim_acf_roll -- determine error
+	-- a_cumError = constrain(a_cumError + error * elapsedTime, -10,10) --compute integral
+	-- a_rateError = constrain((error - a_lastError)/elapsedTime, -10,10) --compute derivative
+	-- 
+	-- out = a_kp*error + a_ki*a_cumError + a_kd*a_rateError --PID output               
+	-- 
+	-- a_lastError = error --remember current error
+	-- previousTime = currentTime --remember current time
+	-- 
+	-- --m_aileron = constrain(out, -50,50)
 end
 
 rudder_delta_prev = 0
@@ -713,15 +735,15 @@ function calculateRudder()
 	
 	rate_to_deg = (fadelagg*18)/320
 	input = 0
-	if (sim_yoke_heading_ratio<deadzone and sim_yoke_heading_ratio > -deadzone) then
+	if (sim_yoke_heading_ratio<deadzone_pedaler and sim_yoke_heading_ratio > -deadzone_pedaler) then
 		input = 0
 		
 	else
 		-- piloten rör pedaler
 		if (sim_yoke_heading_ratio<0) then
-			input = sim_yoke_heading_ratio + deadzone
+			input = sim_yoke_heading_ratio + deadzone_pedaler
 		else
-			input = sim_yoke_heading_ratio - deadzone
+			input = sim_yoke_heading_ratio - deadzone_pedaler
 		end
 		machfade = constrain(1.5-dr_mach, 0.5,1)
 	end
@@ -743,7 +765,6 @@ function calculateRudder()
 	
 	rudder_delta_prev = delta
 	
-	m_rudder = wanted_rate -delta
 	
 	
 	-- ## GAMLA roderuträkningen
@@ -759,6 +780,12 @@ function calculateRudder()
 	--end
 	m_rudder = delta*rate_to_deg * current_fade_out * machfade
 	--m_rudder = input *25
+	
+	
+	if (sim_jas_auto_mode == 3) then
+		m_rudder = 0
+	end
+	
 	-- Noshjulet
 	nos = interpolate(0, 45, 20, 1, dr_groundspeed )
 	nos_multi = math.abs(constrain(nos, 5,45))
@@ -808,6 +835,15 @@ function calculateAutopilot(wanted_rate)
 	-- 	end
 	-- 
 	-- end
+	if (sim_jas_auto_mode == 5) then
+		if lock_pitch_movement == 1 then
+			lock_pitch_movement = 0
+			--autopilot_hold_alti = sim_altitude
+			--autopilot_hold_alti = autopilot_hold_alti + wanted_rate
+			--XLuaSetNumber(dr_jas_auto_alt, autopilot_hold_alti) 
+		end
+		
+	end
 	if (sim_jas_auto_mode == 3) then
 		if lock_pitch_movement == 1 then
 			lock_pitch_movement = 0
@@ -822,7 +858,7 @@ function calculateAutopilot(wanted_rate)
 		
 		
 	end
-	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3) then
+	if (sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5) then
 		if (lock_pitch_movement == 1 and sim_jas_auto_mode == 2) then
 			lock_pitch_movement = 0
 			--autopilot_hold_att = autopilot_hold_att + wanted_rate/100
@@ -840,8 +876,21 @@ function calculateAutopilot(wanted_rate)
 		kd = 0
 	end
 	
-
-	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 20 or sim_jas_auto_mode == 30) then 
+	if (jas_fbw_override >= 1 ) then
+		
+		demand = jas_fbw_override_pitch - sim_acf_flight_angle
+		error = constrain(demand, -15,15)
+		wanted_rate = error * math.cos(math.rad(sim_acf_roll))
+		
+		--wanted_rate = error * math.cos(math.rad(sim_acf_roll))
+		--return demand *5
+		kp = 15
+		kp = constrain(interpolate(0, 10, 500, 0.01, sim_airspeed_kts_pilot ), 0.0001,100)
+		ki = 4*current_fade_out
+		kd = 0
+	end
+	
+	if (sim_jas_auto_mode == 1 or sim_jas_auto_mode == 2 or sim_jas_auto_mode == 3 or sim_jas_auto_mode == 5 or sim_jas_auto_mode == 20 or sim_jas_auto_mode == 30) then 
 		if lock_pitch_movement == 1 then
 			lock_pitch = sim_pitch
 			lock_pitch_movement = 0
@@ -857,6 +906,7 @@ function calculateAutopilot(wanted_rate)
 		--XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[3]"), error) 
 	end
 	
+
 	-- PID försök till att få en bättre autotrim
 
 	elapsedTime = constrain(sim_FRP, 0,0.025)
@@ -1000,8 +1050,6 @@ function calculateElevator()
 		wanted_rate = wanted_rate + auto1 * current_fade_out
 	end
 	
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), auto1) 
-	XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[5]"), lock_avg) 
 	
 	
 	delta = delta * current_fade_out
@@ -1335,7 +1383,8 @@ function before_physics()
 --XLuaSetNumber(dr_right_aileron, -s_aileron_l)
 		sim_heartbeat = 364
 	XLuaSetNumber(dr_vstab, s_rudder)
-		sim_heartbeat = 365
+	sim_heartbeat = 365
+	jas_fbw_override = 0
 -- Sätt status så vi vet om det här scriuptet fungerar 
 	
 	XLuaSetNumber(dr_status, 1)
@@ -1347,6 +1396,7 @@ function before_physics()
 end
 
 function after_physics() 	
-	--XLuaSetNumber(dr_override_surfaces, 0) 
+	XLuaSetNumber(dr_override_surfaces, 0) 
+
 end
 sim_heartbeat = 199

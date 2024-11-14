@@ -33,6 +33,8 @@ jas_ti_map_type2 = find_dataref("JAS/ti/map/type2")
 jas_ti_map_color2 = find_dataref("JAS/ti/map/color2")
 
 jas_udat_lon = find_dataref("JAS/udat/lon")
+jas_udat_lat = find_dataref("JAS/udat/lat")
+jas_udat_namn = find_dataref("JAS/udat/namn")
 
 jas_vu22_vapenop = find_dataref("JAS/io/vu22/knapp/vapenop")
 

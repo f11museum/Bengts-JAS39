@@ -32,6 +32,8 @@ jas_pratorn_larm_gransvarde_g = find_dataref("JAS/pratorn/larm/gransvarde_g")
 
 jas_fuel_total = find_dataref("JAS/fuel/total")
 jas_fuel_pct = find_dataref("JAS/fuel/pct")
+jas_fuel_home = find_dataref("JAS/fuel/home")
+
 -- Dataref från x-plane
 dr_FRP = find_dataref("sim/operation/misc/frame_rate_period")
 dr_mach = find_dataref("sim/flightmodel/misc/machno")
@@ -47,6 +49,7 @@ dr_radar_alt = find_dataref("sim/flightmodel/position/y_agl")
 
 dr_gear_warning = find_dataref("sim/cockpit2/annunciators/gear_warning")
 dr_parking_brake = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
+dr_speedbrake_ratio = find_dataref("sim/cockpit2/controls/speedbrake_ratio")
 
 dr_throttle = find_dataref("sim/flightmodel/engine/ENGN_thro") 
 dr_fuel1 = find_dataref("sim/flightmodel/weight/m_fuel_total")
@@ -138,7 +141,10 @@ function bromsar()
 		jas_vat_larm_bromsar = 1
 		jas_vat_larmkod[177] = 1
 	end
-	
+	if (dr_throttle[0]>0.85 and dr_speedbrake_ratio > 0) then -- Luftbroms på och gas över 85%
+		jas_vat_larm_bromsar = 1
+		jas_vat_larmkod[178] = 1
+	end
 end
 
 function dragkr()
@@ -170,13 +176,20 @@ function brasys()
 end
 
 function bramgd()
+	jas_vat_larm_bramgd = 0
 	-- 24% larmgräns
 	if (jas_fuel_pct <25) then 
 		jas_vat_larm_bramgd = 1
 		jas_vat_larmkod[30] = 1 -- generarar larm 030
-	else
-		jas_vat_larm_bramgd = 0
+
 	end
+	
+	if (jas_fuel_pct < jas_fuel_home ) then
+		jas_vat_larm_bramgd = 1
+		jas_vat_larmkod[298] = 1 -- generarar larm 298 HEMFLYG-BRÄNSLE
+		jas_vat_larmkod[29] = 1 
+	end
+	
 end
 
 function stall()
