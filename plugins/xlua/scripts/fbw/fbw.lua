@@ -17,15 +17,15 @@ optimal_angle = 20 -- För fram vingen
 
 max_pitch_rate = 20
 
-max_pitch_rate_0 = 10
-max_pitch_rate_300 = 15
-max_pitch_rate_500 = 25 -- vid 500 måste vi börja plocka upp en godtycklig max alpha istället för max g
-max_pitch_rate_600 = 35
-max_pitch_rate_1000 = 19
-max_pitch_rate_1300 = 14
-max_roll_rate_val = 320 -- den här bestämmer max roll rate-- påstås va 270-320 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
-max_roll_rate = 320 -- uppdateras i beräkning tiull nuvarande max
-min_roll_rate = 70+30 -- orginal 60
+max_pitch_rate_0 = 30
+max_pitch_rate_300 = 25
+max_pitch_rate_500 = 35 -- vid 500 måste vi börja plocka upp en godtycklig max alpha istället för max g
+max_pitch_rate_600 = 45
+max_pitch_rate_1000 = 29
+max_pitch_rate_1300 = 24
+max_roll_rate_val = 270 -- den här bestämmer max roll rate-- påstås va 270-320 men jag tycker det går fortare på en video där dom flyger, jag kan mäta det till ca 320
+max_roll_rate = 270 -- uppdateras i beräkning till nuvarande max
+min_roll_rate = 60 -- orginal 60
 max_yaw_rate = 50
 
 elevator_rate_to_angle = 2
@@ -72,6 +72,7 @@ d_max_roll_softstop = create_dataref("JAS/debug/fbw/max_roll_softstop", "number"
 
 d_fbw_ele_wanted_rate = create_dataref("JAS/debug/fbw/ele_wanted_rate", "number")
 d_fbw_ele_wanted_filter = create_dataref("JAS/debug/fbw/ele_wanted_filter", "number")
+debug_fbw_canard = create_dataref("JAS/debug/fbw/canard", "number")
 
 d_elv_yoke = create_dataref("JAS/debug/fbw/elv_yoke", "number")
 d_elv_calc = create_dataref("JAS/debug/fbw/elv_calc", "number")
@@ -102,15 +103,29 @@ dr_elv_trim = XLuaFindDataRef("sim/flightmodel/controls/elv_trim")
 dr_tire_steer = find_dataref("sim/flightmodel2/gear/tire_steer_command_deg[0]") 
 dr_tire_steer2 = find_dataref("sim/flightmodel2/gear/tire_steer_command_deg[3]") 
 
--- Vingar
-dr_left_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail1def")
-dr_right_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2r_ail1def")
-dr_left_aileron = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail2def")
-dr_right_aileron = XLuaFindDataRef("sim/flightmodel/controls/wing2r_ail2def")
-dr_left_canard = XLuaFindDataRef("sim/flightmodel/controls/wing4l_elv2def")
-dr_right_canard = XLuaFindDataRef("sim/flightmodel/controls/wing4r_elv2def")
-dr_vstab = XLuaFindDataRef("sim/flightmodel/controls/vstab1_rud1def")
+-- Vingar gamla jas
+-- dr_left_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail1def")
+-- dr_right_elevator = XLuaFindDataRef("sim/flightmodel/controls/wing2r_ail1def")
+-- dr_left_aileron = XLuaFindDataRef("sim/flightmodel/controls/wing2l_ail2def")
+-- dr_right_aileron = XLuaFindDataRef("sim/flightmodel/controls/wing2r_ail2def")
 
+-- Viggen
+dr_left_elevator = find_dataref("sim/flightmodel/controls/wing4l_elv1def")
+dr_right_elevator = find_dataref("sim/flightmodel/controls/wing4r_elv1def")
+dr_left_aileron = find_dataref("sim/flightmodel/controls/wing4l_ail1def")
+dr_right_aileron = find_dataref("sim/flightmodel/controls/wing4r_ail1def")
+
+dr_left_elevator1 = find_dataref("sim/flightmodel/controls/wing1l_elv1def")
+dr_right_elevator1 = find_dataref("sim/flightmodel/controls/wing1r_elv1def")
+dr_left_aileron1 = find_dataref("sim/flightmodel/controls/wing2l_ail1def")
+dr_right_aileron1 = find_dataref("sim/flightmodel/controls/wing2r_ail1def")
+
+
+dr_left_canard = XLuaFindDataRef("sim/flightmodel/controls/wing1l_elv2def")
+dr_right_canard = XLuaFindDataRef("sim/flightmodel/controls/wing1r_elv2def")
+dr_vstab = XLuaFindDataRef("sim/flightmodel/controls/vstab1_rud1def")
+dr_canard_xp12 = find_dataref("sim/flightmodel2/controls/stabilizer_deflection_degrees")
+dr_canard_xp12_test2 = find_dataref("sim/flightmodel/parts/elem_inc")
 
 dr_acf_pitch = XLuaFindDataRef("sim/flightmodel/position/theta") 
 dr_acf_roll = XLuaFindDataRef("sim/flightmodel/position/phi") 
@@ -470,8 +485,8 @@ function update_dataref()
 		max_pitch_rate = max_pitch_rate*2
 	end
 	
-	max_alpha_up = interpolate(500*0.539957, max_alpha_up_normal, 600*0.539957, 20, sim_airspeed_kts_pilot )
-	max_alpha_up = constrain(max_alpha_up, 20,max_alpha_up_normal)
+	max_alpha_up = interpolate(500*0.539957, max_alpha_up_normal, 600*0.539957, 25, sim_airspeed_kts_pilot )
+	max_alpha_up = constrain(max_alpha_up, 25,max_alpha_up_normal)
 	
 	
 	-- XLuaSetNumber(dr_fog, 0.1) 
@@ -644,6 +659,7 @@ function calculateAileron()
 	-- XLuaSetNumber(XLuaFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio[4]"), delta2) 
 	XLuaSetNumber(XLuaFindDataRef("JAS/debug/d"), delta) 
 	m_aileron = delta + fadeout*sim_yoke_roll_ratio*10
+	--m_aileron = sim_yoke_roll_ratio*10
 	d_ail_req = m_aileron
 	
 	
@@ -1078,13 +1094,13 @@ function calculateElevator()
 		canard = canard -55 -- har tagit bort dragkraften från canarden vid detta läget för det blir ostabilt vid landning, men vi vinklar den för syns skull
 		brake = -40
 		-- kör med vingbromsar istället
-		-- XLuaSetNumber(dr_speedbrake_wing_right, 45)
-		-- XLuaSetNumber(dr_speedbrake_wing_left, 45)
-		-- XLuaSetNumber(dr_speedbrake_wing_right2, 45)
-		-- XLuaSetNumber(dr_speedbrake_wing_left2, 45)
+		XLuaSetNumber(dr_speedbrake_wing_right, 45)
+		XLuaSetNumber(dr_speedbrake_wing_left, 45)
+		XLuaSetNumber(dr_speedbrake_wing_right2, 45)
+		XLuaSetNumber(dr_speedbrake_wing_left2, 45)
 		
-		--XLuaSetNumber(dr_speedbrake2_wing_right, 35)
-		--XLuaSetNumber(dr_speedbrake2_wing_left, 35)
+		XLuaSetNumber(dr_speedbrake2_wing_right, 35)
+		XLuaSetNumber(dr_speedbrake2_wing_left, 35)
 		XLuaSetNumber(dr_speedbrake2_wing_right2, 35)
 		XLuaSetNumber(dr_speedbrake2_wing_left2, 35)
 	else
@@ -1260,6 +1276,7 @@ function before_physics()
 	-- Sätt värden på alla vingar efter vad som räknats ut
 	-- Framvingen ska bara ha sin uträkning från canard
 	motor_speed_error = motor_speed
+	--m_canard = -sim_alpha - m_elevator
 	if (error_correction>0) then
 		m_canard = constrain(m_canard, -55-10, 25+20) -- ge den lite extra spelrumm när den ska göra nödvändiga stabiliseringar
 		s_canard = motor(s_canard, m_canard, 56*10*8)
@@ -1287,23 +1304,38 @@ function before_physics()
 	--s_aileron_r = motor(s_aileron_r, m_aileron_r, motor_speed)
 
 	-- sidoroder
-	m_rudder = constrain(m_rudder, -30, 30)
+	m_rudder = constrain(m_rudder*0.5, -30, 30)
 	
 	s_rudder = motor(s_rudder, m_rudder, motor_speed_rudder)
 
 	
 	
-	XLuaSetNumber(dr_left_canard, s_canard )
-	XLuaSetNumber(dr_right_canard, s_canard )
-	
-	XLuaSetNumber(dr_left_elevator , s_elevator_l+s_aileron_e)
-	XLuaSetNumber(dr_right_elevator, s_elevator_r-s_aileron_e)
-	
-	XLuaSetNumber(dr_left_aileron, s_aileron_l)
-	XLuaSetNumber(dr_right_aileron, -s_aileron_l)
-	
+	XLuaSetNumber(dr_left_canard, 0 )
+	XLuaSetNumber(dr_right_canard, 0 )
+		sim_heartbeat = 360
+	dr_canard_xp12 = s_canard
+	debug_fbw_canard = s_canard
+	--dr_canard_xp12_test2[0] = sim_alpha
+	sim_heartbeat = 361
+	--dr_canard_xp12_test2[1] = sim_alpha
+	sim_heartbeat = 362
+	--dr_left_elevator = s_elevator_l+s_aileron_e
+	--dr_right_elevator = s_elevator_r-s_aileron_e
+	dr_left_elevator1 = s_elevator_l+s_aileron_e
+	dr_right_elevator1 = s_elevator_r-s_aileron_e
+	--XLuaSetNumber(dr_left_elevator , s_elevator_l+s_aileron_e)
+
+	--XLuaSetNumber(dr_right_elevator, s_elevator_r-s_aileron_e)
+	sim_heartbeat = 363
+	--dr_left_aileron = s_aileron_l	
+	--dr_right_aileron = -s_aileron_l
+	dr_left_aileron1 = s_aileron_l	
+	dr_right_aileron1 = -s_aileron_l
+	--XLuaSetNumber(dr_left_aileron, s_aileron_l)
+--XLuaSetNumber(dr_right_aileron, -s_aileron_l)
+		sim_heartbeat = 364
 	XLuaSetNumber(dr_vstab, s_rudder)
-	
+		sim_heartbeat = 365
 -- Sätt status så vi vet om det här scriuptet fungerar 
 	
 	XLuaSetNumber(dr_status, 1)
@@ -1315,6 +1347,6 @@ function before_physics()
 end
 
 function after_physics() 	
-	XLuaSetNumber(dr_override_surfaces, 0) 
+	--XLuaSetNumber(dr_override_surfaces, 0) 
 end
 sim_heartbeat = 199
