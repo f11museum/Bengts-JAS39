@@ -71,6 +71,14 @@ dr_master_caution = XLuaFindDataRef("sim/cockpit2/annunciators/master_caution")
 dr_master_warning = XLuaFindDataRef("sim/cockpit2/annunciators/master_warning")
 dr_gear_warning = XLuaFindDataRef("sim/cockpit2/annunciators/gear_warning")
 
+--Externa Lampor
+
+dr_beacon_lights_on = find_dataref("sim/cockpit/electrical/beacon_lights_on")
+dr_cockpit_lights_on = find_dataref("sim/cockpit/electrical/cockpit_lights_on")
+dr_landing_lights_on = find_dataref("sim/cockpit/electrical/landing_lights_on")
+dr_nav_lights_on = find_dataref("sim/cockpit/electrical/nav_lights_on")
+dr_strobe_lights_on = find_dataref("sim/cockpit/electrical/strobe_lights_on")
+dr_taxi_light_on = find_dataref("sim/cockpit/electrical/taxi_light_on")
 
 sim_fuel1 = find_dataref("sim/flightmodel/weight/m_fuel_total")
 -- Egna JAS dataref
@@ -86,6 +94,7 @@ sim_jas_button_lt_kran = find_dataref("JAS/io/vu22/knapp/ltbra")
 sim_jas_button_hstrom = find_dataref("JAS/io/vu22/knapp/hstrom")
 sim_jas_button_ess = find_dataref("JAS/io/vu22/knapp/ess")
 sim_jas_button_apu = find_dataref("JAS/io/vu22/knapp/apu")
+sim_jas_button_elnik = find_dataref("JAS/io/vu22/knapp/elnik")
 
 sim_jas_button_lt_kran_io = find_dataref("JAS/io/vu22/di/ltbra")
 sim_jas_button_hstrom_io = find_dataref("JAS/io/vu22/di/hstrom")
@@ -1265,6 +1274,26 @@ function prickold()
 	sim_heartbeat = 799
 end
 
+
+function belysning()
+	if (sim_jas_button_elnik == 1) then
+		dr_beacon_lights_on = 1
+		dr_cockpit_lights_on = 1
+		dr_landing_lights_on = 1
+		dr_nav_lights_on = 1
+		dr_strobe_lights_on = 1
+		dr_taxi_light_on = 1
+	else
+		dr_beacon_lights_on = 0
+		dr_cockpit_lights_on = 0
+		dr_landing_lights_on = 0
+		dr_nav_lights_on = 0
+		dr_strobe_lights_on = 0
+		dr_taxi_light_on = 0
+	end
+	
+end
+
 heartbeat = 0
 function before_physics() 
 	sim_heartbeat = 300
@@ -1291,6 +1320,8 @@ function before_physics()
 	sim_heartbeat = 309
 	fusk()
 	sim_heartbeat = 310
+	belysning()
+	sim_heartbeat = 311
 	systest()
     -- XLuaSetNumber(XLuaFindDataRef("JAS/system/logic/heartbeat"), 303)
     -- XLuaSetNumber(dr_status, heartbeat) 
