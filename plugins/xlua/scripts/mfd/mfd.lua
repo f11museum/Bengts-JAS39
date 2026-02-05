@@ -38,11 +38,26 @@ jas_udat_namn = find_dataref("JAS/udat/namn")
 
 jas_vu22_vapenop = find_dataref("JAS/io/vu22/knapp/vapenop")
 
+jas_huvudmod = find_dataref("JAS/huvudmod")
+jas_vapen_mode = find_dataref("JAS/vapen/mode")
+
 function knappar_ti()
-	
 
 end
 
+function knappar_mi()
+	
+		if ((jas_io_mi_knapp_knappram[0] == 1) ) then
+			jas_huvudmod = 1
+		end	
+		if ((jas_io_mi_knapp_knappram[1] == 1) ) then
+			jas_huvudmod = 2
+		end	
+		if ((jas_io_mi_knapp_knappram[2] == 1) ) then
+			jas_huvudmod = 3
+		end	
+
+end
 vapenop_prev = 0
 function vapenlast()
 	
@@ -64,7 +79,8 @@ end
 
 heartbeat = 0
 function before_physics() 
-	knappar_ti()
+	knappar_ti() 
+	knappar_mi()
 	vapenlast()
 
 	sim_heartbeat = heartbeat

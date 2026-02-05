@@ -5,25 +5,37 @@ sim_heartbeat = 100
 
 -- local sound_master = load_WAV_file(SYSTEM_DIRECTORY .. "Resources/sounds/alert/gear_warn_2.wav")  -- sound file I want to play
 
-
-vat_kvitt = {}    -- new array
-
-for i=1, 5 do
-	vat_kvitt[i] = {}
-	for j=1, 7 do
-		vat_kvitt[i][j] = 0
-	end
-end
-
-vat_larm = {}    -- new array
-
-for i=1, 5 do
-	vat_larm[i] = {}
-	for j=1, 7 do
-		vat_larm[i][j] = 0
-	end
-end
-
+vat_kvitt = {
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+}
+-- vat_kvitt = {}    -- new array
+-- 
+-- for i=1, 5 do
+-- 	vat_kvitt[i] = {}
+-- 	for j=1, 7 do
+-- 		vat_kvitt[i][j] = 0
+-- 	end
+-- end
+-- 
+-- vat_larm = {}    -- new array
+-- 
+-- for i=1, 5 do
+-- 	vat_larm[i] = {}
+-- 	for j=1, 7 do
+-- 		vat_larm[i][j] = 0
+-- 	end
+-- end
+vat_larm = {
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0},
+}
 sim_heartbeat = 101
 -- JAS/vat/power	int	y	unit	Om systemet har ström
 sim_power = find_dataref("JAS/vat/power")

@@ -80,6 +80,8 @@ balk6_index = 1
 
 dr_payload =  find_dataref("sim/flightmodel/weight/m_fixed") -- den dumma extra vikten som x-plane alltid lägger på planet
  
+dr_elv_trim = find_dataref("sim/flightmodel/controls/elv_trim")
+dr_deploy_flares = find_command("sim/weapons/deploy_flares")
 
 d_selected = create_dataref("JAS/debug/vapen/selected", "number")
 d_klick = create_dataref("JAS/debug/vapen/klick", "number")
@@ -265,10 +267,28 @@ function totalFuel()
 	jas_fuel_range = dr_groundspeed * jas_fuel_eta
 	jas_fuel_home = jas_ti_land_dist /4500
 	sim_heartbeat = 408
+	
+	sim_heartbeat = 409
 end
 
 run_at_interval(totalFuel, 1.0)
 
+
+flares_firing = 0
+function flares()
+	if (flares_firing == 1 and dr_elv_trim == 0) then
+		dr_deploy_flares:stop()
+		flares_firing = 0
+	end
+	if (dr_elv_trim ~= 0) then
+		if (flares_firing == 0) then
+			dr_deploy_flares:start()
+			flares_firing = 1
+		end
+		dr_elv_trim = 0
+		
+	end
+end
 heartbeat = 0
 function before_physics()
 	
@@ -286,9 +306,12 @@ function before_physics()
 	
 	sim_heartbeat = 204
 	--totalFuel()
+	sim_heartbeat = 205
+	flares()
+	
 	
 	dr_payload =  0-- ta bort den dumma extra vikten som x-plane alltid lägger på planet
-	
+	sim_heartbeat = 206
 	sim_heartbeat = heartbeat
 	heartbeat = heartbeat + 1
 end
