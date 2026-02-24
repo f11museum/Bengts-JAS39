@@ -3579,7 +3579,7 @@ P _prop/0/_rad_mod 1.000000000
 P _prop/0/_vectarmY_engn 0.000000000
 P _prop/0/_vectarmZ_engn 0.000000000
 P _prop/count 16
-P _sbrk/0/_area 7.025219440
+P _sbrk/0/_area 7.025218964
 P _sbrk/0/_axi_rot 90.000000000
 P _sbrk/0/_ext_ang 45.000000000
 P _sbrk/0/_geo/0,0,0 -1.280434847
@@ -16894,7 +16894,7 @@ P _wpna/9/_v10_steers_with_gear 0
 P _wpna/count 11
 P acf/_APU_cooldown_time 0.001000000
 P acf/_APU_door_time 0.001000000
-P acf/_APU_ff_kgh 0.000000000
+P acf/_APU_ff_kgh 10.000000000
 P acf/_APU_fuel_src 0
 P acf/_APU_spooldn_time 15.000000000
 P acf/_APU_spoolup_time 15.000000000
@@ -16904,7 +16904,7 @@ P acf/_AShi_alpha_sec 0.000000000
 P acf/_AShi_beta_k 0.000000000
 P acf/_AShi_beta_sec 0.000000000
 P acf/_AShi_hdng_rat 1.000000000
-P acf/_AShi_max_G 0.000000000
+P acf/_AShi_max_G 2.000000000
 P acf/_AShi_max_G_init 1.000000000
 P acf/_AShi_max_alpha 0.000000000
 P acf/_AShi_max_beta 0.000000000
@@ -17002,6 +17002,7 @@ P acf/_Jxx_unitmass 0.000000000
 P acf/_Jyy_unitmass 0.000000000
 P acf/_Jzz_unitmass 0.000000000
 P acf/_Mmo 2.000000000
+P acf/_RAT_KEAS 0.000000000
 P acf/_RSC_idlespeed_ENGN 500.000000000
 P acf/_RSC_maxgreen_ENGN 2650.000000000
 P acf/_RSC_mingov_ENGN 0.000000000
@@ -19140,7 +19141,7 @@ P acf/_feathered_pitch 0.000000000
 P acf/_ff_rat_idle_JET 0.100000001
 P acf/_ff_rat_idle_PRP 0.150000006
 P acf/_ff_rat_idle_turbo 0.100000001
-P acf/_file_writer_version 123300
+P acf/_file_writer_version 124009
 P acf/_fixed_max/0 250.000000000
 P acf/_fixed_max/1 250.000000000
 P acf/_fixed_max/2 50.000000000
@@ -19406,9 +19407,9 @@ P acf/_gyro_spooldown_time 60.000000000
 P acf/_gyro_spoolup_time 5.000000000
 P acf/_h_eqlbm 5.278918743
 P acf/_has_ADG 0
-P acf/_has_APU_bleed_air 0
-P acf/_has_APU_generator 0
-P acf/_has_APU_switch 0
+P acf/_has_APU_bleed_air 1
+P acf/_has_APU_generator 1
+P acf/_has_APU_switch 1
 P acf/_has_DC_fd 0
 P acf/_has_GLASS_hsi 0
 P acf/_has_SC_fd 0
@@ -19576,10 +19577,10 @@ P acf/_jet_N1_climb 100.000000000
 P acf/_jet_N1_hicrz 90.000000000
 P acf/_jet_N1_locrz 80.000000000
 P acf/_jet_N1_takeoff 100.000000000
-P acf/_jet_SFC_climb 0.550000012
-P acf/_jet_SFC_hicrz 0.550000012
-P acf/_jet_SFC_locrz 0.550000012
-P acf/_jet_SFC_takeoff 0.550000012
+P acf/_jet_SFC_climb 0.750000000
+P acf/_jet_SFC_hicrz 0.750000000
+P acf/_jet_SFC_locrz 0.750000000
+P acf/_jet_SFC_takeoff 0.750000000
 P acf/_jett_is_pipe 0
 P acf/_jett_is_ret 0
 P acf/_jett_is_slung 0
@@ -19678,7 +19679,7 @@ P acf/_num_buses 1
 P acf/_num_cylinders 4
 P acf/_num_engn 1
 P acf/_num_generators 1
-P acf/_num_inverters 0
+P acf/_num_inverters 1
 P acf/_num_prop 0
 P acf/_num_xmsn 1
 P acf/_o2_bottle_liter 0.000000000
@@ -19904,7 +19905,7 @@ P acf/_sbrk_on_td_EQ 0
 P acf/_scrolldef_x 0.000000000
 P acf/_scrolldef_y 0.000000000
 P acf/_selective_ties 1
-P acf/_sfc_burner 0.000000000
+P acf/_sfc_burner 2.000000000
 P acf/_shut_off_fuel_at_min_prop 0
 P acf/_single_axis_ap 0
 P acf/_skid_EQ 0
