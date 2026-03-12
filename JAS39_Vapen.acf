@@ -16796,7 +16796,7 @@ P _wpna/10/_v10_att_z_acf_prt_ref 31.167978287
 P _wpna/10/_v10_is_internal 0
 P _wpna/10/_v10_steers_with_gear 0
 P _wpna/2/_v10_att_body -1
-P _wpna/2/_v10_att_file_stl placeholder.wpn
+P _wpna/2/_v10_att_file_stl ARAK.wpn
 P _wpna/2/_v10_att_gear -1
 P _wpna/2/_v10_att_phi_ref 0.000000000
 P _wpna/2/_v10_att_psi_ref 0.000000000
@@ -16808,7 +16808,7 @@ P _wpna/2/_v10_att_z_acf_prt_ref 41.338584900
 P _wpna/2/_v10_is_internal 0
 P _wpna/2/_v10_steers_with_gear 0
 P _wpna/3/_v10_att_body -1
-P _wpna/3/_v10_att_file_stl placeholder.wpn
+P _wpna/3/_v10_att_file_stl ARAK.wpn
 P _wpna/3/_v10_att_gear -1
 P _wpna/3/_v10_att_phi_ref 0.000000000
 P _wpna/3/_v10_att_psi_ref 0.000000000
@@ -16820,7 +16820,7 @@ P _wpna/3/_v10_att_z_acf_prt_ref 41.338584900
 P _wpna/3/_v10_is_internal 0
 P _wpna/3/_v10_steers_with_gear 0
 P _wpna/4/_v10_att_body -1
-P _wpna/4/_v10_att_file_stl placeholder.wpn
+P _wpna/4/_v10_att_file_stl AIM120-AMRAAM.wpn
 P _wpna/4/_v10_att_gear -1
 P _wpna/4/_v10_att_phi_ref 0.000000000
 P _wpna/4/_v10_att_psi_ref 0.000000000
@@ -16832,7 +16832,7 @@ P _wpna/4/_v10_att_z_acf_prt_ref 43.799213409
 P _wpna/4/_v10_is_internal 0
 P _wpna/4/_v10_steers_with_gear 0
 P _wpna/5/_v10_att_body -1
-P _wpna/5/_v10_att_file_stl placeholder.wpn
+P _wpna/5/_v10_att_file_stl AIM120-AMRAAM.wpn
 P _wpna/5/_v10_att_gear -1
 P _wpna/5/_v10_att_phi_ref 0.000000000
 P _wpna/5/_v10_att_psi_ref 0.000000000
@@ -16844,7 +16844,7 @@ P _wpna/5/_v10_att_z_acf_prt_ref 43.799213409
 P _wpna/5/_v10_is_internal 0
 P _wpna/5/_v10_steers_with_gear 0
 P _wpna/6/_v10_att_body -1
-P _wpna/6/_v10_att_file_stl placeholder.wpn
+P _wpna/6/_v10_att_file_stl AIM9-Sidewinder.wpn
 P _wpna/6/_v10_att_gear -1
 P _wpna/6/_v10_att_phi_ref 0.000000000
 P _wpna/6/_v10_att_psi_ref 0.000000000
@@ -16856,7 +16856,7 @@ P _wpna/6/_v10_att_z_acf_prt_ref 47.244091034
 P _wpna/6/_v10_is_internal 0
 P _wpna/6/_v10_steers_with_gear 0
 P _wpna/7/_v10_att_body -1
-P _wpna/7/_v10_att_file_stl placeholder.wpn
+P _wpna/7/_v10_att_file_stl AIM9-Sidewinder.wpn
 P _wpna/7/_v10_att_gear -1
 P _wpna/7/_v10_att_phi_ref 0.000000000
 P _wpna/7/_v10_att_psi_ref 0.000000000
@@ -19656,7 +19656,7 @@ P acf/_n1_power_curve1 2.000000000
 P acf/_n1_power_curve2 3.000000000
 P acf/_n1_rated_thrust 100.000000000
 P acf/_n2_power_curve 3.500000000
-P acf/_name F11 JAS 39 Gripen
+P acf/_name F11 JAS 39 Gripen Vapen
 P acf/_new_plot_XP3D_cock/0 1
 P acf/_new_plot_outer_acf/0 1
 P acf/_no_default_chocks 0

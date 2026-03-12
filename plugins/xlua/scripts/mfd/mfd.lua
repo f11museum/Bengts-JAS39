@@ -47,13 +47,13 @@ end
 
 function knappar_mi()
 	
-		if ((jas_io_mi_knapp_knappram[0] == 1) ) then
+		if ((jas_io_fi_knapp_knappram[0] == 1) ) then
 			jas_huvudmod = 1
 		end	
-		if ((jas_io_mi_knapp_knappram[1] == 1) ) then
+		if ((jas_io_fi_knapp_knappram[1] == 1) ) then
 			jas_huvudmod = 2
 		end	
-		if ((jas_io_mi_knapp_knappram[2] == 1) ) then
+		if ((jas_io_fi_knapp_knappram[2] == 1) ) then
 			jas_huvudmod = 3
 		end	
 
